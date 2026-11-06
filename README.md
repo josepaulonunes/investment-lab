@@ -1,4 +1,4 @@
-# Personal Portfolio
+# Investment Lab
 
 My own investment lab. I built it to track my money and to test whether picking companies is worth it for me.
 
