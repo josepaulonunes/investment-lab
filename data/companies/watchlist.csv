@@ -1,0 +1,47 @@
+ticker,name,region
+ASML.AS,ASML,Europe
+ASM.AS,ASM International,Europe
+PRY.MI,Prysmian,Europe
+NEX.PA,Nexans,Europe
+SU.PA,Schneider Electric,Europe
+LR.PA,Legrand,Europe
+SIE.DE,Siemens,Europe
+SAP.DE,SAP,Europe
+AI.PA,Air Liquide,Europe
+MC.PA,LVMH,Europe
+OR.PA,L'Oreal,Europe
+EL.PA,EssilorLuxottica,Europe
+ITX.MC,Inditex,Europe
+RACE.MI,Ferrari,Europe
+WKL.AS,Wolters Kluwer,Europe
+NOVO-B.CO,Novo Nordisk,Europe
+DSV.CO,DSV,Europe
+ATCO-A.ST,Atlas Copco,Europe
+ASSA-B.ST,Assa Abloy,Europe
+KNEBV.HE,Kone,Europe
+NESN.SW,Nestle,Europe
+ROG.SW,Roche,Europe
+NOVN.SW,Novartis,Europe
+MSFT,Microsoft,USA
+GOOGL,Alphabet,USA
+AAPL,Apple,USA
+AMZN,Amazon,USA
+META,Meta,USA
+NVDA,Nvidia,USA
+V,Visa,USA
+MA,Mastercard,USA
+COST,Costco,USA
+ADBE,Adobe,USA
+TXN,Texas Instruments,USA
+2330.TW,TSMC,Emerging
+005930.KS,Samsung Electronics,Emerging
+MELI,MercadoLibre,Emerging
+WEGE3.SA,WEG,Emerging
+INFY,Infosys,Emerging
+HEIA.AS,Heineken,Europe
+RI.PA,Pernod Ricard,Europe
+UNA.AS,Unilever,Europe
+NKE,Nike,USA
+UNH,UnitedHealth,USA
+ZTS,Zoetis,USA
+ACN,Accenture,USA
