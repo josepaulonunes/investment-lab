@@ -114,4 +114,35 @@ fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_tex
 left.plotly_chart(fig)
 compare = allocation.melt(id_vars="name", value_vars=["Now", "Target"], var_name="series", value_name="%")
 fig = px.bar(compare, x="name", y="%", color="series", barmode="group", color_discrete_map={"Now": "#1f4e79", "Target": "#c9d6e3"})
-fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="",
+fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="")
+right.plotly_chart(fig)
+
+# Rebalance check
+for _, row in allocation.iterrows():
+    gap = row["Now"] - row["Target"]
+    if abs(gap) > band:
+        st.warning(f"{row['name']} is {gap:+.1f} points from target. Fix it in January with new money.")
+if (abs(allocation["Now"] - allocation["Target"]) <= band).all():
+    st.success("All blocks are within 3 points of target. Nothing to do.")
+
+st.divider()
+
+# Table: each product today
+st.subheader("Positions")
+st.caption("What I own in each ETF, how much I put in and how much it is worth today.")
+st.dataframe(
+    positions[["name", "block", "invested", "value", "gain", "gain_%", "weight_%"]],
+    hide_index=True,
+    column_config={
+        "name": "Product",
+        "block": "Block",
+        "invested": st.column_config.NumberColumn("Invested", format="%.2f €"),
+        "value": st.column_config.NumberColumn("Value", format="%.2f €"),
+        "gain": st.column_config.NumberColumn("Gain", format="%.2f €"),
+        "gain_%": st.column_config.NumberColumn("Gain %", format="%.1f%%"),
+        "weight_%": st.column_config.ProgressColumn("Weight", format="%.1f%%", min_value=0, max_value=100),
+    },
+)
+
+# Footer
+st.caption("Prices from Yahoo Finance (Xetra, in EUR). Personal learning project, not investment advice.")
