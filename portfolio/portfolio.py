@@ -6,15 +6,15 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Targets and rules (from IPS.md)
-targets = {"core": 0.85, "small": 0.10, "gold": 0.05}
-monthly_contribution = 400
+targets = {"core": 0.75, "small": 0.10, "future": 0.12, "gold": 0.03}
+monthly_contribution = 700
 band = 0.03
 
 # Use my real data if it exists, otherwise the example data
 folder = "data/portfolio/"
 if not os.path.exists(folder + "transactions.csv"):
     folder = "data/portfolio/example/"
-    print("Using example data")
+    print("Using example data (only 3 ETFs, so blocks will not match the targets)")
 
 # Load data
 transactions = pd.read_csv(folder + "transactions.csv")
