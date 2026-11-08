@@ -25,7 +25,7 @@ Then I added a small future block. I believe AI, electrification, nuclear and he
 | notes/ | My decisions and company notes, written before deciding |
 
 ## How to run
-My real purchases are kept private. If they are not there, the scripts use the example data in data/portfolio/example/.
+My real purchases are kept private. The live app shows my real portfolio scaled so that all the money I put in adds up to 100 (data/portfolio/public/), so you see weights and returns but not the amounts. After each monthly purchase I run python portfolio/make_public.py to update it. If neither file is there, the scripts use the example data in data/portfolio/example/.
 
     pip install -r requirements.txt
     python portfolio/portfolio.py
