@@ -11,26 +11,32 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
-st.caption("85% global stocks (VWCE), 10% small companies (IUSN), 5% gold. 400 EUR a month, reviewed every January.")
+st.caption("75% global stocks, 10% small companies, 12% future sectors (AI, power grid, nuclear, health), 3% gold. 700 EUR a month, reviewed every January.")
 
 # Yahoo ticker for each product I own (all in EUR on Xetra)
 tickers = {
     "IE00BK5BQT80": "VWCE.DE",
     "IE00BF4RFH31": "IUSN.DE",
+    "IE00BDVPNG13": "WTAI.MI",
+    "IE000J80JTL1": "GRID.DE",
+    "IE000M7V94E1": "NUKL.DE",
+    "IE00BM67HK77": "XDWH.DE",
     "IE00B579F325": "8PSG.DE",
 }
-targets = {"core": 85, "small": 10, "gold": 5}
+targets = {"core": 75, "small": 10, "future": 12, "gold": 3}
 band = 3
 
 # Name and colour of each block in the charts
-names = {"core": "Global (VWCE)", "small": "Small caps (IUSN)", "gold": "Gold"}
-colours = {"Global (VWCE)": "#1f4e79", "Small caps (IUSN)": "#2a9d8f", "Gold": "#e9b949"}
+names = {"core": "Global (VWCE)", "small": "Small caps (IUSN)", "future": "Future sectors", "gold": "Gold"}
+colours = {"Global (VWCE)": "#1f4e79", "Small caps (IUSN)": "#2a9d8f", "Future sectors": "#8e6cc0", "Gold": "#e9b949"}
 
 # Use my real data if it exists, otherwise the example data
 file = "data/portfolio/transactions.csv"
+example = False
 if not os.path.exists(file):
     file = "data/portfolio/example/transactions.csv"
-    st.info("Showing example data. My real purchases are kept private.")
+    example = True
+    st.info("Showing example data with only 3 ETFs. My real purchases are kept private.")
 
 # Load my purchases
 transactions = pd.read_csv(file, parse_dates=["date"])
@@ -41,6 +47,13 @@ if len(transactions) == 0:
 # Daily prices in euros since my first purchase
 start = transactions["date"].min()
 prices = yf.download(list(tickers.values()), start=start, progress=False)["Close"].ffill()
+
+# Stop with a clear message if a ticker has no prices on Yahoo
+for isin in transactions["isin"].unique():
+    ticker = tickers[isin]
+    if ticker not in prices.columns or prices[ticker].isna().all():
+        st.error(f"No prices for {ticker} ({isin}). Fix the ticker at the top of dashboard.py")
+        st.stop()
 
 # Value of the portfolio and money invested on each day
 value = pd.Series(0.0, index=prices.index)
@@ -106,7 +119,7 @@ allocation["Target"] = [targets[b] for b in allocation["block"]]
 
 # Charts: allocation donut and now vs target
 st.subheader("Allocation")
-st.caption("Left: how my money is split today. Right: today vs my targets. I only fix a block in January if it is more than 3 points away.")
+st.caption("Left: how my money is split today. Right: today vs my targets. Future sectors are WTAI, GRID, NUKL and health care. I only fix a block in January if it is more than 3 points away.")
 left, right = st.columns(2)
 fig = px.pie(allocation, names="name", values="Now", hole=0.55, color="name", color_discrete_map=colours)
 fig.update_traces(textinfo="percent", sort=False)
@@ -117,12 +130,14 @@ fig = px.bar(compare, x="name", y="%", color="series", barmode="group", color_di
 fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="")
 right.plotly_chart(fig)
 
-# Rebalance check
+# Rebalance check (skipped with the example data)
 for _, row in allocation.iterrows():
+    if example:
+        break
     gap = row["Now"] - row["Target"]
     if abs(gap) > band:
         st.warning(f"{row['name']} is {gap:+.1f} points from target. Fix it in January with new money.")
-if (abs(allocation["Now"] - allocation["Target"]) <= band).all():
+if not example and (abs(allocation["Now"] - allocation["Target"]) <= band).all():
     st.success("All blocks are within 3 points of target. Nothing to do.")
 
 st.divider()
