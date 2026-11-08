@@ -7,12 +7,13 @@ warnings.filterwarnings("ignore")
 
 # My monthly plan: isin, name, block, Yahoo ticker, euros for every 100 EUR invested
 plan = [
-    ["IE00BK5BQT80", "Vanguard FTSE All-World", "core", "VWCE.DE", 75],
+    ["IE00BK5BQT80", "Vanguard FTSE All-World", "core", "VWCE.DE", 72],
     ["IE00BF4RFH31", "iShares MSCI World Small Cap", "small", "IUSN.DE", 10],
-    ["IE00BDVPNG13", "WisdomTree Artificial Intelligence", "future", "WTAI.MI", 4],
+    ["IE00BDVPNG13", "WisdomTree Artificial Intelligence", "future", "WTAI.MI", 2],
     ["IE000J80JTL1", "First Trust Smart Grid Infrastructure", "future", "GRID.DE", 4],
     ["IE000M7V94E1", "VanEck Uranium and Nuclear", "future", "NUKL.DE", 2],
-    ["IE00BM67HK77", "Xtrackers MSCI World Health Care", "future", "XDWH.DE", 2],
+    ["IE00BM67HK77", "Xtrackers MSCI World Health Care", "future", "XDWH.DE", 4],
+    ["IE00BM67HS53", "Xtrackers MSCI World Materials", "future", "XDWM.DE", 3],
     ["IE00B579F325", "Invesco Physical Gold", "gold", "8PSG.DE", 3],
 ]
 

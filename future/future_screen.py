@@ -12,7 +12,7 @@ pd.set_option("display.max_columns", None)
 discount = 0.09
 terminal = 0.025
 max_growth = 0.25
-monthly_budget = 12
+monthly_budget = 15
 
 # Same DCF as the screener: 10 years of free cash flow plus a terminal value
 def dcf_value(fcf, growth):
