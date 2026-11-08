@@ -4,7 +4,7 @@ From 95/5 (VWCE and gold) to 85/10/5 with world small caps.
 
 ## What changed
 - Targets: 85% VWCE, 10% IUSN (IE00BF4RFH31), 5% gold
-- Monthly: VWCE 340 EUR, IUSN 40 EUR, gold 20 EUR, all on the 2nd
+- Monthly plans in the same 85/10/5 split, all on the 2nd
 - First purchase with the new mix on 2 Dec 2026
 - Stocks removed on 1 Nov before the first purchase. The weekly buy zone alert is switched off
 

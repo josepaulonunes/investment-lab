@@ -3,7 +3,7 @@
 My own investment lab. I built it to track my money and to test whether picking companies is worth it for me.
 
 ## The plan
-75% in a global ETF (VWCE), 10% in world small caps (IUSN), 12% in the sectors I think will shape the future (AI, power grid, nuclear and health care) and 3% in physical gold. 700 EUR a month with automatic plans, reviewed once a year in January. The rules are in IPS.md.
+75% in a global ETF (VWCE), 10% in world small caps (IUSN), 12% in the sectors I think will shape the future (AI, power grid, nuclear and health care) and 3% in physical gold. Automatic plans every month, reviewed once a year in January. The rules are in IPS.md.
 
 ## How I got here
 I started with 80% VWCE plus 10% in country ETFs and 10% in gold. Then I built a model to analyse companies and moved to 90/5/5 with 5% in stocks that got a BUY. Three did (Wolters Kluwer, Adobe, Zoetis).

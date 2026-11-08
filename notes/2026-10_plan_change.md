@@ -4,9 +4,9 @@ From 80/10/10 with regional ETFs to 90/5/5 with individual stocks.
 
 ## What changed
 - Targets: 90% VWCE, 5% gold (Invesco Physical Gold, IE00B579F325), 5% stocks
-- Monthly: 400 EUR invested, the rest of my savings in cash
+- Monthly: a fixed amount invested, the rest of my savings in cash
 - No country ETFs. The Korea and Brazil decision of October stays in the house view note as a record, but I did not buy it
-- Stocks: Wolters Kluwer 7 EUR, Zoetis 7 EUR, Adobe 6 EUR a month, all with a BUY verdict
+- Stocks: Wolters Kluwer, Zoetis and Adobe in equal parts, all with a BUY verdict
 - First full plan on 2 Nov 2026
 
 ## Why

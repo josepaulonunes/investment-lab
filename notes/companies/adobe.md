@@ -1,7 +1,7 @@
 # Adobe (ADBE, Nasdaq)
 
 Date: 2026-10-29
-Status: BUY, monthly plan of 6 EUR from 2 Nov 2026
+Status: BUY in Oct 2026. Not bought: on 1 Nov I chose ETFs only (see notes/2026-11_final_plan.md)
 ISIN: US00724F1012
 Buy zone: below 336.03 USD (central fair value 395.33 USD minus 15%)
 

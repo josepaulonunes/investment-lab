@@ -1,9 +1,9 @@
 # Plan change (8 Nov 2026)
 
-From 85/10/5 at 400 EUR a month to a 7 ETF portfolio at 700 EUR a month.
+From 85/10/5 to a 7 ETF portfolio, and a bigger monthly amount.
 
 ## What changed
-- Monthly amount: 400 to 700 EUR
+- Monthly amount: up by about 75%
 - New future block (12%): WTAI 4%, GRID 4%, NUKL 2%, health care 2%
 - Core down from 85% to 75%, gold down from 5% to 3%
 - First purchase with the new mix on 2 Dec 2026

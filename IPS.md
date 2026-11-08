@@ -4,18 +4,18 @@ My rules, written before investing. I only change them in the January review.
 
 ## Money
 - Emergency fund and short term savings stay in cash, never in the portfolio
-- Investing: 700 EUR per month with automatic plans on the 2nd. More when my salary goes up
+- Investing: a fixed amount every month with automatic plans on the 2nd. More when my salary goes up
 
 ## Targets
-| Block | ETF | ISIN | Target | Monthly |
-|---|---|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 75% | 525 EUR |
-| Small | iShares MSCI World Small Cap (IUSN) | IE00BF4RFH31 | 10% | 70 EUR |
-| Future | WisdomTree Artificial Intelligence (WTAI) | IE00BDVPNG13 | 4% | 28 EUR |
-| Future | First Trust Smart Grid Infrastructure (GRID) | IE000J80JTL1 | 4% | 28 EUR |
-| Future | VanEck Uranium and Nuclear Technologies (NUKL) | IE000M7V94E1 | 2% | 14 EUR |
-| Future | Xtrackers MSCI World Health Care (XDWH) | IE00BM67HK77 | 2% | 14 EUR |
-| Gold | Invesco Physical Gold ETC | IE00B579F325 | 3% | 21 EUR |
+| Block | ETF | ISIN | Target |
+|---|---|---|---|
+| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 75% |
+| Small | iShares MSCI World Small Cap (IUSN) | IE00BF4RFH31 | 10% |
+| Future | WisdomTree Artificial Intelligence (WTAI) | IE00BDVPNG13 | 4% |
+| Future | First Trust Smart Grid Infrastructure (GRID) | IE000J80JTL1 | 4% |
+| Future | VanEck Uranium and Nuclear Technologies (NUKL) | IE000M7V94E1 | 2% |
+| Future | Xtrackers MSCI World Health Care (XDWH) | IE00BM67HK77 | 2% |
+| Gold | Invesco Physical Gold ETC | IE00B579F325 | 3% |
 
 Bands for the January review: Small 7 to 13%, Future 9 to 15%, Gold 2 to 5%. Core takes the rest.
 
