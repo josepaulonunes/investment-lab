@@ -93,6 +93,7 @@ monthly["result"] = "Gain"
 monthly.loc[monthly["gain"] < 0, "result"] = "Loss"
 fig = px.bar(monthly, x="month", y="gain", color="result", color_discrete_map={"Gain": "#2a9d8f", "Loss": "#e76f51"})
 fig.update_layout(height=320, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title="€")
+fig.update_xaxes(type="category")
 st.plotly_chart(fig)
 
 st.divider()
