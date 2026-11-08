@@ -5,15 +5,15 @@ import warnings
 # Hide library warnings
 warnings.filterwarnings("ignore")
 
-# My monthly plan: isin, name, block, Yahoo ticker, euros per month
+# My monthly plan: isin, name, block, Yahoo ticker, euros for every 100 EUR invested
 plan = [
-    ["IE00BK5BQT80", "Vanguard FTSE All-World", "core", "VWCE.DE", 525],
-    ["IE00BF4RFH31", "iShares MSCI World Small Cap", "small", "IUSN.DE", 70],
-    ["IE00BDVPNG13", "WisdomTree Artificial Intelligence", "future", "WTAI.MI", 28],
-    ["IE000J80JTL1", "First Trust Smart Grid Infrastructure", "future", "GRID.DE", 28],
-    ["IE000M7V94E1", "VanEck Uranium and Nuclear", "future", "NUKL.DE", 14],
-    ["IE00BM67HK77", "Xtrackers MSCI World Health Care", "future", "XDWH.DE", 14],
-    ["IE00B579F325", "Invesco Physical Gold", "gold", "8PSG.DE", 21],
+    ["IE00BK5BQT80", "Vanguard FTSE All-World", "core", "VWCE.DE", 75],
+    ["IE00BF4RFH31", "iShares MSCI World Small Cap", "small", "IUSN.DE", 10],
+    ["IE00BDVPNG13", "WisdomTree Artificial Intelligence", "future", "WTAI.MI", 4],
+    ["IE000J80JTL1", "First Trust Smart Grid Infrastructure", "future", "GRID.DE", 4],
+    ["IE000M7V94E1", "VanEck Uranium and Nuclear", "future", "NUKL.DE", 2],
+    ["IE00BM67HK77", "Xtrackers MSCI World Health Care", "future", "XDWH.DE", 2],
+    ["IE00B579F325", "Invesco Physical Gold", "gold", "8PSG.DE", 3],
 ]
 
 # Real daily prices for the last 12 months

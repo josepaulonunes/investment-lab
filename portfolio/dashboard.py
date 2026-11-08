@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
-st.caption("75% global stocks, 10% small companies, 12% future sectors (AI, power grid, nuclear, health), 3% gold. 700 EUR a month, reviewed every January.")
+st.caption("75% global stocks, 10% small companies, 12% future sectors (AI, power grid, nuclear, health), 3% gold. Automatic plans every month, reviewed every January.")
 
 # Yahoo ticker for each product I own (all in EUR on Xetra)
 tickers = {

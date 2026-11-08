@@ -7,7 +7,7 @@ warnings.filterwarnings("ignore")
 
 # Targets and rules (from IPS.md)
 targets = {"core": 0.75, "small": 0.10, "future": 0.12, "gold": 0.03}
-monthly_contribution = 700
+monthly_contribution = 100
 band = 0.03
 
 # Use my real data if it exists, otherwise the example data
@@ -69,7 +69,7 @@ else:
 
 # Suggested split of next month's money to move back towards targets
 print()
-print("SUGGESTED PLANS FOR NEXT MONTH")
+print("SUGGESTED SPLIT OF NEXT MONTH (for every 100 EUR)")
 new_total = total + monthly_contribution
 needs = {}
 for block, target in targets.items():

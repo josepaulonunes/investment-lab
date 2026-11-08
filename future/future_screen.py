@@ -12,7 +12,7 @@ pd.set_option("display.max_columns", None)
 discount = 0.09
 terminal = 0.025
 max_growth = 0.25
-monthly_budget = 70
+monthly_budget = 12
 
 # Same DCF as the screener: 10 years of free cash flow plus a terminal value
 def dcf_value(fcf, growth):
@@ -136,7 +136,7 @@ print(screen.round(2).to_string(index=False))
 # Suggested monthly plan: the best BUY without warnings in each link of the chain, the rest in WTAI
 picks = screen[(screen["verdict"] == "BUY") & (screen["warning"] == "")].drop_duplicates("link")
 print()
-print("SUGGESTED PLAN FOR", monthly_budget, "EUR A MONTH")
+print("SUGGESTED PLAN FOR THE", str(monthly_budget) + "% FUTURE BLOCK (% of the monthly money)")
 if len(picks) >= 4:
     each = monthly_budget / len(picks)
     wtai = 0
@@ -144,5 +144,5 @@ else:
     each = monthly_budget / 2 / max(len(picks), 1)
     wtai = monthly_budget - each * len(picks)
 for _, pick in picks.iterrows():
-    print(pick["name"], "(" + pick["link"] + "):", round(each, 2), "EUR")
-print("WTAI:", round(wtai, 2), "EUR")
+    print(pick["name"], "(" + pick["link"] + "):", round(each, 1), "%")
+print("WTAI:", round(wtai, 1), "%")
