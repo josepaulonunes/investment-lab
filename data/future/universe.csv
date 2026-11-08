@@ -1,0 +1,24 @@
+ticker,name,link
+NVDA,Nvidia,Chips
+AMD,AMD,Chips
+AVGO,Broadcom,Chips
+ARM,Arm,Chips
+2330.TW,TSMC,Manufacturing
+ASML.AS,ASML,Manufacturing
+MU,Micron,Memory
+000660.KS,SK hynix,Memory
+ANET,Arista Networks,Networking
+MRVL,Marvell,Networking
+VRT,Vertiv,Data center power
+ETN,Eaton,Data center power
+SU.PA,Schneider Electric,Data center power
+PWR,Quanta Services,Grid
+GEV,GE Vernova,Grid
+ENR.DE,Siemens Energy,Grid
+CCO.TO,Cameco,Nuclear
+CEG,Constellation Energy,Nuclear
+BWXT,BWX Technologies,Nuclear
+OKLO,Oklo,Nuclear
+AMZN,Amazon,Cloud
+MSFT,Microsoft,Cloud
+GOOGL,Alphabet,Cloud
