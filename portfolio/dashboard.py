@@ -30,11 +30,20 @@ band = 3
 names = {"core": "Global (VWCE)", "small": "Small caps (IUSN)", "future": "Future sectors", "gold": "Gold"}
 colours = {"Global (VWCE)": "#1f4e79", "Small caps (IUSN)": "#2a9d8f", "Future sectors": "#8e6cc0", "Gold": "#e9b949"}
 
-# Use my real data if it exists, otherwise the example data
+# Pick the data: my real file (private), the public file (scaled, no euros) or the example
 file = "data/portfolio/transactions.csv"
+public = False
+unit = "€"
+if not os.path.exists(file):
+    file = "data/portfolio/public/transactions.csv"
+    public = True
+    unit = "points"
+    st.info("This is my real portfolio, scaled so that all the money I put in adds up to 100. The real amounts stay private.")
 if not os.path.exists(file):
     file = "data/portfolio/example/transactions.csv"
-    st.info("Showing example data: 12 months of my plan bought at real prices. My real purchases are kept private.")
+    public = False
+    unit = "€"
+    st.info("Showing example data: 12 months of my plan bought at real prices.")
 
 # Load my purchases
 transactions = pd.read_csv(file, parse_dates=["date"])
@@ -66,10 +75,16 @@ gain = value.iloc[-1] - invested.iloc[-1]
 gain_pct = gain / invested.iloc[-1] * 100
 months = transactions["date"].dt.strftime("%Y-%m").nunique()
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Value today", f"{value.iloc[-1]:,.0f} €")
-col2.metric("Money I put in", f"{invested.iloc[-1]:,.0f} €")
-col3.metric("Gain", f"{gain:,.0f} €", f"{gain_pct:.1f}%")
-col4.metric("Months investing", months)
+if public:
+    col1.metric("Return", f"{gain_pct:+.1f}%")
+    col2.metric("ETFs", transactions["isin"].nunique())
+    col3.metric("Purchases", len(transactions))
+    col4.metric("Months investing", months)
+else:
+    col1.metric("Value today", f"{value.iloc[-1]:,.0f} €")
+    col2.metric("Money I put in", f"{invested.iloc[-1]:,.0f} €")
+    col3.metric("Gain", f"{gain:,.0f} €", f"{gain_pct:.1f}%")
+    col4.metric("Months investing", months)
 
 st.divider()
 
@@ -78,7 +93,7 @@ st.subheader("Value vs money invested")
 st.caption("The steps are my monthly purchases. The space between the two lines is what the market added or took away.")
 history = pd.DataFrame({"Value": value, "Money invested": invested})
 fig = px.line(history, color_discrete_map={"Value": "#1f4e79", "Money invested": "#9aa5b1"})
-fig.update_layout(height=380, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title="€")
+fig.update_layout(height=380, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
 st.plotly_chart(fig)
 
 # Chart: gain or loss of each month (without the new money I put in)
@@ -92,7 +107,7 @@ monthly = pd.DataFrame({"month": monthly_gain.index.strftime("%Y-%m"), "gain": m
 monthly["result"] = "Gain"
 monthly.loc[monthly["gain"] < 0, "result"] = "Loss"
 fig = px.bar(monthly, x="month", y="gain", color="result", color_discrete_map={"Gain": "#2a9d8f", "Loss": "#e76f51"})
-fig.update_layout(height=320, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title="€")
+fig.update_layout(height=320, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
 fig.update_xaxes(type="category")
 st.plotly_chart(fig)
 
@@ -142,8 +157,11 @@ st.divider()
 # Table: each product today
 st.subheader("Positions")
 st.caption("What I own in each ETF, how much I put in and how much it is worth today.")
+columns = ["name", "block", "invested", "value", "gain", "gain_%", "weight_%"]
+if public:
+    columns = ["name", "block", "gain_%", "weight_%"]
 st.dataframe(
-    positions[["name", "block", "invested", "value", "gain", "gain_%", "weight_%"]],
+    positions[columns],
     hide_index=True,
     column_config={
         "name": "Product",
