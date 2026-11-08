@@ -1,37 +1,85 @@
 date,isin,name,block,quantity,price_eur,amount_eur,fee_eur
-2025-01-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.6562,128,340,0
-2025-01-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.2632,7.6,40,0
-2025-01-02,IE00B579F325,Invesco Physical Gold,gold,0.0784,255,20,0
-2025-02-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.6357,129,340,0
-2025-02-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.3333,7.5,40,0
-2025-02-02,IE00B579F325,Invesco Physical Gold,gold,0.0746,268,20,0
-2025-03-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.7419,124,340,0
-2025-03-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.6338,7.1,40,0
-2025-03-02,IE00B579F325,Invesco Physical Gold,gold,0.0714,280,20,0
-2025-04-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.8814,118,340,0
-2025-04-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.8824,6.8,40,0
-2025-04-02,IE00B579F325,Invesco Physical Gold,gold,0.0678,295,20,0
-2025-05-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.72,125,340,0
-2025-05-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.5556,7.2,40,0
-2025-05-02,IE00B579F325,Invesco Physical Gold,gold,0.069,290,20,0
-2025-06-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.6357,129,340,0
-2025-06-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.3333,7.5,40,0
-2025-06-02,IE00B579F325,Invesco Physical Gold,gold,0.0678,295,20,0
-2025-07-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.5758,132,340,0
-2025-07-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.1282,7.8,40,0
-2025-07-02,IE00B579F325,Invesco Physical Gold,gold,0.0667,300,20,0
-2025-08-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.5373,134,340,0
-2025-08-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.0633,7.9,40,0
-2025-08-02,IE00B579F325,Invesco Physical Gold,gold,0.0645,310,20,0
-2025-09-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.5,136,340,0
-2025-09-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,5.0,8.0,40,0
-2025-09-02,IE00B579F325,Invesco Physical Gold,gold,0.0615,325,20,0
-2025-10-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.4286,140,340,0
-2025-10-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,4.878,8.2,40,0
-2025-10-02,IE00B579F325,Invesco Physical Gold,gold,0.058,345,20,0
-2025-11-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.4113,141,340,0
-2025-11-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,4.8193,8.3,40,0
-2025-11-02,IE00B579F325,Invesco Physical Gold,gold,0.0588,340,20,0
-2025-12-02,IE00BK5BQT80,Vanguard FTSE All-World,core,2.3776,143,340,0
-2025-12-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,4.7619,8.4,40,0
-2025-12-02,IE00B579F325,Invesco Physical Gold,gold,0.0571,350,20,0
+2025-12-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.6393,144.26,525,0
+2025-12-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,9.1563,7.64,70,0
+2025-12-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.3889,71.99,28,0
+2025-12-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.6173,45.36,28,0
+2025-12-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2995,46.75,14,0
+2025-12-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2786,50.26,14,0
+2025-12-02,IE00B579F325,Invesco Physical Gold,gold,0.0605,347.1,21,0
+2026-01-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.6172,145.14,525,0
+2026-01-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,9.0299,7.75,70,0
+2026-01-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.3763,74.41,28,0
+2026-01-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.6088,45.99,28,0
+2026-01-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2906,48.18,14,0
+2026-01-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2806,49.9,14,0
+2026-01-02,IE00B579F325,Invesco Physical Gold,gold,0.0593,353.94,21,0
+2026-02-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.5344,148.54,525,0
+2026-02-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,8.6069,8.13,70,0
+2026-02-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.3633,77.08,28,0
+2026-02-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.576,48.61,28,0
+2026-02-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2557,54.76,14,0
+2026-02-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2777,50.42,14,0
+2026-02-02,IE00B579F325,Invesco Physical Gold,gold,0.0552,380.48,21,0
+2026-03-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.4995,150.02,525,0
+2026-03-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,8.3234,8.41,70,0
+2026-03-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.3719,75.28,28,0
+2026-03-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.54,51.85,28,0
+2026-03-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2463,56.84,14,0
+2026-03-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2726,51.35,14,0
+2026-03-02,IE00B579F325,Invesco Physical Gold,gold,0.0482,435.64,21,0
+2026-04-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.6272,144.74,525,0
+2026-04-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,8.6569,8.09,70,0
+2026-04-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.382,73.3,28,0
+2026-04-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.566,49.47,28,0
+2026-04-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2789,50.19,14,0
+2026-04-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2864,48.88,14,0
+2026-04-02,IE00B579F325,Invesco Physical Gold,gold,0.054,389.22,21,0
+2026-05-04,IE00BK5BQT80,Vanguard FTSE All-World,core,3.3967,154.56,525,0
+2026-05-04,IE00BF4RFH31,iShares MSCI World Small Cap,small,8.2189,8.52,70,0
+2026-05-04,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.3105,90.18,28,0
+2026-05-04,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.4954,56.52,28,0
+2026-05-04,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2609,53.66,14,0
+2026-05-04,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2967,47.18,14,0
+2026-05-04,IE00B579F325,Invesco Physical Gold,gold,0.0563,372.98,21,0
+2026-06-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.1841,164.88,525,0
+2026-06-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.8502,8.92,70,0
+2026-06-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2511,111.49,28,0
+2026-06-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.4756,58.87,28,0
+2026-06-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2597,53.91,14,0
+2026-06-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2951,47.44,14,0
+2026-06-02,IE00B579F325,Invesco Physical Gold,gold,0.0563,372.72,21,0
+2026-07-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.1822,164.98,525,0
+2026-07-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.6269,9.18,70,0
+2026-07-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2646,105.84,28,0
+2026-07-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.4952,56.54,28,0
+2026-07-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.2983,46.92,14,0
+2026-07-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2617,53.5,14,0
+2026-07-02,IE00B579F325,Invesco Physical Gold,gold,0.0605,347.1,21,0
+2026-08-03,IE00BK5BQT80,Vanguard FTSE All-World,core,3.1799,165.1,525,0
+2026-08-03,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.7545,9.03,70,0
+2026-08-03,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2882,97.14,28,0
+2026-08-03,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.5127,54.61,28,0
+2026-08-03,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.315,44.44,14,0
+2026-08-03,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2682,52.2,14,0
+2026-08-03,IE00B579F325,Invesco Physical Gold,gold,0.0622,337.4,21,0
+2026-09-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.1471,166.82,525,0
+2026-09-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.7212,9.07,70,0
+2026-09-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2848,98.3,28,0
+2026-09-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.5309,52.74,28,0
+2026-09-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.3062,45.72,14,0
+2026-09-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2551,54.88,14,0
+2026-09-02,IE00B579F325,Invesco Physical Gold,gold,0.0579,362.76,21,0
+2026-10-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.0677,171.14,525,0
+2026-10-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.7126,9.08,70,0
+2026-10-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2496,112.17,28,0
+2026-10-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.4933,56.76,28,0
+2026-10-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.3193,43.84,14,0
+2026-10-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2602,53.8,14,0
+2026-10-02,IE00B579F325,Invesco Physical Gold,gold,0.0593,354.14,21,0
+2026-11-02,IE00BK5BQT80,Vanguard FTSE All-World,core,3.0995,169.38,525,0
+2026-11-02,IE00BF4RFH31,iShares MSCI World Small Cap,small,7.5922,9.22,70,0
+2026-11-02,IE00BDVPNG13,WisdomTree Artificial Intelligence,future,0.2882,97.16,28,0
+2026-11-02,IE000J80JTL1,First Trust Smart Grid Infrastructure,future,0.543,51.57,28,0
+2026-11-02,IE000M7V94E1,VanEck Uranium and Nuclear,future,0.3641,38.46,14,0
+2026-11-02,IE00BM67HK77,Xtrackers MSCI World Health Care,future,0.2328,60.15,14,0
+2026-11-02,IE00B579F325,Invesco Physical Gold,gold,0.0616,340.8,21,0
