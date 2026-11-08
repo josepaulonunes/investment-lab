@@ -31,7 +31,7 @@ Is the price backed by what the company does today?
 - If fewer than 4 BUYs, half goes to WTAI (IE00BDVPNG13)
 - Rerun the study every January. A company that turns WATCH keeps what I bought, new money goes elsewhere
 - Sell only if the business breaks, never because the price fell
-- Growth over 50% gets a warning: it may be a cycle peak (memory chips are famous for this)
+- Growth over 40% gets a warning and is left out of the plan: it may be a cycle peak (memory chips are famous for this)
 
 ## Limits of this model
 - One year of growth says little about the next ten

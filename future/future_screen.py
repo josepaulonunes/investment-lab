@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import warnings
+from datetime import date
 
 # Hide library warnings and show wide tables
 warnings.filterwarnings("ignore")
@@ -101,8 +102,8 @@ for _, company in universe.iterrows():
     warning = ""
     if not same_currency:
         warning = "Reports in another currency: check by hand"
-    if growth is not None and growth > 0.5:
-        warning = "Growth over 50%: cycle peak?"
+    if growth is not None and growth > 0.4:
+        warning = "Growth over 40%: cycle peak?"
 
     rows.append({
         "name": company["name"],
@@ -127,6 +128,7 @@ screen["rank"] = screen["verdict"].map(order)
 screen["price_vs_growth"] = screen["implied_growth"] / screen["growth_used"]
 screen = screen.sort_values(["rank", "price_vs_growth"]).drop(columns="rank")
 screen.to_csv("data/future/future_screen.csv", index=False)
+screen.to_csv("data/future/future_screen_" + str(date.today()) + ".csv", index=False)
 print()
 print("FUTURE STUDY (quality out of 4)")
 print(screen.round(2).to_string(index=False))
