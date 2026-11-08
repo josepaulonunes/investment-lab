@@ -14,7 +14,7 @@ band = 0.03
 folder = "data/portfolio/"
 if not os.path.exists(folder + "transactions.csv"):
     folder = "data/portfolio/example/"
-    print("Using example data (only 3 ETFs, so blocks will not match the targets)")
+    print("Using example data")
 
 # Load data
 transactions = pd.read_csv(folder + "transactions.csv")

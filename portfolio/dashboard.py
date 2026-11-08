@@ -32,11 +32,9 @@ colours = {"Global (VWCE)": "#1f4e79", "Small caps (IUSN)": "#2a9d8f", "Future s
 
 # Use my real data if it exists, otherwise the example data
 file = "data/portfolio/transactions.csv"
-example = False
 if not os.path.exists(file):
     file = "data/portfolio/example/transactions.csv"
-    example = True
-    st.info("Showing example data with only 3 ETFs. My real purchases are kept private.")
+    st.info("Showing example data: 12 months of my plan bought at real prices. My real purchases are kept private.")
 
 # Load my purchases
 transactions = pd.read_csv(file, parse_dates=["date"])
@@ -130,14 +128,12 @@ fig = px.bar(compare, x="name", y="%", color="series", barmode="group", color_di
 fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="")
 right.plotly_chart(fig)
 
-# Rebalance check (skipped with the example data)
+# Rebalance check
 for _, row in allocation.iterrows():
-    if example:
-        break
     gap = row["Now"] - row["Target"]
     if abs(gap) > band:
         st.warning(f"{row['name']} is {gap:+.1f} points from target. Fix it in January with new money.")
-if not example and (abs(allocation["Now"] - allocation["Target"]) <= band).all():
+if (abs(allocation["Now"] - allocation["Target"]) <= band).all():
     st.success("All blocks are within 3 points of target. Nothing to do.")
 
 st.divider()
