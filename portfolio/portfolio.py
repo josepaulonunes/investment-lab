@@ -6,7 +6,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Targets and rules (from IPS.md)
-targets = {"core": 0.74, "small": 0.10, "future": 0.13, "gold": 0.03}
+targets = {"core": 0.75, "small": 0.12, "future": 0.13, "gold": 0.0}
 monthly_contribution = 100
 band = 0.03
 

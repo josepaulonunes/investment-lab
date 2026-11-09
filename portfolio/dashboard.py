@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
-st.caption("74% global stocks, 10% small companies, 13% future sectors (power grid, health, materials, nuclear), 3% gold. Automatic plans every month, reviewed every January.")
+st.caption("75% global stocks, 12% small companies, 13% future sectors (power grid, health, materials, nuclear). No new gold since Dec 2026. Automatic plans every month, reviewed every January.")
 
 # Yahoo ticker for each product I own (all in EUR on Xetra)
 tickers = {
@@ -23,7 +23,7 @@ tickers = {
     "IE00BM67HS53": "XDWM.DE",
     "IE00B579F325": "8PSG.DE",
 }
-targets = {"core": 74, "small": 10, "future": 13, "gold": 3}
+targets = {"core": 75, "small": 12, "future": 13, "gold": 0}
 band = 3
 
 # Name and colour of each block in the charts
