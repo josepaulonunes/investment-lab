@@ -5,13 +5,12 @@ My own investment tools in Python: a tracker and dashboard for my ETF portfolio,
 ## The plan
 | Block | ETF | Weight |
 |---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 74% |
-| Small companies | iShares MSCI World Small Cap (IUSN) | 10% |
+| Core | Vanguard FTSE All-World (VWCE) | 75% |
+| Small companies | iShares MSCI World Small Cap (IUSN) | 12% |
 | Future: power grid | First Trust Smart Grid Infrastructure (GRID) | 4% |
 | Future: health care | Xtrackers MSCI World Health Care (XDWH) | 4% |
 | Future: materials | Xtrackers MSCI World Materials (XDWM) | 3% |
 | Future: nuclear | VanEck Uranium and Nuclear Technologies (NUKL) | 2% |
-| Insurance | Invesco Physical Gold | 3% |
 
 Automatic plans every month, reviewed once a year in January. The core follows the whole market. The future block (13%) is my bet on the sectors I think will shape the next decades, kept small on purpose. The rules are in IPS.md.
 

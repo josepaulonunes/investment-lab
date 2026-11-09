@@ -1,11 +1,12 @@
 # Plan change (8 and 9 Nov 2026)
 
-From 85/10/5 to a 7 product portfolio, and a bigger monthly amount.
+From 85/10/5 to a 6 ETF portfolio, and a bigger monthly amount.
 
 ## What changed
-- Monthly amount: up by about 75%
+- Monthly amount: up by about 50%
 - New future block (13%): GRID 4%, health care 4%, materials 3%, NUKL 2%
-- Core down from 85% to 74%, gold down from 5% to 3%
+- Core down from 85% to 75%, small companies up from 10% to 12%
+- Gold dropped: over the long run it earns about 1.5% a year above inflation against about 8% for stocks, it is at record highs, and at my age the opportunity cost is high. Its 2% went to IUSN, the only extra with long term evidence behind it. I keep the gold I already bought
 - First purchase with the new mix on 2 Dec 2026
 
 ## Why
