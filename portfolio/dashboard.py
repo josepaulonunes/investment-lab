@@ -11,20 +11,19 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
-st.caption("72% global stocks, 10% small companies, 15% future sectors (power grid, health, materials, AI, nuclear), 3% gold. Automatic plans every month, reviewed every January.")
+st.caption("74% global stocks, 10% small companies, 13% future sectors (power grid, health, materials, nuclear), 3% gold. Automatic plans every month, reviewed every January.")
 
 # Yahoo ticker for each product I own (all in EUR on Xetra)
 tickers = {
     "IE00BK5BQT80": "VWCE.DE",
     "IE00BF4RFH31": "IUSN.DE",
-    "IE00BDVPNG13": "WTAI.MI",
     "IE000J80JTL1": "GRID.DE",
     "IE000M7V94E1": "NUKL.DE",
     "IE00BM67HK77": "XDWH.DE",
     "IE00BM67HS53": "XDWM.DE",
     "IE00B579F325": "8PSG.DE",
 }
-targets = {"core": 72, "small": 10, "future": 15, "gold": 3}
+targets = {"core": 74, "small": 10, "future": 13, "gold": 3}
 band = 3
 
 # Name and colour of each block in the charts
@@ -134,7 +133,7 @@ allocation["Target"] = [targets[b] for b in allocation["block"]]
 
 # Charts: allocation donut and now vs target
 st.subheader("Allocation")
-st.caption("Left: how my money is split today. Right: today vs my targets. Future sectors are GRID, health care, materials, WTAI and NUKL. I only fix a block in January if it is more than 3 points away.")
+st.caption("Left: how my money is split today. Right: today vs my targets. Future sectors are GRID, health care, materials and NUKL. I only fix a block in January if it is more than 3 points away.")
 left, right = st.columns(2)
 fig = px.pie(allocation, names="name", values="Now", hole=0.55, color="name", color_discrete_map=colours)
 fig.update_traces(textinfo="percent", sort=False)
