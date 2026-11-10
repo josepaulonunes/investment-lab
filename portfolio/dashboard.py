@@ -177,22 +177,23 @@ st.divider()
 
 # Stocks: health check and watchlist from the screener
 screen = pd.read_csv("data/future/future_screen.csv")
-if "ticker" in screen.columns:
+if "fair_high" in screen.columns:
     screen["vs_fair_%"] = (screen["price"] / screen["buy_below"] - 1) * 100
     table_config = {
         "name": "Company",
         "price": st.column_config.NumberColumn("Price", format="%.2f"),
-        "buy_below": st.column_config.NumberColumn("Fair price", format="%.2f"),
+        "buy_below": st.column_config.NumberColumn("Fair price (careful)", format="%.2f"),
+        "fair_high": st.column_config.NumberColumn("Fair price (optimistic)", format="%.2f"),
         "vs_fair_%": st.column_config.NumberColumn("Price vs fair", format="%+.0f%%"),
         "quality": "Quality /5",
         "edge": "Moat and future /4",
         "score": "Score /11",
         "verdict": "Verdict",
     }
-    show = ["name", "price", "buy_below", "vs_fair_%", "quality", "edge", "score", "verdict"]
+    show = ["name", "price", "buy_below", "fair_high", "vs_fair_%", "quality", "edge", "score", "verdict"]
 
     st.subheader("My stocks: health check")
-    st.caption("From the screener, in each company's own currency. Fair price comes from a DCF with growth capped at 25%. Below 0% means cheaper than fair.")
+    st.caption("From the screener, in each company's own currency. Careful fair price: today's growth (capped at 25%) fades to 2.5% over 10 years. Optimistic: today's growth for all 10 years. BUY below careful, FAIR between the two, WATCH above optimistic. Price vs fair compares with the careful one.")
     my_stocks = products[products["block"] == "stocks"]["name"]
     st.dataframe(screen[screen["name"].isin(my_stocks)][show], hide_index=True, column_config=table_config)
 
