@@ -32,6 +32,12 @@ for _, product in products.iterrows():
     prices_eur.append(price)
 products["price_eur"] = prices_eur
 
+# If Yahoo fails for a product, use the price I last paid for it
+last_paid = transactions.groupby("isin")["price_eur"].last()
+for i, product in products.iterrows():
+    if pd.isna(product["price_eur"]) and product["isin"] in last_paid:
+        print("No price today for", product["name"], "so I use my last purchase price")
+        products.loc[i, "price_eur"] = last_paid[product["isin"]]
 # Weight of each product I own
 held = transactions.groupby("isin")["quantity"].sum().reset_index()
 held = held.merge(products, on="isin")
