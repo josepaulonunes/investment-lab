@@ -38,12 +38,14 @@ Base 70%, bets 30% (17% stocks, 13% theme ETFs). The same list is in data/portfo
 4. All bets together stay at or below 30%. Above that, new money goes to VWCE.
 5. Rules 3 and 4 start after 6 months of buying (around April 2027): the one-off stock buy in Nov 2026 makes the first months look off.
 6. Sell or replace a stock only if the business gets worse: quality below 4 out of 5, revenue lower than 3 years ago, debt above 4 times profits, or more than 5% new shares a year. Then I decide in January, not on the day.
-7. Extra buys only when the weekly check says a stock is at least 20% below its fair price, at least 50 EUR, from my personal budget, never from the savings for my master's.
+7. Extra buys only when the weekly check says a stock is below its careful fair price (method in notes/2026-11_fair_price_method.md), at least 50 EUR, from my personal budget, never from the savings for my master's.
 8. A watchlist company only comes in if it reaches its fair price and replaces my weakest stock. Maximum 5 stocks.
 9. The weekly check (GitHub, every Monday) runs the screener and the alerts. I read the alerts, I don't react to news.
 10. No changes because of videos, news, social media or other AIs. New ideas wait for January.
 11. If I need money for my master's or a move: pause plans, never sell.
 12. If I move country, check how it taxes ETFs and stocks before doing anything.
+13. A stock above its optimistic fair price is EXPENSIVE: no extra buys, its plan keeps going and I look at it in January.
+14. Three year test (January 2030): if my stocks together did worse than VWCE since I bought them, the stock block goes to VWCE. Most people who pick stocks end up below the market, and this tells me if I am one of them.
 
 ## Tax notes (Portugal)
 - Accumulating ETFs: no tax until I sell

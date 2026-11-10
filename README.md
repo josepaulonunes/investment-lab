@@ -15,13 +15,14 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 ## How I picked the stocks
 1. A list of about 100 companies in AI, chips, energy, nuclear, health, payments and more (data/future/universe.csv)
 2. The screener scores each one: quality (growth, margin, cash, debt, return on equity), moat and future (my own scores, 0 to 4) and the long run (3 year growth and money given back to shareholders)
-3. A reverse DCF says if the price is fair
-4. Only companies with a near monopoly, top quality and a fair price get a BUY
+3. A DCF gives two fair prices: a careful one where growth fades to 2.5% over 10 years, as research says it usually does, and an optimistic one where it doesn't. The discount rate is the 10 year Treasury yield plus beta times Damodaran's equity risk premium (notes/2026-11_fair_price_method.md)
+4. Only companies with a near monopoly, top quality and a price below the careful fair price get a BUY
 5. A portfolio optimizer (portfolio/optimize.py) helps set the weights
 
 ## The weekly check
 Every Monday GitHub runs the screener and future/alerts.py. If something needs my attention it opens an issue and I get a notification:
-- BUY or BUY EXTRA: a stock is well below its fair price
+- BUY or BUY EXTRA: a stock is below its careful fair price
+- EXPENSIVE: a stock I own is above its optimistic fair price. I keep buying and look at it in January
 - STOP BUYING: a bet is above 5% of the portfolio, or bets are above 30%
 - REVIEW: the business got worse (quality, revenue, debt, new shares)
 
