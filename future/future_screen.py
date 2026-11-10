@@ -8,18 +8,27 @@ warnings.filterwarnings("ignore")
 pd.set_option("display.width", 250)
 pd.set_option("display.max_columns", None)
 
-# Settings
-discount = 0.09
+# Settings (sources in notes/2026-11_fair_price_method.md)
+equity_premium = 0.0423
 terminal = 0.025
 max_growth = 0.25
-monthly_budget = 10
+min_beta = 0.8
+max_beta = 1.6
 
-# Same DCF as the screener: 10 years of free cash flow plus a terminal value
-def dcf_value(fcf, growth):
+# Risk free rate: US 10 year Treasury yield today
+risk_free = yf.Ticker("^TNX").history(period="5d")["Close"].iloc[-1] / 100
+print("Risk free rate:", round(risk_free * 100, 2), "%")
+
+# DCF: 10 years of free cash flow plus a terminal value
+# fade=True: growth falls in a straight line from today's rate to the terminal rate by year 10
+def dcf_value(fcf, growth, discount, fade):
     value = 0
     cash = fcf
     for year in range(1, 11):
-        cash = cash * (1 + growth)
+        g = growth
+        if fade:
+            g = growth - (growth - terminal) * (year - 1) / 9
+        cash = cash * (1 + g)
         value = value + cash / (1 + discount) ** year
     terminal_value = cash * (1 + terminal) / (discount - terminal)
     value = value + terminal_value / (1 + discount) ** 10
@@ -99,20 +108,29 @@ for _, company in universe.iterrows():
     ]
     quality = checks.count(True)
 
-    # Price: growth per year the price assumes vs growth the company shows today (capped at 25%)
+    # Discount rate for this company: risk free + beta x equity premium (beta kept between 0.8 and 1.6)
+    beta = info.get("beta") or 1
+    beta = min(max(beta, min_beta), max_beta)
+    discount = risk_free + beta * equity_premium
+
+    # Two fair prices from today's growth (capped at 25%)
+    # fair_high: growth stays the same for 10 years (optimistic)
+    # buy_below: growth fades to the terminal rate by year 10 (conservative, what the research supports)
     same_currency = info.get("financialCurrency") == info.get("currency")
     implied_growth = None
     buy_below = None
+    fair_high = None
     growth_used = None
     if fcf and fcf > 0 and same_currency and growth is not None:
         for step in range(-50, 601):
             g = step / 1000
-            if dcf_value(fcf, g) >= market_cap:
+            if dcf_value(fcf, g, discount, True) >= market_cap:
                 implied_growth = g
                 break
         growth_used = min(growth, max_growth)
         shares = market_cap / price
-        buy_below = dcf_value(fcf, growth_used) / shares
+        buy_below = dcf_value(fcf, growth_used, discount, True) / shares
+        fair_high = dcf_value(fcf, growth_used, discount, False) / shares
 
     # Edge: how hard to replace and how central to the future (out of 4)
     edge = company["moat"] + company["future"]
@@ -133,6 +151,8 @@ for _, company in universe.iterrows():
         verdict = "CHECK"
     elif buy_below is not None and price <= buy_below:
         verdict = "BUY"
+    elif fair_high is not None and price <= fair_high:
+        verdict = "FAIR"
     else:
         verdict = "WATCH"
 
@@ -160,7 +180,9 @@ for _, company in universe.iterrows():
         "dilution": dilution,
         "implied_growth": implied_growth,
         "growth_used": growth_used,
+        "discount": discount,
         "buy_below": buy_below,
+        "fair_high": fair_high,
         "quality": quality,
         "edge": edge,
         "long_term": long_term,
@@ -171,7 +193,7 @@ for _, company in universe.iterrows():
 
 # Rank: BUY first, then the best score, then the cheapest compared with its growth
 screen = pd.DataFrame(rows)
-order = {"BUY": 0, "WATCH": 1, "CHECK": 2, "SPECULATIVE": 3, "AVOID": 4}
+order = {"BUY": 0, "FAIR": 1, "WATCH": 2, "CHECK": 3, "SPECULATIVE": 4, "AVOID": 5}
 screen["rank"] = screen["verdict"].map(order)
 screen["price_vs_growth"] = screen["implied_growth"] / screen["growth_used"]
 screen = screen.sort_values(["rank", "score", "price_vs_growth"], ascending=[True, False, True]).drop(columns="rank")
@@ -181,10 +203,3 @@ print()
 print("FUTURE STUDY (quality out of 5, edge out of 4, long term out of 2, score out of 11)")
 print(screen.round(2).to_string(index=False))
 
-# Suggested plan: up to 5 BUYs without warnings, one per link of the chain, 2% each, the rest in VWCE
-picks = screen[(screen["verdict"] == "BUY") & (screen["warning"] == "")].drop_duplicates("link").head(5)
-print()
-print("SUGGESTED PLAN FOR THE", str(monthly_budget) + "% STOCK BLOCK (% of the monthly money)")
-for _, pick in picks.iterrows():
-    print(pick["name"], "(" + pick["link"] + "):", 2, "%")
-print("VWCE:", monthly_budget - 2 * len(picks), "%")
