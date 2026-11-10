@@ -38,6 +38,7 @@ for i, product in products.iterrows():
     if pd.isna(product["price_eur"]) and product["isin"] in last_paid:
         print("No price today for", product["name"], "so I use my last purchase price")
         products.loc[i, "price_eur"] = last_paid[product["isin"]]
+
 # Weight of each product I own
 held = transactions.groupby("isin")["quantity"].sum().reset_index()
 held = held.merge(products, on="isin")
@@ -68,7 +69,7 @@ if "ticker" not in screen.columns:
 
 # Rule: check the business and the price of each stock I own
 for _, row in held[held["block"] == "stocks"].iterrows():
-    match = screen[screen["ticker"] == row["ticker"]]
+    match = screen[screen["name"] == row["name"]]
     if len(match) == 0:
         continue
     company = match.iloc[0]
