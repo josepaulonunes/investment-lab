@@ -11,8 +11,7 @@ warnings.filterwarnings("ignore")
 max_position = 5
 max_bets = 30
 months_before_limits = 6
-cheap = 0.8
-expensive = 2
+cheap = 1.0
 
 # My products and my purchases (real file if it exists, otherwise the public one)
 products = pd.read_csv("data/portfolio/products.csv")
@@ -63,7 +62,7 @@ if limits_on and bets > max_bets:
 
 # Latest screener results (run future/future_screen.py first)
 screen = pd.read_csv("data/future/future_screen.csv")
-if "ticker" not in screen.columns:
+if "fair_high" not in screen.columns:
     print("The screen is old: run future/future_screen.py first")
     exit()
 
@@ -83,10 +82,10 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     if pd.notna(company["dilution"]) and company["dilution"] > 0.05:
         alerts.append(["REVIEW", name, f"It adds {company['dilution'] * 100:.0f}% new shares a year, above 5%"])
     if pd.notna(company["buy_below"]) and company["buy_below"] > 0:
-        if company["price"] > company["buy_below"] * expensive:
-            alerts.append(["STOP BUYING", name, f"Price is more than twice the fair price ({company['buy_below']:.0f}). Pause its plan"])
+        if company["price"] > company["fair_high"]:
+            alerts.append(["EXPENSIVE", name, f"Price is above even the optimistic fair price ({company['fair_high']:.0f}): it assumes today's growth for more than 10 years. Keep the plan and review it in January"])
         if company["price"] < company["buy_below"] * cheap and row["weight"] < max_position:
-            alerts.append(["BUY EXTRA", name, f"Price is {(1 - company['price'] / company['buy_below']) * 100:.0f}% below the fair price ({company['buy_below']:.0f}). A one-off buy of at least 50 EUR from my personal budget makes sense, never from the savings for my master's"])
+            alerts.append(["BUY EXTRA", name, f"Price is {(1 - company['price'] / company['buy_below']) * 100:.0f}% below the careful fair price ({company['buy_below']:.0f}). A one-off buy of at least 50 EUR from my personal budget makes sense, never from the savings for my master's"])
 
 # Rule: a watchlist company reaches its fair price
 watchlist = pd.read_csv("data/future/watchlist.csv")
@@ -96,7 +95,7 @@ for _, row in watchlist.iterrows():
         continue
     company = match.iloc[0]
     if company["verdict"] == "BUY":
-        alerts.append(["BUY", row["name"], f"Now at {company['price']:.0f}, below its fair price of {company['buy_below']:.0f}. Candidate to replace my weakest stock"])
+        alerts.append(["BUY", row["name"], f"Now at {company['price']:.0f}, below its careful fair price of {company['buy_below']:.0f}. Candidate to replace my weakest stock"])
 
 # Save the alerts for the dashboard and for GitHub
 today = str(date.today())
