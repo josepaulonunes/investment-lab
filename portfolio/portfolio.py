@@ -6,7 +6,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Targets and rules (from IPS.md)
-targets = {"core": 0.75, "small": 0.12, "future": 0.13, "gold": 0.0}
+targets = (pd.read_csv("data/portfolio/products.csv").groupby("block")["target"].sum() / 100).to_dict()
 monthly_contribution = 100
 band = 0.03
 
