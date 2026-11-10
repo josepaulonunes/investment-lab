@@ -2,11 +2,9 @@
 
 ALERTS FOUND
 
-- **BUY** Autodesk: Now at 260, below its fair price of 557. Candidate to replace my weakest stock
-- **BUY** Lam Research: Now at 223, below its fair price of 333. Candidate to replace my weakest stock
-- **BUY** Visa: Now at 421, below its fair price of 471. Candidate to replace my weakest stock
-- **BUY** Safran: Now at 314, below its fair price of 319. Candidate to replace my weakest stock
-- **BUY** BWX Technologies: Now at 126, below its fair price of 167. Candidate to replace my weakest stock
+- **EXPENSIVE** Broadcom: Price is above even the optimistic fair price (294): it assumes today's growth for more than 10 years. Keep the plan and review it in January
+- **EXPENSIVE** Intuitive Surgical: Price is above even the optimistic fair price (309): it assumes today's growth for more than 10 years. Keep the plan and review it in January
+- **BUY** Autodesk: Now at 261, below its careful fair price of 272. Candidate to replace my weakest stock
 
-Bets are 38.2% of the portfolio (limit 30%).
+Bets are 38.0% of the portfolio (limit 30%).
 Weight limits start after 6 months of buying. Now: 1.

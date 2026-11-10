@@ -1,6 +1,4 @@
 date,type,product,message
-2026-11-10,BUY,Autodesk,"Now at 260, below its fair price of 557. Candidate to replace my weakest stock"
-2026-11-10,BUY,Lam Research,"Now at 223, below its fair price of 333. Candidate to replace my weakest stock"
-2026-11-10,BUY,Visa,"Now at 421, below its fair price of 471. Candidate to replace my weakest stock"
-2026-11-10,BUY,Safran,"Now at 314, below its fair price of 319. Candidate to replace my weakest stock"
-2026-11-10,BUY,BWX Technologies,"Now at 126, below its fair price of 167. Candidate to replace my weakest stock"
+2026-11-10,EXPENSIVE,Broadcom,Price is above even the optimistic fair price (294): it assumes today's growth for more than 10 years. Keep the plan and review it in January
+2026-11-10,EXPENSIVE,Intuitive Surgical,Price is above even the optimistic fair price (309): it assumes today's growth for more than 10 years. Keep the plan and review it in January
+2026-11-10,BUY,Autodesk,"Now at 261, below its careful fair price of 272. Candidate to replace my weakest stock"
