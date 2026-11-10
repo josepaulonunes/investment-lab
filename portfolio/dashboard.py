@@ -89,7 +89,7 @@ st.divider()
 
 # Alerts from the weekly check
 st.subheader("Alerts")
-st.caption("Checked automatically every Monday. Green: a chance to buy. Yellow: stop buying for now. Red: check if the business got worse. I never sell just because the price fell.")
+st.caption("Checked automatically every Monday. Green: a chance to buy. Yellow: stop buying, or expensive for now. Red: check if the business got worse. I never sell just because the price fell.")
 if os.path.exists("data/alerts/alerts.csv"):
     alerts = pd.read_csv("data/alerts/alerts.csv")
     st.write("Last check:", alerts["date"].iloc[0])
@@ -99,7 +99,7 @@ if os.path.exists("data/alerts/alerts.csv"):
             st.success(alert["message"])
         elif alert["type"] in ["BUY", "BUY EXTRA"]:
             st.success(text)
-        elif alert["type"] == "STOP BUYING":
+        elif alert["type"] in ["STOP BUYING", "EXPENSIVE"]:
             st.warning(text)
         else:
             st.error(text)
