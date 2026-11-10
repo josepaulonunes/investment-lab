@@ -108,31 +108,6 @@ else:
 
 st.divider()
 
-# Chart: value vs money invested
-st.subheader("Value vs money invested")
-st.caption("The steps are my monthly purchases. The space between the two lines is what the market added or took away.")
-history = pd.DataFrame({"Value": value, "Money invested": invested})
-fig = px.line(history, color_discrete_map={"Value": "#1f4e79", "Money invested": "#9aa5b1"})
-fig.update_layout(height=380, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
-st.plotly_chart(fig)
-
-# Chart: gain or loss of each month (without the new money I put in)
-st.subheader("Gain or loss per month")
-st.caption("How much the market moved my money each month, without counting new purchases. Red months are normal.")
-monthly_value = value.resample("ME").last()
-monthly_invested = invested.resample("ME").last()
-monthly_gain = (monthly_value - monthly_invested).diff()
-monthly_gain.iloc[0] = monthly_value.iloc[0] - monthly_invested.iloc[0]
-monthly = pd.DataFrame({"month": monthly_gain.index.strftime("%Y-%m"), "gain": monthly_gain.values})
-monthly["result"] = "Gain"
-monthly.loc[monthly["gain"] < 0, "result"] = "Loss"
-fig = px.bar(monthly, x="month", y="gain", color="result", color_discrete_map={"Gain": "#2a9d8f", "Loss": "#e76f51"})
-fig.update_layout(height=320, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
-fig.update_xaxes(type="category")
-st.plotly_chart(fig)
-
-st.divider()
-
 # Positions: each product today
 positions = transactions.groupby(["isin", "name", "block"]).agg(
     quantity=("quantity", "sum"),
@@ -164,13 +139,17 @@ fig = px.bar(compare, x="name", y="%", color="series", barmode="group", color_di
 fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="")
 right.plotly_chart(fig)
 
-# Rebalance check
-for _, row in allocation.iterrows():
-    gap = row["Now"] - row["Target"]
-    if abs(gap) > band:
-        st.warning(f"{row['name']} is {gap:+.1f} points from target. Fix it with new money, never by selling.")
-if (abs(allocation["Now"] - allocation["Target"]) <= band).all():
-    st.success("All blocks are within 3 points of target. Nothing to do.")
+# Rebalance check (only after 6 months, gold is kept on purpose so it is left out)
+if months < 6:
+    st.info(f"Targets are checked after 6 months of monthly plans. Now: {months}.")
+else:
+    blocks_to_check = allocation[allocation["block"] != "gold"]
+    for _, row in blocks_to_check.iterrows():
+        gap = row["Now"] - row["Target"]
+        if abs(gap) > band:
+            st.warning(f"{row['name']} is {gap:+.1f} points from target. Fix it with new money, never by selling.")
+    if (abs(blocks_to_check["Now"] - blocks_to_check["Target"]) <= band).all():
+        st.success("All blocks are within 3 points of target. Nothing to do.")
 
 st.divider()
 
@@ -214,14 +193,39 @@ if "ticker" in screen.columns:
 
     st.subheader("My stocks: health check")
     st.caption("From the screener, in each company's own currency. Fair price comes from a DCF with growth capped at 25%. Below 0% means cheaper than fair.")
-    my_tickers = products[products["block"] == "stocks"]["ticker"]
-    st.dataframe(screen[screen["ticker"].isin(my_tickers)][show], hide_index=True, column_config=table_config)
+    my_stocks = products[products["block"] == "stocks"]["name"]
+    st.dataframe(screen[screen["name"].isin(my_stocks)][show], hide_index=True, column_config=table_config)
 
     st.subheader("Watchlist")
     st.caption("Great companies I don't own yet because they were too expensive. They become candidates when the price goes below fair.")
     watchlist = pd.read_csv("data/future/watchlist.csv")
     waiting = screen[screen["ticker"].isin(watchlist["ticker"])].sort_values("vs_fair_%")
     st.dataframe(waiting[show], hide_index=True, column_config=table_config)
+
+st.divider()
+
+# Chart: value vs money invested
+st.subheader("Value vs money invested")
+st.caption("The steps are my monthly purchases. The space between the two lines is what the market added or took away.")
+history = pd.DataFrame({"Value": value, "Money invested": invested})
+fig = px.line(history, color_discrete_map={"Value": "#1f4e79", "Money invested": "#9aa5b1"})
+fig.update_layout(height=380, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
+st.plotly_chart(fig)
+
+# Chart: gain or loss of each month (without the new money I put in)
+st.subheader("Gain or loss per month")
+st.caption("How much the market moved my money each month, without counting new purchases. Red months are normal.")
+monthly_value = value.resample("ME").last()
+monthly_invested = invested.resample("ME").last()
+monthly_gain = (monthly_value - monthly_invested).diff()
+monthly_gain.iloc[0] = monthly_value.iloc[0] - monthly_invested.iloc[0]
+monthly = pd.DataFrame({"month": monthly_gain.index.strftime("%Y-%m"), "gain": monthly_gain.values})
+monthly["result"] = "Gain"
+monthly.loc[monthly["gain"] < 0, "result"] = "Loss"
+fig = px.bar(monthly, x="month", y="gain", color="result", color_discrete_map={"Gain": "#2a9d8f", "Loss": "#e76f51"})
+fig.update_layout(height=320, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
+fig.update_xaxes(type="category")
+st.plotly_chart(fig)
 
 # Footer
 st.caption("Prices from Yahoo Finance, US stocks converted to euros. Personal learning project, not investment advice.")
