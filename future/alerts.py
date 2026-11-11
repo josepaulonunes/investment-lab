@@ -10,6 +10,7 @@ warnings.filterwarnings("ignore")
 # Limits from IPS.md (change them in data/portfolio/rules.csv, not here)
 rules = pd.read_csv("data/portfolio/rules.csv").set_index("name")["value"]
 max_position = rules["max_position"]
+min_position = rules["min_position"]
 max_bets = rules["max_bets"]
 max_group = rules["max_group"]
 months_before_limits = rules["months_before_limits"]
@@ -60,6 +61,11 @@ limits_on = months >= months_before_limits
 for _, row in held.iterrows():
     if limits_on and row["block"] in ["themes", "stocks"] and row["weight"] > max_position:
         alerts.append(["STOP BUYING", row["name"], f"It is {row['weight']:.1f}% of the portfolio, above {max_position:.0f}%. Move its monthly plan to VWCE"])
+
+# Rule: no bet below the minimum weight (too small to change anything)
+for _, row in held.iterrows():
+    if limits_on and row["block"] in ["themes", "stocks"] and row["quantity"] > 0 and row["weight"] < min_position:
+        alerts.append(["REVIEW", row["name"], f"It is {row['weight']:.1f}% of the portfolio, below {min_position:.0f}%. Raise its plan or replace it in January"])
 
 # Rule: all bets together stay at or below the limit
 bets = held[held["block"].isin(["themes", "stocks"])]["weight"].sum()
