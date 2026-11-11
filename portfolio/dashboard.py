@@ -120,11 +120,13 @@ else:
 
 st.divider()
 
-# Positions: each product today
+# Positions: each product today (money invested includes fees, like the chart below)
 positions = transactions.groupby(["isin", "name", "block"]).agg(
     quantity=("quantity", "sum"),
-    invested=("amount_eur", "sum"),
+    amount=("amount_eur", "sum"),
+    fees=("fee_eur", "sum"),
 ).reset_index()
+positions["invested"] = positions["amount"] + positions["fees"]
 positions["price"] = [prices[tickers[isin]].iloc[-1] for isin in positions["isin"]]
 positions["value"] = positions["quantity"] * positions["price"]
 positions["gain"] = positions["value"] - positions["invested"]
