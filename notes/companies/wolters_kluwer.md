@@ -1,7 +1,7 @@
 # Wolters Kluwer (WKL, Euronext Amsterdam)
 
 Date: 2026-10-29
-Status: BUY in Oct 2026. Not bought: on 1 Nov I chose ETFs only (see notes/2026-11_final_plan.md)
+Status: BUY in Oct 2026. Not bought: on 1 Nov I chose ETFs only (see notes/2026-11-06_plan_change.md)
 ISIN: NL0000395903
 Buy zone: below 101.71 EUR (central fair value 119.66 EUR minus 15%)
 
