@@ -17,7 +17,7 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 2. The screener scores each one: quality (growth, margin, cash, debt, return on equity), moat and future (my own scores, 0 to 4) and the long run (3 year growth and money given back to shareholders)
 3. A DCF gives two fair prices: a careful one where growth fades to 2.5% over 10 years, as research says it usually does, and an optimistic one where it doesn't. The discount rate is the 10 year Treasury yield plus beta times Damodaran's equity risk premium (notes/2026-11_fair_price_method.md)
 4. Only companies with a near monopoly, top quality and a price below the careful fair price get a BUY
-5. When a company invests so much that its free cash flow is far below its profits (Eli Lilly, Amazon), the DCF stops making sense. Those get CHECK and I look at the forward P/E instead
+5. When a company invests so much that its free cash flow is far below its profits (TSMC, Eli Lilly, Amazon), the DCF stops making sense. Those get CHECK and I look at the forward P/E instead
 6. A portfolio optimizer (portfolio/optimize.py) helps set the weights
 
 ## The weekly check
