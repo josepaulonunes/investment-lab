@@ -134,6 +134,17 @@ if len(alerts) == 0:
     alerts.append(["OK", "-", "No alerts. Nothing to do"])
 table = pd.DataFrame(alerts, columns=["type", "product", "message"])
 table.insert(0, "date", today)
+
+# Last week's alerts: only the type and the product count, the numbers in the message move every week
+last_week = []
+if os.path.exists("data/alerts/alerts.csv"):
+    old = pd.read_csv("data/alerts/alerts.csv")
+    for _, row in old.iterrows():
+        last_week.append(row["type"] + " " + row["product"])
+this_week = []
+for _, row in table.iterrows():
+    this_week.append(row["type"] + " " + row["product"])
+changed = sorted(this_week) != sorted(last_week)
 table.to_csv("data/alerts/alerts.csv", index=False)
 
 # Text for the GitHub issue
@@ -142,9 +153,14 @@ if table["type"].iloc[0] == "OK":
     lines.append("No alerts. Nothing to do.")
 else:
     lines.append("ALERTS FOUND")
+    if changed:
+        lines.append("ALERTS CHANGED SINCE LAST WEEK")
     lines.append("")
     for _, row in table.iterrows():
-        lines.append("- **" + row["type"] + "** " + row["product"] + ": " + row["message"])
+        new = ""
+        if row["type"] + " " + row["product"] not in last_week:
+            new = " (new)"
+        lines.append("- **" + row["type"] + "** " + row["product"] + new + ": " + row["message"])
 lines.append("")
 lines.append(f"Bets are {bets:.1f}% of the portfolio (limit {max_bets:.0f}%).")
 if not limits_on:
