@@ -10,9 +10,11 @@ warnings.filterwarnings("ignore")
 # Limits from IPS.md (change them in data/portfolio/rules.csv, not here)
 rules = pd.read_csv("data/portfolio/rules.csv").set_index("name")["value"]
 max_position = rules["max_position"]
+min_position = rules["min_position"]
 max_bets = rules["max_bets"]
 max_group = rules["max_group"]
 months_before_limits = rules["months_before_limits"]
+max_stocks = rules["max_stocks"]
 
 # My products and my purchases (real file if it exists, otherwise the public one)
 products = pd.read_csv("data/portfolio/products.csv")
@@ -61,6 +63,12 @@ for _, row in held.iterrows():
     if limits_on and row["block"] in ["themes", "stocks"] and row["weight"] > max_position:
         alerts.append(["STOP BUYING", row["name"], f"It is {row['weight']:.1f}% of the portfolio, above {max_position:.0f}%. Move its monthly plan to VWCE"])
 
+# Rule: no bet below the minimum weight (too small to change anything)
+# Only products still in the plan (target above 0): one I stopped buying but still hold is fine
+for _, row in held.iterrows():
+    if limits_on and row["block"] in ["themes", "stocks"] and row["target"] > 0 and row["quantity"] > 0 and row["weight"] < min_position:
+        alerts.append(["REVIEW", row["name"], f"It is {row['weight']:.1f}% of the portfolio, below {min_position:.0f}%. Raise its plan or replace it in January"])
+
 # Rule: all bets together stay at or below the limit
 bets = held[held["block"].isin(["themes", "stocks"])]["weight"].sum()
 if limits_on and bets > max_bets:
@@ -71,6 +79,11 @@ groups = held.dropna(subset=["group"]).groupby("group")["weight"].sum()
 for group, weight in groups.items():
     if limits_on and weight > max_group:
         alerts.append(["STOP BUYING", "Group " + group, f"Together they are {weight:.1f}% of the portfolio, above {max_group:.0f}%. No extra buys in this group"])
+
+# Rule: no more stocks than I can follow properly (rule 8), counting only stocks still in the plan (target above 0)
+stocks_held = held[(held["block"] == "stocks") & (held["target"] > 0) & (held["quantity"] > 0)]
+if len(stocks_held) > max_stocks:
+    alerts.append(["REVIEW", "All stocks", f"I own {len(stocks_held)} stocks, above {max_stocks:.0f}. Pick which ones to drop in January"])
 
 # Latest screener results (run future/future_screen.py first)
 screen = pd.read_csv("data/future/future_screen.csv")
@@ -99,7 +112,9 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     if company["verdict"] != "CHECK" and pd.notna(company["buy_below"]) and company["buy_below"] > 0:
         if company["price"] > company["fair_high"]:
             alerts.append(["EXPENSIVE", name, f"Price is above even the optimistic fair price ({company['fair_high']:.0f}): it assumes today's growth for more than 10 years. Keep the plan and review it in January"])
-        if company["price"] < company["buy_below"] and row["weight"] < max_position:
+        # No extra buys if its group is already above the group limit (rule 15)
+        group_full = limits_on and pd.notna(row["group"]) and groups[row["group"]] > max_group
+        if company["price"] < company["buy_below"] and row["weight"] < max_position and not group_full:
             alerts.append(["BUY EXTRA", name, f"Price is {(1 - company['price'] / company['buy_below']) * 100:.0f}% below the careful fair price ({company['buy_below']:.0f}). A one-off buy from my personal budget makes sense"])
 
 # Rule: a watchlist company reaches its fair price
