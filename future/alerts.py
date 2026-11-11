@@ -64,8 +64,9 @@ for _, row in held.iterrows():
         alerts.append(["STOP BUYING", row["name"], f"It is {row['weight']:.1f}% of the portfolio, above {max_position:.0f}%. Move its monthly plan to VWCE"])
 
 # Rule: no bet below the minimum weight (too small to change anything)
+# Only products still in the plan (target above 0): one I stopped buying but still hold is fine
 for _, row in held.iterrows():
-    if limits_on and row["block"] in ["themes", "stocks"] and row["quantity"] > 0 and row["weight"] < min_position:
+    if limits_on and row["block"] in ["themes", "stocks"] and row["target"] > 0 and row["quantity"] > 0 and row["weight"] < min_position:
         alerts.append(["REVIEW", row["name"], f"It is {row['weight']:.1f}% of the portfolio, below {min_position:.0f}%. Raise its plan or replace it in January"])
 
 # Rule: all bets together stay at or below the limit
@@ -79,8 +80,8 @@ for group, weight in groups.items():
     if limits_on and weight > max_group:
         alerts.append(["STOP BUYING", "Group " + group, f"Together they are {weight:.1f}% of the portfolio, above {max_group:.0f}%. No extra buys in this group"])
 
-# Rule: no more stocks than I can follow properly (rule 8)
-stocks_held = held[(held["block"] == "stocks") & (held["quantity"] > 0)]
+# Rule: no more stocks than I can follow properly (rule 8), counting only stocks still in the plan (target above 0)
+stocks_held = held[(held["block"] == "stocks") & (held["target"] > 0) & (held["quantity"] > 0)]
 if len(stocks_held) > max_stocks:
     alerts.append(["REVIEW", "All stocks", f"I own {len(stocks_held)} stocks, above {max_stocks:.0f}. Pick which ones to drop in January"])
 
