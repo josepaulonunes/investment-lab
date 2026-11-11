@@ -21,7 +21,7 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 6. A portfolio optimizer (portfolio/optimize.py) helps set the weights
 
 ## The weekly check
-Every Monday GitHub runs the screener and future/alerts.py. If something needs my attention it opens an issue and I get a notification:
+Every Monday GitHub runs the screener and future/alerts.py. If the alerts are different from last week it opens an issue and I get a notification. New alerts are marked (new):
 - BUY or BUY EXTRA: a stock is below its careful fair price
 - EXPENSIVE: a stock I own is above its optimistic fair price. I keep buying and look at it in January
 - STOP BUYING: a bet is above 5% of the portfolio, the AI chip stocks together are above 12%, or bets are above 30%
