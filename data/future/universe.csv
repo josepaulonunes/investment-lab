@@ -144,3 +144,35 @@ NG.L,National Grid,Grid operators,2,2
 EDP.LS,EDP,Power,1,2
 EDPR.LS,EDP Renovaveis,Renewables,1,2
 GALP.LS,Galp,Oil and gas,1,1
+META,Meta Platforms,Digital ads,2,2
+FICO,Fair Isaac,Financial data,2,1
+VRSK,Verisk,Financial data,2,1
+INTU,Intuit,Business software,2,1
+ADBE,Adobe,Design software,2,1
+WKL.AS,Wolters Kluwer,Professional information,2,1
+REL.L,RELX,Professional information,2,1
+AMS.MC,Amadeus IT,Travel technology,2,1
+AENA.MC,Aena,Airports,2,1
+HWM,Howmet Aerospace,Aircraft parts,2,1
+MTX.DE,MTU Aero Engines,Aircraft engines,2,1
+AM.PA,Dassault Aviation,Defense,2,2
+LHX,L3Harris,Defense,2,2
+CW,Curtiss-Wright,Nuclear,2,1
+LEU,Centrus Energy,Nuclear,2,2
+AI.PA,Air Liquide,Industrial gases,2,1
+ATCO-A.ST,Atlas Copco,Factory automation,2,1
+CGNX,Cognex,Factory automation,2,1
+OTIS,Otis,Elevators,2,1
+KNEBV.HE,Kone,Elevators,2,1
+CP.TO,Canadian Pacific Kansas City,Supply chain,2,1
+CNR.TO,Canadian National Railway,Supply chain,2,1
+RSG,Republic Services,Circular economy,2,1
+VACN.SW,VAT Group,Chip equipment parts,2,2
+TER,Teradyne,Chip testing,2,2
+DXCM,Dexcom,Medical devices,2,2
+RMD,ResMed,Medical devices,2,2
+COH.AX,Cochlear,Medical devices,2,2
+IDXX,IDEXX Laboratories,Animal health,2,1
+WST,West Pharmaceutical,Drug manufacturing,2,2
+MTD,Mettler-Toledo,Lab equipment,2,1
+GILD,Gilead Sciences,Biotech,2,2
