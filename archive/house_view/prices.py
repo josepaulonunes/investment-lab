@@ -36,5 +36,5 @@ prices_eur = prices_eur.rename(columns=names)
 prices_eur = prices_eur[list(regions.keys())]
 
 # Save
-prices_eur.to_csv("data/house_view/prices_eur.csv")
+prices_eur.to_csv("archive/data/house_view/prices_eur.csv")
 print(prices_eur.tail())

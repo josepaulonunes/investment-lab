@@ -19,7 +19,7 @@ def dcf_value(fcf, growth, terminal, discount):
     return value
 
 # Companies I find interesting (add a line to the csv to add a company)
-watchlist = pd.read_csv("data/companies/watchlist.csv")
+watchlist = pd.read_csv("archive/data/companies/watchlist.csv")
 
 # Get the main numbers of each company from yfinance
 rows = []
@@ -97,7 +97,7 @@ screen = pd.DataFrame(rows)
 screen = screen.sort_values(["score", "implied_growth"], ascending=[False, True])
 screen["next_step"] = "skip"
 screen.loc[(screen["score"] >= 4) & (screen["warning"] == ""), "next_step"] = "full analysis"
-screen.to_csv("data/companies/screen.csv", index=False)
+screen.to_csv("archive/data/companies/screen.csv", index=False)
 print()
 print("SCREEN (score out of 5)")
 print(screen.round(2).to_string(index=False))
