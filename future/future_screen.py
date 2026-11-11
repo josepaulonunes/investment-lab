@@ -40,176 +40,187 @@ def dcf_value(fcf, growth, discount, fade):
 universe = pd.read_csv("data/future/universe.csv")
 
 rows = []
+failed = []
 for _, company in universe.iterrows():
-    print("Loading", company["name"])
-    stock = yf.Ticker(company["ticker"])
-    info = stock.info
-    market_cap = info.get("marketCap")
-    price = info.get("currentPrice")
-    if not market_cap or not price:
-        print("No data for", company["name"], "- check the ticker")
-        continue
+    # One company at a time: if Yahoo fails for one, note it and go on with the next
+    try:
+        print("Loading", company["name"])
+        stock = yf.Ticker(company["ticker"])
+        info = stock.info
+        market_cap = info.get("marketCap")
+        price = info.get("currentPrice")
+        if not market_cap or not price:
+            print("No data for", company["name"], "- check the ticker")
+            continue
 
-    # Revenue growth over the last full year (more stable than the last quarter)
-    growth = info.get("revenueGrowth")
-    income = stock.income_stmt
-    if "Total Revenue" in income.index:
-        revenue = income.loc["Total Revenue"].dropna()
-        if len(revenue) >= 2:
-            growth = revenue.iloc[0] / revenue.iloc[1] - 1
+        # Revenue growth over the last full year (more stable than the last quarter)
+        growth = info.get("revenueGrowth")
+        income = stock.income_stmt
+        if "Total Revenue" in income.index:
+            revenue = income.loc["Total Revenue"].dropna()
+            if len(revenue) >= 2:
+                growth = revenue.iloc[0] / revenue.iloc[1] - 1
 
-    # Long term growth: yearly revenue growth over the last 3 years
-    growth_3y = None
-    if "Total Revenue" in income.index:
-        revenue = income.loc["Total Revenue"].dropna()
-        if len(revenue) >= 4 and revenue.iloc[3] > 0:
-            growth_3y = (revenue.iloc[0] / revenue.iloc[3]) ** (1 / 3) - 1
+        # Long term growth: yearly revenue growth over the last 3 years
+        growth_3y = None
+        if "Total Revenue" in income.index:
+            revenue = income.loc["Total Revenue"].dropna()
+            if len(revenue) >= 4 and revenue.iloc[3] > 0:
+                growth_3y = (revenue.iloc[0] / revenue.iloc[3]) ** (1 / 3) - 1
 
-    # Free cash flow from the last annual cash flow statement
-    fcf = None
-    cashflow = stock.cashflow
-    if "Free Cash Flow" in cashflow.index:
-        values = cashflow.loc["Free Cash Flow"].dropna()
-        if len(values) > 0:
-            fcf = values.iloc[0]
-
-    # Money given back to shareholders last year (dividends plus buybacks) as % of the company value
-    returned = 0
-    for item in ["Cash Dividends Paid", "Repurchase Of Capital Stock"]:
-        if item in cashflow.index:
-            values = cashflow.loc[item].dropna()
+        # Free cash flow from the last annual cash flow statement
+        fcf = None
+        cashflow = stock.cashflow
+        if "Free Cash Flow" in cashflow.index:
+            values = cashflow.loc["Free Cash Flow"].dropna()
             if len(values) > 0:
-                returned = returned - values.iloc[0]
-    shareholder_yield = returned / market_cap
+                fcf = values.iloc[0]
 
-    # Debt compared with yearly profits (negative means more cash than debt)
-    net_debt_to_ebitda = None
-    ebitda = info.get("ebitda")
-    if ebitda and ebitda > 0:
-        net_debt_to_ebitda = ((info.get("totalDebt") or 0) - (info.get("totalCash") or 0)) / ebitda
-    margin = info.get("operatingMargins")
-    roe = info.get("returnOnEquity")
+        # Money given back to shareholders last year (dividends plus buybacks) as % of the company value
+        returned = 0
+        for item in ["Cash Dividends Paid", "Repurchase Of Capital Stock"]:
+            if item in cashflow.index:
+                values = cashflow.loc[item].dropna()
+                if len(values) > 0:
+                    returned = returned - values.iloc[0]
+        shareholder_yield = returned / market_cap
 
-    # Price compared with next year's expected profits, and last year's profit (a second opinion next to the DCF)
-    forward_pe = info.get("forwardPE")
-    net_income = info.get("netIncomeToCommon")
-    profitable = net_income is not None and net_income > 0
+        # Debt compared with yearly profits (negative means more cash than debt)
+        net_debt_to_ebitda = None
+        ebitda = info.get("ebitda")
+        if ebitda and ebitda > 0:
+            net_debt_to_ebitda = ((info.get("totalDebt") or 0) - (info.get("totalCash") or 0)) / ebitda
+        margin = info.get("operatingMargins")
+        roe = info.get("returnOnEquity")
 
-    # The DCF uses free cash flow. A company that is investing a lot has free cash flow far below its profits, and the DCF price makes no sense for it
-    dcf_ok = fcf is not None and fcf > 0
-    if dcf_ok and profitable and fcf < 0.5 * net_income:
-        dcf_ok = False
+        # Price compared with next year's expected profits, and last year's profit (a second opinion next to the DCF)
+        forward_pe = info.get("forwardPE")
+        net_income = info.get("netIncomeToCommon")
+        profitable = net_income is not None and net_income > 0
 
-    # Dilution: yearly change in the number of shares over the last 3 years (new shares make each one worth less)
-    dilution = None
-    balance = stock.balance_sheet
-    if "Ordinary Shares Number" in balance.index:
-        shares_count = balance.loc["Ordinary Shares Number"].dropna()
-        if len(shares_count) >= 4 and shares_count.iloc[3] > 0:
-            dilution = (shares_count.iloc[0] / shares_count.iloc[3]) ** (1 / 3) - 1
+        # The DCF uses free cash flow. A company that is investing a lot has free cash flow far below its profits, and the DCF price makes no sense for it
+        dcf_ok = fcf is not None and fcf > 0
+        if dcf_ok and profitable and fcf < 0.5 * net_income:
+            dcf_ok = False
 
-    # Quality: is it a good business?
-    checks = [
-        growth is not None and growth > 0.10,
-        margin is not None and margin > 0.10,
-        fcf is not None and fcf > 0,
-        net_debt_to_ebitda is not None and net_debt_to_ebitda < 3,
-        roe is not None and roe > 0.15,
-    ]
-    quality = checks.count(True)
+        # Dilution: yearly change in the number of shares over the last 3 years (new shares make each one worth less)
+        dilution = None
+        balance = stock.balance_sheet
+        if "Ordinary Shares Number" in balance.index:
+            shares_count = balance.loc["Ordinary Shares Number"].dropna()
+            if len(shares_count) >= 4 and shares_count.iloc[3] > 0:
+                dilution = (shares_count.iloc[0] / shares_count.iloc[3]) ** (1 / 3) - 1
 
-    # Discount rate for this company: risk free + beta x equity premium (beta kept between 0.8 and 1.6)
-    beta = info.get("beta") or 1
-    beta = min(max(beta, min_beta), max_beta)
-    discount = risk_free + beta * equity_premium
+        # Quality: is it a good business?
+        checks = [
+            growth is not None and growth > 0.10,
+            margin is not None and margin > 0.10,
+            fcf is not None and fcf > 0,
+            net_debt_to_ebitda is not None and net_debt_to_ebitda < 3,
+            roe is not None and roe > 0.15,
+        ]
+        quality = checks.count(True)
 
-    # Two fair prices from today's growth (capped at 25%)
-    # fair_high: growth stays the same for 10 years (optimistic)
-    # buy_below: growth fades to the terminal rate by year 10 (conservative, what the research supports)
-    same_currency = info.get("financialCurrency") == info.get("currency")
-    implied_growth = None
-    buy_below = None
-    fair_high = None
-    growth_used = None
-    if fcf and fcf > 0 and same_currency and growth is not None:
-        for step in range(-50, 601):
-            g = step / 1000
-            if dcf_value(fcf, g, discount, True) >= market_cap:
-                implied_growth = g
-                break
-        growth_used = min(growth, max_growth)
-        shares = market_cap / price
-        buy_below = dcf_value(fcf, growth_used, discount, True) / shares
-        fair_high = dcf_value(fcf, growth_used, discount, False) / shares
+        # Discount rate for this company: risk free + beta x equity premium (beta kept between 0.8 and 1.6)
+        beta = info.get("beta") or 1
+        beta = min(max(beta, min_beta), max_beta)
+        discount = risk_free + beta * equity_premium
 
-    # Forward P/E divided by growth in % (same growth cap as the DCF). Lower is cheaper. Only to compare companies with each other
-    pe_vs_growth = None
-    if forward_pe and growth is not None and growth > 0:
-        pe_vs_growth = forward_pe / (min(growth, max_growth) * 100)
+        # Two fair prices from today's growth (capped at 25%)
+        # fair_high: growth stays the same for 10 years (optimistic)
+        # buy_below: growth fades to the terminal rate by year 10 (conservative, what the research supports)
+        same_currency = info.get("financialCurrency") == info.get("currency")
+        implied_growth = None
+        buy_below = None
+        fair_high = None
+        growth_used = None
+        if fcf and fcf > 0 and same_currency and growth is not None:
+            for step in range(-50, 601):
+                g = step / 1000
+                if dcf_value(fcf, g, discount, True) >= market_cap:
+                    implied_growth = g
+                    break
+            growth_used = min(growth, max_growth)
+            shares = market_cap / price
+            buy_below = dcf_value(fcf, growth_used, discount, True) / shares
+            fair_high = dcf_value(fcf, growth_used, discount, False) / shares
 
-    # Edge: how hard to replace and how central to the future (out of 4)
-    edge = company["moat"] + company["future"]
+        # Forward P/E divided by growth in % (same growth cap as the DCF). Lower is cheaper. Only to compare companies with each other
+        pe_vs_growth = None
+        if forward_pe and growth is not None and growth > 0:
+            pe_vs_growth = forward_pe / (min(growth, max_growth) * 100)
 
-    # Long term: steady growth and money back to shareholders (out of 2)
-    long_term = 0
-    if growth_3y is not None and growth_3y > 0.10:
-        long_term = long_term + 1
-    if shareholder_yield > 0.01:
-        long_term = long_term + 1
+        # Edge: how hard to replace and how central to the future (out of 4)
+        edge = company["moat"] + company["future"]
 
-    # Verdict
-    if not dcf_ok and not profitable:
-        verdict = "SPECULATIVE"
-    elif quality < 4 or company["moat"] < 2 or edge < 3:
-        verdict = "AVOID"
-    elif not same_currency or not dcf_ok:
-        verdict = "CHECK"
-    elif buy_below is not None and price <= buy_below:
-        verdict = "BUY"
-    elif fair_high is not None and price <= fair_high:
-        verdict = "FAIR"
-    else:
-        verdict = "WATCH"
+        # Long term: steady growth and money back to shareholders (out of 2)
+        long_term = 0
+        if growth_3y is not None and growth_3y > 0.10:
+            long_term = long_term + 1
+        if shareholder_yield > 0.01:
+            long_term = long_term + 1
 
-    # Warnings
-    notes = []
-    if not same_currency:
-        notes.append("Reports in another currency: check by hand")
-    if profitable and not dcf_ok:
-        notes.append("Free cash flow far below profits: ignore the DCF, look at forward P/E")
-    if dilution is not None and dilution > 0.02:
-        notes.append("More than 2% new shares a year")
-    if growth is not None and growth > 0.4:
-        notes.append("Growth over 40%: cycle peak?")
-    warning = ". ".join(notes)
+        # Verdict
+        if not dcf_ok and not profitable:
+            verdict = "SPECULATIVE"
+        elif quality < 4 or company["moat"] < 2 or edge < 3:
+            verdict = "AVOID"
+        elif not same_currency or not dcf_ok:
+            verdict = "CHECK"
+        elif buy_below is not None and price <= buy_below:
+            verdict = "BUY"
+        elif fair_high is not None and price <= fair_high:
+            verdict = "FAIR"
+        else:
+            verdict = "WATCH"
 
-    rows.append({
-        "name": company["name"],
-        "ticker": company["ticker"],
-        "link": company["link"],
-        "price": price,
-        "currency": info.get("currency"),
-        "revenue_growth": growth,
-        "growth_3y": growth_3y,
-        "shareholder_yield": shareholder_yield,
-        "op_margin": margin,
-        "net_debt_to_ebitda": net_debt_to_ebitda,
-        "roe": roe,
-        "dilution": dilution,
-        "implied_growth": implied_growth,
-        "growth_used": growth_used,
-        "discount": discount,
-        "buy_below": buy_below,
-        "fair_high": fair_high,
-        "forward_pe": forward_pe,
-        "pe_vs_growth": pe_vs_growth,
-        "quality": quality,
-        "edge": edge,
-        "long_term": long_term,
-        "score": quality + edge + long_term,
-        "verdict": verdict,
-        "warning": warning,
-    })
+        # Warnings
+        notes = []
+        if not same_currency:
+            notes.append("Reports in another currency: check by hand")
+        if profitable and not dcf_ok:
+            notes.append("Free cash flow far below profits: ignore the DCF, look at forward P/E")
+        if dilution is not None and dilution > 0.02:
+            notes.append("More than 2% new shares a year")
+        if growth is not None and growth > 0.4:
+            notes.append("Growth over 40%: cycle peak?")
+        warning = ". ".join(notes)
+
+        rows.append({
+            "name": company["name"],
+            "ticker": company["ticker"],
+            "link": company["link"],
+            "price": price,
+            "currency": info.get("currency"),
+            "revenue_growth": growth,
+            "growth_3y": growth_3y,
+            "shareholder_yield": shareholder_yield,
+            "op_margin": margin,
+            "net_debt_to_ebitda": net_debt_to_ebitda,
+            "roe": roe,
+            "dilution": dilution,
+            "implied_growth": implied_growth,
+            "growth_used": growth_used,
+            "discount": discount,
+            "buy_below": buy_below,
+            "fair_high": fair_high,
+            "forward_pe": forward_pe,
+            "pe_vs_growth": pe_vs_growth,
+            "quality": quality,
+            "edge": edge,
+            "long_term": long_term,
+            "score": quality + edge + long_term,
+            "verdict": verdict,
+            "warning": warning,
+        })
+    except Exception as error:
+        print("Failed for", company["name"], "-", error)
+        failed.append(company["name"])
+
+# Stop without saving if nothing loaded (Yahoo down): the last good screen stays
+if len(rows) == 0:
+    print("No company loaded. The last screen is kept")
+    exit(1)
 
 # Rank: BUY first, then the best score, then the cheapest compared with its growth
 screen = pd.DataFrame(rows)
@@ -223,3 +234,7 @@ print()
 print("FUTURE STUDY (quality out of 5, edge out of 4, long term out of 2, score out of 11)")
 print(screen.round(2).to_string(index=False))
 
+# Companies that failed this time (they are missing from the screen until the next run)
+if len(failed) > 0:
+    print()
+    print("Failed:", ", ".join(failed))
