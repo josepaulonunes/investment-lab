@@ -11,10 +11,16 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
-st.caption("60% global stocks, 10% small companies and 30% in bets on the future: 5 stocks with little competition and 4 theme ETFs (health, power grid, quantum, nuclear). Automatic plans every month, checked every Monday, reviewed every January.")
 
-# My products: isin, name, block, Yahoo ticker, currency and target %
+# My products: isin, name, block, Yahoo ticker, currency, target % and group
 products = pd.read_csv("data/portfolio/products.csv")
+
+# One line that describes the plan, built from the products file so it is never out of date
+plan = products[products["target"] > 0]
+base = plan[plan["block"].isin(["core", "small"])]["target"].sum()
+stocks = plan[plan["block"] == "stocks"]
+themes = plan[plan["block"] == "themes"]
+st.caption(f"{base:.0f}% in the whole market and {100 - base:.0f}% in bets on the future: {len(stocks)} stocks with little competition ({stocks['target'].sum():.0f}%) and {len(themes)} theme ETFs ({themes['target'].sum():.0f}%). Automatic plans every month, checked every Monday, reviewed every January.")
 tickers = dict(zip(products["isin"], products["ticker"]))
 targets = products.groupby("block")["target"].sum().to_dict()
 band = 3
@@ -44,12 +50,18 @@ if len(transactions) == 0:
     st.write("No purchases yet: fill data/portfolio/transactions.csv first")
     st.stop()
 
-# Daily prices since my first purchase, all in euros (US stocks are converted with the EUR/USD rate)
+# Exchange rates: one ticker for each currency that is not the euro (EURUSD=X, EURJPY=X...)
+rate_tickers = []
+for currency in products["currency"].unique():
+    if currency != "EUR":
+        rate_tickers.append("EUR" + currency + "=X")
+
+# Daily prices since my first purchase, all in euros
 start = transactions["date"].min()
-prices = yf.download(list(products["ticker"]) + ["EURUSD=X"], start=start, progress=False)["Close"].ffill()
+prices = yf.download(list(products["ticker"]) + rate_tickers, start=start, progress=False)["Close"].ffill()
 for _, product in products.iterrows():
-    if product["currency"] == "USD":
-        prices[product["ticker"]] = prices[product["ticker"]] / prices["EURUSD=X"]
+    if product["currency"] != "EUR":
+        prices[product["ticker"]] = prices[product["ticker"]] / prices["EUR" + product["currency"] + "=X"]
 
 # Stop with a clear message if a product has no prices on Yahoo
 for isin in transactions["isin"].unique():
