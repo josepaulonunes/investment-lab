@@ -38,10 +38,10 @@ jobs:
           git commit -m "Weekly check" || echo "Nothing new"
           git push
 
-      - name: Open an issue if there are alerts
+      - name: Open an issue if the alerts changed since last week
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if grep -q "ALERTS FOUND" data/alerts/latest.md; then
+          if grep -q "ALERTS CHANGED SINCE LAST WEEK" data/alerts/latest.md; then
             gh issue create --title "Portfolio alerts $(date +%F)" --body-file data/alerts/latest.md
           fi
