@@ -99,7 +99,9 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     if company["verdict"] != "CHECK" and pd.notna(company["buy_below"]) and company["buy_below"] > 0:
         if company["price"] > company["fair_high"]:
             alerts.append(["EXPENSIVE", name, f"Price is above even the optimistic fair price ({company['fair_high']:.0f}): it assumes today's growth for more than 10 years. Keep the plan and review it in January"])
-        if company["price"] < company["buy_below"] and row["weight"] < max_position:
+        # No extra buys if its group is already above the group limit (rule 15)
+        group_full = limits_on and pd.notna(row["group"]) and groups[row["group"]] > max_group
+        if company["price"] < company["buy_below"] and row["weight"] < max_position and not group_full:
             alerts.append(["BUY EXTRA", name, f"Price is {(1 - company['price'] / company['buy_below']) * 100:.0f}% below the careful fair price ({company['buy_below']:.0f}). A one-off buy from my personal budget makes sense"])
 
 # Rule: a watchlist company reaches its fair price
