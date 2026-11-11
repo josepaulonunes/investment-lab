@@ -101,3 +101,46 @@ RKLB,Rocket Lab,Space,0,2
 ASTS,AST SpaceMobile,Space,0,2
 IRDM,Iridium,Space,1,1
 MDA.TO,MDA Space,Space,1,2
+LMT,Lockheed Martin,Defense,2,2
+NOC,Northrop Grumman,Defense,2,2
+GD,General Dynamics,Defense,2,2
+RTX,RTX,Defense,2,2
+BA.L,BAE Systems,Defense,2,2
+RHM.DE,Rheinmetall,Defense,1,2
+HO.PA,Thales,Defense,1,2
+KOG.OL,Kongsberg,Defense,1,2
+SAAB-B.ST,Saab,Defense,1,2
+LDO.MI,Leonardo,Defense,1,2
+MP,MP Materials,Critical minerals,2,2
+LYC.AX,Lynas,Critical minerals,2,2
+ALB,Albemarle,Critical minerals,1,2
+SQM,SQM,Critical minerals,1,2
+FCX,Freeport-McMoRan,Critical minerals,1,2
+HII,Huntington Ingalls,Defense,2,2
+GE,GE Aerospace,Aircraft engines,2,2
+RR.L,Rolls-Royce,Aircraft engines,2,1
+AIR.PA,Airbus,Aircraft makers,2,1
+SCCO,Southern Copper,Critical minerals,1,2
+CME,CME Group,Market infrastructure,2,1
+ICE,Intercontinental Exchange,Market infrastructure,2,1
+DB1.DE,Deutsche Boerse,Market infrastructure,2,1
+LSEG.L,London Stock Exchange Group,Market infrastructure,2,1
+CTVA,Corteva,Food and farming,2,2
+DE,Deere,Food and farming,2,2
+NTR,Nutrien,Food and farming,1,2
+XYL,Xylem,Water,1,2
+VLTO,Veralto,Water,1,2
+EW,Edwards Lifesciences,Medical devices,2,2
+SYK,Stryker,Medical devices,1,2
+BSX,Boston Scientific,Medical devices,1,2
+LONN.SW,Lonza,Drug manufacturing,2,2
+ZTS,Zoetis,Animal health,2,1
+300750.SZ,CATL,Batteries,1,2
+RENE.LS,REN,Grid operators,2,2
+RED.MC,Redeia,Grid operators,2,2
+TRN.MI,Terna,Grid operators,2,2
+ELI.BR,Elia,Grid operators,2,2
+NG.L,National Grid,Grid operators,2,2
+EDP.LS,EDP,Power,1,2
+EDPR.LS,EDP Renovaveis,Renewables,1,2
+GALP.LS,Galp,Oil and gas,1,1

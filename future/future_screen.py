@@ -36,7 +36,7 @@ def dcf_value(fcf, growth, discount, fade):
 
 # Companies for the study, with my own scores from research (add a line to the csv to add one)
 # moat: 0 none, 1 some edge, 2 near monopoly or duopoly
-# future: 0 no link, 1 steady need, 2 central to AI, power or health
+# future: 0 no link, 1 steady need, 2 central to AI, power, health, defense, food, water or critical minerals
 universe = pd.read_csv("data/future/universe.csv")
 
 rows = []
