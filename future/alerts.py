@@ -14,6 +14,7 @@ min_position = rules["min_position"]
 max_bets = rules["max_bets"]
 max_group = rules["max_group"]
 months_before_limits = rules["months_before_limits"]
+max_stocks = rules["max_stocks"]
 
 # My products and my purchases (real file if it exists, otherwise the public one)
 products = pd.read_csv("data/portfolio/products.csv")
@@ -77,6 +78,11 @@ groups = held.dropna(subset=["group"]).groupby("group")["weight"].sum()
 for group, weight in groups.items():
     if limits_on and weight > max_group:
         alerts.append(["STOP BUYING", "Group " + group, f"Together they are {weight:.1f}% of the portfolio, above {max_group:.0f}%. No extra buys in this group"])
+
+# Rule: no more stocks than I can follow properly (rule 8)
+stocks_held = held[(held["block"] == "stocks") & (held["quantity"] > 0)]
+if len(stocks_held) > max_stocks:
+    alerts.append(["REVIEW", "All stocks", f"I own {len(stocks_held)} stocks, above {max_stocks:.0f}. Pick which ones to drop in January"])
 
 # Latest screener results (run future/future_screen.py first)
 screen = pd.read_csv("data/future/future_screen.csv")
