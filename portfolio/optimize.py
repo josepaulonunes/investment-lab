@@ -6,39 +6,35 @@ import warnings
 # Hide library warnings
 warnings.filterwarnings("ignore")
 
-# Settings: the bets are 30% of the portfolio, each one between 2% and 5%
-bets_total = 0.30
-min_weight = 0.02
-max_weight = 0.05
+# Limits for each bet (from data/portfolio/rules.csv)
+rules = pd.read_csv("data/portfolio/rules.csv").set_index("name")["value"]
+min_weight = rules["min_position"] / 100
+max_weight = rules["max_position"] / 100
 risk_free = 0.02
-monthly_money = 600
 simulations = 50000
 
-# The bets: 5 stocks and 4 theme ETFs (ticker on Yahoo and currency)
-assets = {
-    "TSMC": ["TSM", "USD"],
-    "Mastercard": ["MA", "USD"],
-    "Broadcom": ["AVGO", "USD"],
-    "Nvidia": ["NVDA", "USD"],
-    "Intuitive Surgical": ["ISRG", "USD"],
-    "Health ETF": ["XDWH.DE", "EUR"],
-    "Grid ETF": ["GRID.DE", "EUR"],
-    "Quantum ETF": ["QUTM.DE", "EUR"],
-    "Nuclear ETF": ["NUKL.DE", "EUR"],
-}
+# The bets: every stock and theme ETF with a target in data/portfolio/products.csv
+products = pd.read_csv("data/portfolio/products.csv")
+bets = products[products["block"].isin(["themes", "stocks"]) & (products["target"] > 0)]
+bets_total = bets["target"].sum() / 100
+names = list(bets["name"])
+
+# Exchange rates: one ticker for each currency that is not the euro (EURUSD=X, EURJPY=X...)
+rate_tickers = []
+for currency in bets["currency"].unique():
+    if currency != "EUR":
+        rate_tickers.append("EUR" + currency + "=X")
 
 # Daily prices for the last 3 years
-tickers = [assets[name][0] for name in assets]
-prices = yf.download(tickers + ["EURUSD=X"], period="3y", progress=False)["Close"].ffill()
+prices = yf.download(list(bets["ticker"]) + rate_tickers, period="3y", progress=False)["Close"].ffill()
 
 # Put every price in euros (I invest in euros)
 euro_prices = pd.DataFrame()
-for name in assets:
-    ticker, currency = assets[name]
-    if currency == "USD":
-        euro_prices[name] = prices[ticker] / prices["EURUSD=X"]
+for _, bet in bets.iterrows():
+    if bet["currency"] != "EUR":
+        euro_prices[bet["name"]] = prices[bet["ticker"]] / prices["EUR" + bet["currency"] + "=X"]
     else:
-        euro_prices[name] = prices[ticker]
+        euro_prices[bet["name"]] = prices[bet["ticker"]]
 
 # Yearly return and risk of each asset
 returns = euro_prices.pct_change()
@@ -53,8 +49,12 @@ print("EACH ASSET (in euros, last 3 years or since launch)")
 table = pd.DataFrame({"past_return": yearly_return, "risk": yearly_risk, "return_used": expected})
 print((table * 100).round(1).to_string())
 
-# Monte Carlo: try many random mixes, each asset between 2% and 5%, all together 30%
-names = list(assets.keys())
+# How much the bets move together (1 = always together, 0 = no link). Low numbers are what diversifies
+print()
+print("CORRELATION BETWEEN THE BETS")
+print(returns.corr().round(2).to_string())
+
+# Monte Carlo: try many random mixes, each asset between the minimum and the maximum weight
 results = []
 for i in range(simulations):
     extra = np.random.dirichlet(np.ones(len(names))) * (bets_total - min_weight * len(names))
@@ -70,20 +70,20 @@ for i in range(simulations):
 best = max(results, key=lambda r: r[3])
 calm = min(results, key=lambda r: r[2])
 
-# Simple rule to compare: more weight to the calmer assets (inverse risk), kept between 2% and 5%
+# Simple rule to compare: more weight to the calmer assets (inverse risk), kept between the limits
 inverse = (1 / yearly_risk) / (1 / yearly_risk).sum() * bets_total
 inverse = inverse.clip(min_weight, max_weight)
 inverse = inverse / inverse.sum() * bets_total
 
-# Show the three options
+# Show the three options next to my targets
 options = pd.DataFrame({
+    "my_target_%": bets["target"].values,
     "best_sharpe_%": best[0] * 100,
     "calmest_%": calm[0] * 100,
     "inverse_risk_%": inverse.values * 100,
 }, index=names)
-options["best_eur_month"] = best[0] * monthly_money
 print()
-print("WEIGHTS IN % OF THE WHOLE PORTFOLIO (bets = 30%)")
+print("WEIGHTS IN % OF THE WHOLE PORTFOLIO (bets =", round(bets_total * 100), "%)")
 print(options.round(1).to_string())
 print()
 print("Best Sharpe mix: return", round(best[1] * 100, 1), "% a year, risk", round(best[2] * 100, 1), "%, Sharpe", round(best[3], 2))
