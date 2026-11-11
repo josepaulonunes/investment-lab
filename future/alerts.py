@@ -96,7 +96,7 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     match = screen[screen["name"] == row["name"]]
     name = row["name"]
     if len(match) == 0:
-        alerts.append(["REVIEW", name, "Not in the screener. Add it to data/future/universe.csv with the same name"])
+        alerts.append(["REVIEW", name, "Not in the screener. Yahoo may have failed for it this week, or add it to data/future/universe.csv with the same name"])
         continue
     company = match.iloc[0]
     if company["quality"] < 4:
