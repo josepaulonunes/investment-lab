@@ -90,6 +90,16 @@ for _, company in universe.iterrows():
     margin = info.get("operatingMargins")
     roe = info.get("returnOnEquity")
 
+    # Price compared with next year's expected profits, and last year's profit (a second opinion next to the DCF)
+    forward_pe = info.get("forwardPE")
+    net_income = info.get("netIncomeToCommon")
+    profitable = net_income is not None and net_income > 0
+
+    # The DCF uses free cash flow. A company that is investing a lot has free cash flow far below its profits, and the DCF price makes no sense for it
+    dcf_ok = fcf is not None and fcf > 0
+    if dcf_ok and profitable and fcf < 0.5 * net_income:
+        dcf_ok = False
+
     # Dilution: yearly change in the number of shares over the last 3 years (new shares make each one worth less)
     dilution = None
     balance = stock.balance_sheet
@@ -132,6 +142,11 @@ for _, company in universe.iterrows():
         buy_below = dcf_value(fcf, growth_used, discount, True) / shares
         fair_high = dcf_value(fcf, growth_used, discount, False) / shares
 
+    # Forward P/E divided by growth in % (same growth cap as the DCF). Lower is cheaper. Only to compare companies with each other
+    pe_vs_growth = None
+    if forward_pe and growth is not None and growth > 0:
+        pe_vs_growth = forward_pe / (min(growth, max_growth) * 100)
+
     # Edge: how hard to replace and how central to the future (out of 4)
     edge = company["moat"] + company["future"]
 
@@ -143,11 +158,11 @@ for _, company in universe.iterrows():
         long_term = long_term + 1
 
     # Verdict
-    if fcf is None or fcf <= 0:
+    if not dcf_ok and not profitable:
         verdict = "SPECULATIVE"
     elif quality < 4 or company["moat"] < 2 or edge < 3:
         verdict = "AVOID"
-    elif not same_currency:
+    elif not same_currency or not dcf_ok:
         verdict = "CHECK"
     elif buy_below is not None and price <= buy_below:
         verdict = "BUY"
@@ -157,13 +172,16 @@ for _, company in universe.iterrows():
         verdict = "WATCH"
 
     # Warnings
-    warning = ""
+    notes = []
     if not same_currency:
-        warning = "Reports in another currency: check by hand"
+        notes.append("Reports in another currency: check by hand")
+    if profitable and not dcf_ok:
+        notes.append("Free cash flow far below profits: ignore the DCF, look at forward P/E")
     if dilution is not None and dilution > 0.02:
-        warning = "More than 2% new shares a year"
+        notes.append("More than 2% new shares a year")
     if growth is not None and growth > 0.4:
-        warning = "Growth over 40%: cycle peak?"
+        notes.append("Growth over 40%: cycle peak?")
+    warning = ". ".join(notes)
 
     rows.append({
         "name": company["name"],
@@ -183,6 +201,8 @@ for _, company in universe.iterrows():
         "discount": discount,
         "buy_below": buy_below,
         "fair_high": fair_high,
+        "forward_pe": forward_pe,
+        "pe_vs_growth": pe_vs_growth,
         "quality": quality,
         "edge": edge,
         "long_term": long_term,
