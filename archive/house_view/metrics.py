@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load prices and compute monthly returns
-prices = pd.read_csv("data/house_view/prices_eur.csv", index_col=0, parse_dates=True)
+prices = pd.read_csv("archive/data/house_view/prices_eur.csv", index_col=0, parse_dates=True)
 returns = prices.pct_change()
 
 # Metrics for each region
@@ -33,7 +33,7 @@ for region in prices.columns:
 
 # Save the table
 table = pd.DataFrame(results).T
-table.to_csv("data/house_view/metrics.csv")
+table.to_csv("archive/data/house_view/metrics.csv")
 print(table)
 
 # Chart: momentum by region

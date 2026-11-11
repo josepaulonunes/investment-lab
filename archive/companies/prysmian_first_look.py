@@ -43,5 +43,5 @@ print(pd.Series(snapshot).round(2))
 income = company.income_stmt
 rows = ["Total Revenue", "EBITDA", "Net Income"]
 income = income.loc[income.index.intersection(rows)] / 1e6
-income.to_csv("data/companies/prysmian/income_first_look.csv")
+income.to_csv("archive/data/companies/prysmian_income_first_look.csv")
 print(income.round(0))

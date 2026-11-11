@@ -35,9 +35,17 @@ I never sell just because the price fell.
 | portfolio/ | Dashboard (Streamlit), positions vs targets, optimizer, public data |
 | future/ | Screener and weekly alerts |
 | companies/ | Valuation model for any company: ratios, DCF, reverse DCF, sensitivity, peers |
-| house_view/ | Scores regions by valuation and momentum |
 | data/ | Inputs and outputs |
 | notes/ | My decisions, written before deciding |
+| archive/ | Old versions of the project, kept as a record. Not used anymore |
+
+## Old versions (archive/)
+These are tools I used before the current plan. I keep them to see how my thinking changed, but nothing in the plan or the weekly check uses them:
+- archive/companies/screener.py: my first screener, with a fixed 9% discount rate and its own watchlist. Replaced by future/future_screen.py
+- archive/house_view/: scored regions by valuation and momentum. I used it in October 2026 when I was choosing country ETFs. I dropped country ETFs on 29 Oct 2026 (notes/2026-10_plan_change.md)
+- archive/companies/prysmian_first_look.py: a first quick look at Prysmian before the full valuation model
+
+Their data is in archive/data/. They still run from the main folder if I want to look again.
 
 ## How to run
 My real purchases are private. The live app shows my real portfolio scaled so that all the money I put in adds up to 100: you see weights and returns, not amounts.
