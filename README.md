@@ -25,7 +25,7 @@ Every Monday GitHub runs the screener and future/alerts.py. If something needs m
 - BUY or BUY EXTRA: a stock is below its careful fair price
 - EXPENSIVE: a stock I own is above its optimistic fair price. I keep buying and look at it in January
 - STOP BUYING: a bet is above 5% of the portfolio, the AI chip stocks together are above 12%, or bets are above 30%
-- REVIEW: the business got worse (quality, revenue, debt, new shares)
+- REVIEW: the business got worse (quality, revenue, debt, new shares), a bet is below 2% of the portfolio, or I own more than 7 stocks
 
 I never sell just because the price fell.
 
