@@ -67,7 +67,7 @@ for _, row in held.iterrows():
 # Only products still in the plan (target above 0): one I stopped buying but still hold is fine
 for _, row in held.iterrows():
     if limits_on and row["block"] in ["themes", "stocks"] and row["target"] > 0 and row["quantity"] > 0 and row["weight"] < min_position:
-        alerts.append(["REVIEW", row["name"], f"It is {row['weight']:.1f}% of the portfolio, below {min_position:.0f}%. Raise its plan or replace it in January"])
+        alerts.append(["REVIEW", row["name"], f"It is {row['weight']:.1f}% of the portfolio, below {min_position:.0f}%. Raise its plan or replace it in the next review"])
 
 # Rule: all bets together stay at or below the limit
 bets = held[held["block"].isin(["themes", "stocks"])]["weight"].sum()
@@ -83,7 +83,7 @@ for group, weight in groups.items():
 # Rule: no more stocks than I can follow properly (rule 8), counting only stocks still in the plan (target above 0)
 stocks_held = held[(held["block"] == "stocks") & (held["target"] > 0) & (held["quantity"] > 0)]
 if len(stocks_held) > max_stocks:
-    alerts.append(["REVIEW", "All stocks", f"I own {len(stocks_held)} stocks, above {max_stocks:.0f}. Pick which ones to drop in January"])
+    alerts.append(["REVIEW", "All stocks", f"I own {len(stocks_held)} stocks, above {max_stocks:.0f}. Pick which ones to drop in the next review"])
 
 # Latest screener results (run future/future_screen.py first)
 screen = pd.read_csv("data/future/future_screen.csv")
@@ -91,7 +91,7 @@ if "forward_pe" not in screen.columns:
     print("The screen is old: run future/future_screen.py first")
     exit()
 
-# Rule: check the business and the price of each stock I own
+# Rule: check the business of each stock I own
 for _, row in held[held["block"] == "stocks"].iterrows():
     match = screen[screen["name"] == row["name"]]
     name = row["name"]
@@ -100,7 +100,7 @@ for _, row in held[held["block"] == "stocks"].iterrows():
         continue
     company = match.iloc[0]
     if company["quality"] < 4:
-        alerts.append(["REVIEW", name, f"Quality fell to {company['quality']} out of 5. Check if the business is getting worse"])
+        alerts.append(["REVIEW", name, f"Quality fell to {company['quality']} out of 5. Check its alarms in IPS.md and sell or replace only if they are confirmed"])
     if pd.notna(company["growth_3y"]) and company["growth_3y"] < 0:
         alerts.append(["REVIEW", name, "Revenue is lower than 3 years ago"])
     if pd.notna(company["net_debt_to_ebitda"]) and company["net_debt_to_ebitda"] > 4:
@@ -108,24 +108,39 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     if pd.notna(company["dilution"]) and company["dilution"] > 0.05:
         alerts.append(["REVIEW", name, f"It adds {company['dilution'] * 100:.0f}% new shares a year, above 5%"])
 
-    # Price alerts only when the DCF can be trusted for this company (verdict CHECK means it cannot)
-    if company["verdict"] != "CHECK" and pd.notna(company["buy_below"]) and company["buy_below"] > 0:
-        if company["price"] > company["fair_high"]:
-            alerts.append(["EXPENSIVE", name, f"Price is above even the optimistic fair price ({company['fair_high']:.0f}): it assumes today's growth for more than 10 years. Keep the plan and review it in January"])
-        # No extra buys if its group is already above the group limit (rule 15)
-        group_full = limits_on and pd.notna(row["group"]) and groups[row["group"]] > max_group
-        if company["price"] < company["buy_below"] and row["weight"] < max_position and not group_full:
-            alerts.append(["BUY EXTRA", name, f"Price is {(1 - company['price'] / company['buy_below']) * 100:.0f}% below the careful fair price ({company['buy_below']:.0f}). A one-off buy from my personal budget makes sense"])
+# Fair prices from my own DCF (run future/fair_price.py first)
+fair = pd.read_csv("data/future/fair_prices.csv")
+keeps = []
 
-# Rule: a watchlist company reaches its fair price
-watchlist = pd.read_csv("data/future/watchlist.csv")
-for _, row in watchlist.iterrows():
-    match = screen[screen["ticker"] == row["ticker"]]
-    if len(match) == 0:
-        continue
-    company = match.iloc[0]
-    if company["verdict"] == "BUY":
-        alerts.append(["BUY", row["name"], f"Now at {company['price']:.0f}, below its careful fair price of {company['buy_below']:.0f}. Candidate for the January review"])
+# Rule: every stock in the plan gets one line: buy extra, keep buying or pause
+for _, row in fair[fair["list"] == "portfolio"].iterrows():
+    name = row["name"]
+    product = products[products["name"] == name].iloc[0]
+    weight = 0
+    if name in list(held["name"]):
+        weight = held[held["name"] == name]["weight"].iloc[0]
+
+    # No extra buys if the stock or its group is already above its limit
+    full = limits_on and weight > max_position
+    if limits_on and pd.notna(product["group"]) and product["group"] in groups and groups[product["group"]] > max_group:
+        full = True
+
+    if row["status"] == "BUY EXTRA" and not full:
+        alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}). Expected return {row['return']:.1f}% a year. A one-off buy from my personal budget makes sense if none of its alarms is on"])
+    elif row["status"] == "PAUSE":
+        alerts.append(["PAUSE", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"])
+    elif row["status"] == "NO PRICE":
+        alerts.append(["REVIEW", name, "No price from Yahoo this week. Check the ticker in data/portfolio/fair_inputs.csv"])
+    else:
+        keeps.append(["KEEP", name, f"Price is {row['gap']:+.0f}% vs my fair price ({row['fair']:.0f} {row['currency']}). The monthly plan keeps going. Sell only if: {row['alarm']}"])
+
+# Rule: a watchlist company reaches my entry price
+for _, row in fair[fair["list"] == "watchlist"].iterrows():
+    if row["status"] == "BUY":
+        alerts.append(["BUY", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my entry price of {row['entry']:.0f}. Write the full analysis before buying"])
+
+# The KEEP lines go last: they are not a call to action
+alerts = alerts + keeps
 
 # Save the alerts for the dashboard and for GitHub
 today = str(date.today())
