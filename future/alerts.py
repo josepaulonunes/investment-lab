@@ -163,9 +163,18 @@ for _, row in fair[fair["list"] == "watchlist"].iterrows():
     if row["status"] == "BUY":
         alerts.append(["BUY", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my entry price of {row['entry']:.0f}. Write the full analysis before buying"])
 
+# Rule: one of my top priorities reaches its fair price (start a monthly plan) or falls 15% below it (buy big)
+for _, row in fair[fair["list"] == "priority"].iterrows():
+    if row["status"] == "BUY BIG":
+        alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 15% or more below my fair price of {row['fair']:.0f}. Check its alarms and the independent checks, then buy from the extra money (up to 200 € a month) and start a monthly plan"])
+    elif row["status"] == "START PLAN":
+        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my fair price of {row['fair']:.0f}. Time to start a monthly plan: it takes the place of my weakest stock so I stay at 10 stocks and inside the AI limit"])
+    elif row["price"] <= row["fair"] * 1.05:
+        alerts.append(["PRIORITY CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my fair price of {row['fair']:.0f}. Get ready to start a monthly plan"])
+
 # Rule: close to a buying price, so I am ready (within 5%)
 for _, row in fair.iterrows():
-    if row["status"] in ["KEEP BUYING", "WAIT"] and pd.notna(row["entry"]) and row["entry"] < row["price"] <= row["entry"] * 1.05:
+    if row["list"] != "priority" and row["status"] in ["KEEP BUYING", "WAIT"] and pd.notna(row["entry"]) and row["entry"] < row["price"] <= row["entry"] * 1.05:
         alerts.append(["CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my buying price of {row['entry']:.0f}. Check that the limit order or the price alert is ready"])
 
 # Rule: the analysts now expect a very different profit, so my fair price may be out of date

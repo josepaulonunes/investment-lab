@@ -62,6 +62,15 @@ for _, company in inputs.iterrows():
         if price <= entry:
             status = "BUY"
 
+    # Top priorities, the companies I want to own one day: start a monthly plan at the fair price, buy big 15% below it
+    if company["list"] == "priority":
+        entry = fair * 0.85
+        status = "WAIT"
+        if price <= fair:
+            status = "START PLAN"
+        if price <= entry:
+            status = "BUY BIG"
+
     # No price from Yahoo this week
     if pd.isna(price):
         status = "NO PRICE"

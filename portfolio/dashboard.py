@@ -43,14 +43,17 @@ palette = ["#0f766e", "#1e3a5f", "#2563eb", "#7c3aed", "#db2777", "#d97706", "#c
 status_colours = {
     "BUY EXTRA": "#15803d", "BUY": "#15803d", "KEEP BUYING": "#2563eb", "WAIT": "#64748b",
     "PAUSE": "#d97706", "SELL PART": "#b91c1c", "NO PRICE": "#6b7280",
+    "BUY BIG": "#15803d", "START PLAN": "#2563eb",
 }
 status_dots = {
     "BUY EXTRA": "🟢", "BUY": "🟢", "KEEP BUYING": "🔵", "WAIT": "⚪",
     "PAUSE": "🟠", "SELL PART": "🔴", "NO PRICE": "⚪",
+    "BUY BIG": "🟢", "START PLAN": "🔵",
 }
 alert_colours = {
     "OK": "#15803d", "BUY": "#15803d", "BUY EXTRA": "#15803d", "CLOSE": "#15803d", "KEEP": "#2563eb",
     "STOP BUYING": "#d97706", "PAUSE": "#d97706", "RESULTS": "#d97706", "REVIEW ASSUMPTION": "#d97706",
+    "PRIORITY BUY BIG": "#15803d", "PRIORITY START PLAN": "#15803d", "PRIORITY CLOSE": "#2563eb",
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
@@ -134,8 +137,9 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 st.caption("Prices from Yahoo Finance. Personal learning project, not investment advice.")
 
-tab_portfolio, tab_plan, tab_fair, tab_lab, tab_alerts = st.tabs([
+tab_portfolio, tab_priority, tab_plan, tab_fair, tab_lab, tab_alerts = st.tabs([
     ":material/pie_chart: Portfolio",
+    ":material/star: Top priorities",
     ":material/calendar_month: Monthly plan",
     ":material/sell: Fair prices",
     ":material/calculate: DCF lab",
@@ -319,10 +323,12 @@ with tab_fair:
     st.caption("Below 0 the stock is cheaper than my fair price. Green zone: buy extra (15% or more below). Up to +10%: the plan keeps going. Above +10%: pause the plan. Above +50%: sell part.")
 
     # Filter: my stocks, the watchlist or both
-    show = st.radio("Show", ["My stocks", "Watchlist", "Both"], horizontal=True)
+    show = st.radio("Show", ["My stocks", "Top priorities", "Watchlist", "All"], horizontal=True)
     table = fair.copy()
     if show == "My stocks":
         table = table[table["list"] == "portfolio"]
+    if show == "Top priorities":
+        table = table[table["list"] == "priority"]
     if show == "Watchlist":
         table = table[table["list"] == "watchlist"]
     table = table.sort_values("gap", ascending=False)
@@ -378,6 +384,51 @@ with tab_fair:
             },
         )
     st.caption("Prices from the last daily check (every weekday after the US close). If analysts are more than 15% away from my profit number, the check asks me to review it.")
+
+# ---------------- Top priorities ----------------
+with tab_priority:
+    st.subheader(":material/star: The companies I want to own one day")
+    st.caption("I love what these companies do, but I only buy at a fair price. At or below my fair price I start a monthly plan. 15% or more below it I also buy big with the extra money (up to 200 € a month). Prices in euros, updated after every US close.")
+
+    # My top priorities, the closest to a buy first
+    top = fair[fair["list"] == "priority"].sort_values("gap")
+
+    # How many are in each state
+    counts = top["status"].value_counts()
+    labels = ""
+    for status in counts.index:
+        labels = labels + pill(f"{counts[status]} {status}", status_colours.get(status, colours["grey"]))
+    st.markdown(labels, unsafe_allow_html=True)
+
+    # One card per company, two cards in a row
+    columns = st.columns(2)
+    number = 0
+    for _, row in top.iterrows():
+        to_euro = 1
+        if row["currency"] == "USD":
+            to_euro = 1 / rate
+        today = row["price"] * to_euro
+        start_plan = row["fair"] * to_euro
+        buy_big = row["entry"] * to_euro
+        fall_needed = (start_plan / today - 1) * 100
+
+        with columns[number % 2]:
+            with st.container(border=True, key=f"card_priority_{number}"):
+                st.markdown(f"**{row['name']}** " + pill(row["status"], status_colours.get(row["status"], colours["grey"])), unsafe_allow_html=True)
+                left, middle, right = st.columns(3)
+                left.metric("Today", f"{today:,.0f} €")
+                middle.metric("Start plan at", f"{start_plan:,.0f} €")
+                right.metric("Buy big at", f"{buy_big:,.0f} €")
+
+                # How close the price is to the start of the plan (full bar = time to start)
+                closeness = min(1.0, max(0.0, start_plan / today))
+                if fall_needed < 0:
+                    st.progress(closeness, text=f"Needs to fall {-fall_needed:.0f}% to start the plan")
+                else:
+                    st.progress(closeness, text="At or below my fair price: start the plan")
+        number = number + 1
+
+    st.caption("When one of them reaches its start price, its plan takes the place of my weakest stock, so I stay at 10 stocks and inside the 30% AI limit. Next to study, two or three at each review: health care, consumer staples (McDonald's and food companies), defense and space.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:
@@ -488,7 +539,7 @@ with tab_alerts:
         # One box per alert: green is good news, yellow is something to do, red is a warning
         for _, alert in alerts.iterrows():
             text = f"**{alert['type']}** · {alert['product']}: {alert['message']}"
-            if alert["type"] in ["OK", "BUY", "BUY EXTRA", "CLOSE"]:
+            if alert["type"] in ["OK", "BUY", "BUY EXTRA", "CLOSE", "PRIORITY BUY BIG", "PRIORITY START PLAN", "PRIORITY CLOSE"]:
                 st.success(text, icon=":material/check_circle:")
             elif alert["type"] == "KEEP":
                 with st.expander(f"KEEP · {alert['product']}", icon=":material/thumb_up:"):
@@ -519,6 +570,8 @@ with tab_alerts:
             to_euro = 1 / rate
         if row["list"] == "portfolio":
             levels.append([row["name"], "My stock", row["fair"] * 0.85 * to_euro, row["fair"] * 1.10 * to_euro, row["fair"] * 1.5 * to_euro, row["price"] * to_euro])
+        elif row["list"] == "priority":
+            levels.append([row["name"], "Top priority", row["fair"] * to_euro, None, None, row["price"] * to_euro])
         else:
             levels.append([row["name"], "Watchlist", row["entry"] * to_euro, None, None, row["price"] * to_euro])
     levels = pd.DataFrame(levels, columns=["name", "list", "cheap", "pause", "sell_part", "today"])

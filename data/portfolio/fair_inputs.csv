@@ -12,11 +12,11 @@ Vertiv,VRT,USD,portfolio,8.8,0.9,0.18,0.10,,yes,Sales growth below 15% for two q
 BNY,BNY,USD,watchlist,10.6,0.9,0.07,0.10,143,yes,CET1 below 10%; return on tangible equity below 20%; losing big custody clients
 Intuitive Surgical,ISRG,USD,portfolio,12.4,0.85,0.16,0.09,,yes,Losing the lead in robotic surgery; procedures growing less than 10%
 S&P Global,SPGI,USD,watchlist,19.4,1.0,0.10,0.09,425,yes,
-Alphabet,GOOGL,USD,watchlist,15.4,0.6,0.14,0.09,265,yes,
+Alphabet,GOOGL,USD,priority,15.4,0.6,0.14,0.09,,yes,Cloud growth below 20%; search share falling; capex growing much faster than cash flow
 Safran,SAF.PA,EUR,portfolio,12.4,1.0,0.11,0.09,,yes,LEAP deliveries or spare parts falling for two quarters; Airbus or Boeing cutting production rates; operating margin below 15%; losing the LEAP successor engine to a rival
-Microsoft,MSFT,USD,watchlist,22.5,0.7,0.14,0.09,450,yes,
-Amazon,AMZN,USD,watchlist,11.5,0.5,0.18,0.09,220,yes,
-Meta,META,USD,watchlist,34,0.55,0.11,0.09,480,yes,
+Microsoft,MSFT,USD,priority,24.2,0.7,0.14,0.09,,yes,Azure growth below 25%; capex growing much faster than cash flow; Copilot not selling
+Amazon,AMZN,USD,priority,11.5,0.5,0.18,0.09,,yes,AWS growth below 15%; free cash flow negative for a year; retail margin falling
+Meta,META,USD,priority,34,0.55,0.11,0.09,,yes,Users falling; ad prices falling two quarters; AI spending with no return
 Marvell,MRVL,USD,watchlist,7,0.6,0.20,0.10,149,yes,
 Corning,GLW,USD,watchlist,4.5,0.8,0.16,0.10,103,yes,
 Qualcomm,QCOM,USD,watchlist,9.3,0.9,0.07,0.10,148,yes,
@@ -27,3 +27,7 @@ Rheinmetall,RHM.DE,EUR,watchlist,40,0.6,0.20,0.10,724,yes,
 Quanta Services,PWR,USD,watchlist,21.4,0.85,0.15,0.10,420,yes,
 Eaton,ETN,USD,watchlist,15.4,0.9,0.12,0.10,273,yes,
 Prysmian,PRY.MI,EUR,watchlist,5.5,0.8,0.10,0.10,78,yes,
+Apple,AAPL,USD,priority,9.8,1.0,0.08,0.09,,yes,iPhone sales falling for a year; services growth below 10%; losing the App Store fee fight
+Micron,MU,USD,priority,70,0.6,0.08,0.11,,no,Memory prices falling two quarters; new supply from Samsung and SK Hynix; capex far above cash flow
+IBM,IBM,USD,priority,13.3,1.1,0.05,0.09,,yes,Software growth below 5%; free cash flow falling; dividend not covered
+SpaceX,SPCX,USD,priority,1.3,0.8,0.30,0.11,,no,Starlink subscribers falling; Starship delays of years; big share sales after the lock-up
