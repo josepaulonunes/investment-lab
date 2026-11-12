@@ -8,8 +8,8 @@ import warnings
 # Hide library warnings
 warnings.filterwarnings("ignore")
 
-# How much I invest every month (change it here if my plan changes)
-monthly = 500
+# How much I invested this month (asked each time, so the amount never goes to GitHub)
+monthly = float(input("How much did the plans invest this month (€)? "))
 
 # Month to add: this month, or the one I write after the script name
 # Example: python portfolio/add_month.py 2026-12

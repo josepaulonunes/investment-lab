@@ -65,9 +65,9 @@ def load_rate():
         return 1.125
 
 
-# Sidebar: how much I invest and the exchange rate for the Trade Republic levels
+# Sidebar: an example amount to split (my real amount stays private) and the exchange rate for the Trade Republic levels
 st.sidebar.title("📈 My portfolio")
-monthly = st.sidebar.number_input("Monthly investment (€)", min_value=50, max_value=5000, value=500, step=50)
+monthly = st.sidebar.number_input("Try an amount (€)", min_value=10, max_value=5000, value=100, step=10)
 rate = st.sidebar.number_input("Dollars per euro", min_value=0.80, max_value=1.60, value=round(load_rate(), 3), step=0.005, format="%.3f")
 st.sidebar.caption("Trade Republic shows US stocks in euros, so every price level in dollars is divided by this rate.")
 st.sidebar.divider()
@@ -201,7 +201,8 @@ with tab_portfolio:
 
 # ---------------- Monthly plan ----------------
 with tab_plan:
-    st.subheader(f"Where my {monthly:,.0f} € go every month")
+    st.subheader("How I split my money every month")
+    st.caption(f"The euros show how {monthly:,.0f} € would be split. Change the amount on the left.")
 
     # Euros per product for the amount in the sidebar
     split = plan[["name", "block", "sector", "target", "ai"]].copy()
@@ -223,7 +224,7 @@ with tab_plan:
                 "name": "Product",
                 "sector": "Sector",
                 "target": st.column_config.ProgressColumn("Weight", format="%.0f%%", min_value=0, max_value=100),
-                "euros": st.column_config.NumberColumn("Per month", format="%.2f €"),
+                "euros": st.column_config.NumberColumn(f"Out of {monthly:,.0f} €", format="%.2f €"),
             },
         )
 
