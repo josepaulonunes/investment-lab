@@ -168,7 +168,7 @@ for _, row in fair[fair["list"] == "priority"].iterrows():
     if row["status"] == "BUY BIG":
         alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 15% or more below my fair price of {row['fair']:.0f}. Check its alarms and the independent checks, then buy from the extra money (up to 200 € a month) and start a monthly plan"])
     elif row["status"] == "START PLAN":
-        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my fair price of {row['fair']:.0f}. Time to start a monthly plan: it takes the place of my weakest stock so I stay at 10 stocks and inside the AI limit"])
+        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my fair price of {row['fair']:.0f}. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"])
     elif row["price"] <= row["fair"] * 1.05:
         alerts.append(["PRIORITY CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my fair price of {row['fair']:.0f}. Get ready to start a monthly plan"])
 

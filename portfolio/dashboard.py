@@ -428,7 +428,7 @@ with tab_priority:
                     st.progress(closeness, text="At or below my fair price: start the plan")
         number = number + 1
 
-    st.caption("When one of them reaches its start price, its plan takes the place of my weakest stock, so I stay at 10 stocks and inside the 30% AI limit. Next to study, two or three at each review: health care, consumer staples (McDonald's and food companies), defense and space.")
+    st.caption("When one of them reaches its start price, I start its plan and VWCE goes down to make room, never below 50%. No other stock has to leave. Next to study, two or three at each review: health care, consumer staples (McDonald's and food companies), defense and space.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:

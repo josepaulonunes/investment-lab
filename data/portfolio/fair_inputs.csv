@@ -31,3 +31,10 @@ Apple,AAPL,USD,priority,9.8,1.0,0.08,0.09,,yes,iPhone sales falling for a year; 
 Micron,MU,USD,priority,70,0.6,0.08,0.11,,no,Memory prices falling two quarters; new supply from Samsung and SK Hynix; capex far above cash flow
 IBM,IBM,USD,priority,13.3,1.1,0.05,0.09,,yes,Software growth below 5%; free cash flow falling; dividend not covered
 SpaceX,SPCX,USD,priority,1.3,0.8,0.30,0.11,,no,Starlink subscribers falling; Starship delays of years; big share sales after the lock-up
+Netflix,NFLX,USD,priority,3.5,1.0,0.13,0.09,,yes,Subscribers falling; revenue growth below 8%; content spending growing faster than revenue
+Costco,COST,USD,priority,23,1.0,0.10,0.09,,yes,Renewal rate below 90%; comparable sales below 4% for a year; membership fee growth stalling
+Berkshire Hathaway,BRK-B,USD,priority,21,1.0,0.06,0.09,,no,Operating earnings falling two years; big loss at the insurance business; poor use of its cash after Buffett
+Ferrari,RACE.MI,EUR,priority,10.8,0.9,0.10,0.09,,yes,Order book shorter than a year; deliveries falling; margin below 35% EBITDA
+Hermès,RMS.PA,EUR,priority,47,0.9,0.08,0.09,,no,Leather goods growth below 5%; operating margin below 38%; discounts or a weaker brand
+Visa,V,USD,priority,14.9,1.0,0.11,0.09,,yes,A law that cuts card fees; volume growing less than 5% for a year; client incentives eating revenue growth
+Tesla,TSLA,USD,priority,2.34,0.6,0.25,0.11,,yes,Car deliveries falling two years; robotaxi and Optimus with no revenue; cash burn
