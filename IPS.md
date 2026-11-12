@@ -9,20 +9,22 @@ My rules, written before investing. I change them in the quarterly review, or wh
 ## Targets
 | Block | Product | ISIN | Target |
 |---|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 73% |
+| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 60% |
 | Stock | Nvidia | US67066G1040 | 5% |
+| Stock | TSMC (ADR) | US8740391003 | 5% |
+| Stock | ASML | NL0010273215 | 5% |
+| Stock | Broadcom | US11135F1012 | 4% |
+| Stock | ServiceNow | US81762P1021 | 4% |
 | Stock | Mastercard | US57636Q1040 | 5% |
-| Stock | TSMC (ADR) | US8740391003 | 4% |
-| Stock | Eli Lilly | US5324571083 | 4% |
-| Stock | ASML | NL0010273215 | 3% |
-| Stock | GE Vernova | US36828A1016 | 3% |
-| Stock | Broadcom | US11135F1012 | 3% |
+| Stock | Eli Lilly | US5324571083 | 5% |
+| Stock | GE Vernova | US36828A1016 | 4% |
+| Stock | Vistra | US92840M1027 | 3% |
 
-Core 73%, stocks 27%. I keep the Intuitive Surgical shares and the gold I already bought, with no new money. The same list is in data/portfolio/products.csv, the limits are in data/portfolio/rules.csv and the assumptions behind each fair price are in data/portfolio/fair_inputs.csv.
+Core 60%, stocks 40% (changed on 12 Nov 2026, see notes/2026-11-12_sixty_forty.md). I keep the Intuitive Surgical shares and the gold I already bought, with no new money. The same list is in data/portfolio/products.csv, the limits are in data/portfolio/rules.csv and the assumptions behind each fair price are in data/portfolio/fair_inputs.csv.
 
 ## Why this mix
-- VWCE is the default home for my money: thousands of companies from about 50 countries. Its weight is not fixed. It goes down when a good company reaches a good price and up when one gets expensive. It never goes below 60% before the 2030 test
-- Stocks only where the winner is clear and the price is fair or better. Nvidia makes most AI chips. TSMC makes the chips for everyone. ASML is the only maker of the machines TSMC needs. Broadcom makes custom AI chips. Mastercard is half of a duopoly in card payments. Eli Lilly leads obesity and diabetes drugs. GE Vernova is one of three makers of big gas turbines and sells grid equipment.
+- VWCE is the default home for my money: thousands of companies from about 50 countries. Its weight is not fixed. It goes down when a good company reaches a good price and up when one gets expensive. It is at its floor of 60% and never goes below it before the 2030 test
+- Stocks only where the winner is clear and the price is fair or better. Nvidia makes most AI chips. TSMC makes the chips for everyone. ASML is the only maker of the machines TSMC needs. Broadcom makes custom AI chips. ServiceNow runs the workflows of most big companies and is adding AI agents on top. Mastercard is half of a duopoly in card payments. Eli Lilly leads obesity and diabetes drugs. GE Vernova is one of three makers of big gas turbines and sells grid equipment. Vistra owns about 50 GW of power plants, including nuclear, and sells long contracts to data centers.
 - No small cap ETF: the extra return of small companies is weak unless you filter for quality (Asness and others, 2018), it costs more, and it is the opposite of what I look for in stocks
 - No theme ETFs: specialised ETFs lost about 30% against the market in their first 5 years, mostly because the theme was already expensive when the ETF came out (Ben-David and others, 2023). If I like a theme I buy its best company at a fair price, or I wait
 - VWCE and not the S&P 500 or the Nasdaq 100: my stocks are already mostly American tech
@@ -38,8 +40,8 @@ Core 73%, stocks 27%. I keep the Intuitive Surgical shares and the gold I alread
 7. Sell in two cases, never on the day of the bad news:
    - The business breaks: one of its alarms is confirmed (they are written in data/portfolio/fair_inputs.csv), or the screener shows two or more warning signs at once (quality below 4 out of 5, revenue falling, revenue lower than 3 years ago, debt above 4 times profits, more than 5% new shares a year). One sign alone means I look closer. Two mean I sell if the next results confirm them.
    - The price gets absurd: 50% or more above my fair price. Then the expected return is below what VWCE gives, so I sell up to half and move it to VWCE, if the gain after the 28% tax is worth it. I keep the other half, because a great business can stay expensive for years.
-8. Each stock stays between 2% and 5% of the portfolio. Above 5% I stop buying it. Maximum 8 stocks with a plan.
-9. No sector above 20% of the portfolio, counting only the stocks I pick (VWCE does not count). The sector of each stock is in data/portfolio/products.csv. When a sector is full, the next good company has to come from another sector. That keeps me looking at the whole economy, not only at what is in the news.
+8. Each stock stays between 2% and 5% of the portfolio. Above 5% I stop buying it. Maximum 10 stocks with a plan.
+9. No sector above 20% of the portfolio, counting only the stocks I pick (VWCE does not count). The sector of each stock is in data/portfolio/products.csv. When a sector is full, the next good company has to come from another sector. That keeps me looking at the whole economy, not only at what is in the news. On top of that, everything that depends on AI (chips, ServiceNow, GE Vernova and Vistra, the ai column in products.csv) stays at or below 30%.
 10. All stocks together stay at or below 40%.
 11. Rules 8, 9 and 10 start after 6 months of buying (around April 2027): the one-off buy in Nov 2026 makes the first months look off.
 12. The weekly check (GitHub, every Monday) works out the fair prices and the alerts. I read the alerts, I don't react to news.

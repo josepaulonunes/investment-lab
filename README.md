@@ -5,10 +5,10 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 ## The plan
 | Block | What | Weight |
 |---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 73% |
-| Stocks | Nvidia 5%, Mastercard 5%, TSMC 4%, Eli Lilly 4%, ASML 3%, GE Vernova 3%, Broadcom 3% | 27% |
+| Core | Vanguard FTSE All-World (VWCE) | 60% |
+| Stocks | Nvidia 5%, TSMC 5%, ASML 5%, Broadcom 4%, ServiceNow 4%, Mastercard 5%, Eli Lilly 5%, GE Vernova 4%, Vistra 3% | 40% |
 
-73% follows the whole market. 27% is in 7 companies that clearly beat their rivals, bought only at a fair price or below. The weight of VWCE is not fixed: when a stock gets expensive its monthly plan goes to VWCE, and when a good company on the watchlist reaches a good price it comes in. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
+60% follows the whole market. 40% is in 9 companies from 5 sectors that clearly beat their rivals, bought only at a fair price or below. VWCE never goes below 60%: when a stock gets expensive its monthly plan goes to VWCE, and a watchlist company only comes in when another one leaves. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
 
 I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_plan_change.md).
 
@@ -27,12 +27,20 @@ Every Monday GitHub runs the screener, the fair prices and future/alerts.py. If 
 - SELL PART: 50% or more above fair. The price already counts on years of perfect growth, so I sell up to half and move it to VWCE
 - REVIEW: one warning sign in the business (quality, revenue, debt, new shares). I look closer
 - SELL: two or more warning signs at once. If the next results confirm them, I sell
-- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), or all stocks are above 40%
+- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), everything linked to AI is above 30%, or all stocks are above 40%
 
 And for the watchlist:
 - BUY: the price reached my entry price. Time to write the full analysis
 
 I never sell just because the price fell.
+
+## The dashboard
+`python -m streamlit run portfolio/dashboard.py` opens five tabs:
+- Portfolio: value vs money invested, what I own, gain per product and per month
+- Monthly plan: where each euro goes for any monthly amount, and every limit (sector, AI, stocks)
+- Fair prices: price vs my fair price for my stocks and the watchlist, and the yearly return each price gives me
+- DCF lab: pick a company and move the sliders (profit, cash, growth, rate) to see how the fair price changes, plus a heat map of what happens if I am wrong
+- Alerts and TR levels: this week's alerts and the euro prices to set as alerts on Trade Republic
 
 ## What's inside
 | Folder | What it does |
