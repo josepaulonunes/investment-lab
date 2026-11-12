@@ -1,13 +1,14 @@
 # Simpler plan: VWCE and 8 stocks (12 Nov 2026)
 
 ## What changed
-- From 60% VWCE, 10% small caps, 8% theme ETFs and 22% stocks to 70% VWCE and 30% stocks
+- From 60% VWCE, 10% small caps, 8% theme ETFs and 22% stocks to 73% VWCE and 27% stocks
 - Out before the first purchase: the small cap ETF, the three theme ETFs, Safran and Microsoft
-- In: ASML, GE Vernova and BNY at 3% each
+- In: ASML and GE Vernova at 3% each
 - Nvidia and Mastercard go to 5%, Eli Lilly to 4%
 - Intuitive Surgical keeps its shares but gets no new money
 - One fair price method for every company, with the yearly return next to it (future/fair_price.py)
-- AI stocks count as one bet: 15% through the plans, up to 25% only with extra buys at a discount
+- No sector above 20% of the portfolio, counting only my stocks
+- BNY was in the plan but Trade Republic has no savings plan for it, so its 3% went to VWCE. It stays on the watchlist for a one-off buy below about 143 dollars
 
 ## Why
 - I was changing the portfolio almost every day. The problem was not the method, it was me. Now plans only change in the quarterly review or after a full written analysis

@@ -5,10 +5,10 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 ## The plan
 | Block | What | Weight |
 |---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 70% |
-| Stocks | Nvidia 5%, Mastercard 5%, TSMC 4%, Eli Lilly 4%, ASML 3%, GE Vernova 3%, Broadcom 3%, BNY 3% | 30% |
+| Core | Vanguard FTSE All-World (VWCE) | 73% |
+| Stocks | Nvidia 5%, Mastercard 5%, TSMC 4%, Eli Lilly 4%, ASML 3%, GE Vernova 3%, Broadcom 3% | 27% |
 
-70% follows the whole market. 30% is in 8 companies that clearly beat their rivals, bought only at a fair price or below. The weight of VWCE is not fixed: when a stock gets expensive its monthly plan goes to VWCE, and when a good company on the watchlist reaches a good price it comes in. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
+73% follows the whole market. 27% is in 7 companies that clearly beat their rivals, bought only at a fair price or below. The weight of VWCE is not fixed: when a stock gets expensive its monthly plan goes to VWCE, and when a good company on the watchlist reaches a good price it comes in. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
 
 I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_plan_change.md).
 
@@ -24,8 +24,10 @@ Every Monday GitHub runs the screener, the fair prices and future/alerts.py. If 
 - BUY EXTRA: 15% or more below its fair price. A one-off buy makes sense
 - KEEP: up to 10% above fair. The monthly plan keeps going
 - PAUSE: more than 10% above fair. Its plan goes to VWCE and I keep the shares
-- REVIEW: the business got worse (quality, revenue, debt, new shares). I check its alarms and only then decide to sell or replace it
-- STOP BUYING: a stock is above 5% of the portfolio, the AI stocks together are above 25%, or all stocks are above 40%
+- SELL PART: 50% or more above fair. The price already counts on years of perfect growth, so I sell up to half and move it to VWCE
+- REVIEW: one warning sign in the business (quality, revenue, debt, new shares). I look closer
+- SELL: two or more warning signs at once. If the next results confirm them, I sell
+- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), or all stocks are above 40%
 
 And for the watchlist:
 - BUY: the price reached my entry price. Time to write the full analysis
