@@ -39,7 +39,7 @@ status_colours = {
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
-    "Health": "#db2777", "Energy": "#d97706", "Gold": "#ca8a04",
+    "Health": "#db2777", "Energy": "#d97706", "Aerospace and defense": "#475569", "Gold": "#ca8a04",
 }
 
 # My files: products, limits, my DCF assumptions and the weekly fair prices

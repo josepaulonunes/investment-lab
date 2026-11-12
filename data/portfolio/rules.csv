@@ -1,7 +1,7 @@
 name,value
 max_position,5
 min_position,2
-max_bets,40
+max_bets,45
 max_sector,20
 max_ai,30
 months_before_limits,6

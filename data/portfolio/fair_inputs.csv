@@ -11,12 +11,15 @@ Vistra,VST,USD,portfolio,13.7,0.6,0.06,0.10,,no,Texas rules that cap power price
 BNY,BNY,USD,watchlist,10.6,0.9,0.07,0.10,143,yes,CET1 below 10%; return on tangible equity below 20%; losing big custody clients
 Intuitive Surgical,ISRG,USD,portfolio,12.4,0.85,0.16,0.09,,yes,Losing the lead in robotic surgery; procedures growing less than 10%
 S&P Global,SPGI,USD,watchlist,19.4,1.0,0.10,0.09,425,yes,
-Alphabet,GOOGL,USD,watchlist,15,0.6,0.14,0.09,265,yes,
-Safran,SAF.PA,EUR,watchlist,11,1.0,0.11,0.09,280,yes,
-Microsoft,MSFT,USD,watchlist,20.7,0.7,0.14,0.09,450,yes,
+Alphabet,GOOGL,USD,watchlist,15.4,0.6,0.14,0.09,265,yes,
+Safran,SAF.PA,EUR,portfolio,12.4,1.0,0.11,0.09,,yes,LEAP deliveries or spare parts falling for two quarters; Airbus or Boeing cutting production rates; operating margin below 15%; losing the LEAP successor engine to a rival
+Microsoft,MSFT,USD,watchlist,22.5,0.7,0.14,0.09,450,yes,
 Amazon,AMZN,USD,watchlist,11.5,0.5,0.18,0.09,220,yes,
 Meta,META,USD,watchlist,34,0.55,0.11,0.09,480,yes,
 Marvell,MRVL,USD,watchlist,7,0.6,0.20,0.10,149,yes,
 Corning,GLW,USD,watchlist,4.5,0.8,0.16,0.10,103,yes,
 Qualcomm,QCOM,USD,watchlist,9.3,0.9,0.07,0.10,148,yes,
 Constellation Energy,CEG,USD,watchlist,13.5,0.7,0.10,0.10,197,yes,
+General Dynamics,GD,USD,watchlist,18.95,0.95,0.08,0.09,331,yes,
+ResMed,RMD,USD,watchlist,12.4,0.95,0.09,0.09,229,yes,
+Rheinmetall,RHM.DE,EUR,watchlist,40,0.6,0.20,0.10,724,yes,
