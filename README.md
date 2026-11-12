@@ -8,7 +8,7 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 | Core | Vanguard FTSE All-World (VWCE) | 55% |
 | Stocks | Nvidia 5%, TSMC 5%, ASML 5%, Broadcom 4%, Vertiv 4%, GE Vernova 4%, Vistra 3%, Mastercard 5%, Eli Lilly 5%, Safran 5% | 45% |
 
-55% follows the whole market. 45% is in 10 companies from 5 sectors that clearly beat their rivals, bought only at a fair price or below. When a stock gets expensive its monthly plan goes to VWCE. My top priorities (15 companies I want to own one day, from Microsoft to Ferrari) start a plan as soon as they reach my fair price, with the money coming from VWCE, which never goes below 50%. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
+55% follows the whole market. 45% is in 10 companies from 5 sectors that clearly beat their rivals, bought only at a fair price or below. When a stock gets expensive its monthly plan goes to VWCE. My top priorities (9 companies I want to own one day: Micron, Microsoft, Alphabet, Apple, Amazon, SpaceX, Meta, IBM and Intel) start a plan 10% below my fair price, once independent checks agree, with the money coming from VWCE, which never goes below 50%. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
 
 I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_plan_change.md).
 

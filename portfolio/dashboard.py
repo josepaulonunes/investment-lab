@@ -43,17 +43,18 @@ palette = ["#0f766e", "#1e3a5f", "#2563eb", "#7c3aed", "#db2777", "#d97706", "#c
 status_colours = {
     "BUY EXTRA": "#15803d", "BUY": "#15803d", "KEEP BUYING": "#2563eb", "WAIT": "#64748b",
     "PAUSE": "#d97706", "SELL PART": "#b91c1c", "NO PRICE": "#6b7280",
-    "BUY BIG": "#15803d", "START PLAN": "#2563eb",
+    "BUY BIG": "#15803d", "START PLAN": "#2563eb", "CHEAP, NOT CONFIRMED": "#ca8a04", "WAIT RESULTS": "#ca8a04",
 }
 status_dots = {
     "BUY EXTRA": "🟢", "BUY": "🟢", "KEEP BUYING": "🔵", "WAIT": "⚪",
     "PAUSE": "🟠", "SELL PART": "🔴", "NO PRICE": "⚪",
-    "BUY BIG": "🟢", "START PLAN": "🔵",
+    "BUY BIG": "🟢", "START PLAN": "🔵", "CHEAP, NOT CONFIRMED": "🟡", "WAIT RESULTS": "🟡",
 }
 alert_colours = {
     "OK": "#15803d", "BUY": "#15803d", "BUY EXTRA": "#15803d", "CLOSE": "#15803d", "KEEP": "#2563eb",
     "STOP BUYING": "#d97706", "PAUSE": "#d97706", "RESULTS": "#d97706", "REVIEW ASSUMPTION": "#d97706",
     "PRIORITY BUY BIG": "#15803d", "PRIORITY START PLAN": "#15803d", "PRIORITY CLOSE": "#2563eb",
+    "NOT CONFIRMED": "#ca8a04", "WAIT RESULTS": "#ca8a04", "PRIORITY NOT CONFIRMED": "#ca8a04", "PRIORITY WAIT RESULTS": "#ca8a04",
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
@@ -320,7 +321,7 @@ with tab_plan:
 # ---------------- Fair prices ----------------
 with tab_fair:
     st.subheader(":material/sell: Price today vs my fair price")
-    st.caption("Below 0 the stock is cheaper than my fair price. Green zone: buy extra (15% or more below). Up to +10%: the plan keeps going. Above +10%: pause the plan. Above +50%: sell part.")
+    st.caption("Below 0 the stock is cheaper than my fair price. Green zone: buy extra (15% or more below, only if two independent checks agree). Up to +10%: the plan keeps going. Above +10%: pause the plan. Above +50%: sell part.")
 
     # Filter: my stocks, the watchlist or both
     show = st.radio("Show", ["My stocks", "Top priorities", "Watchlist", "All"], horizontal=True)
@@ -388,7 +389,7 @@ with tab_fair:
 # ---------------- Top priorities ----------------
 with tab_priority:
     st.subheader(":material/star: The companies I want to own one day")
-    st.caption("I love what these companies do, but I only buy at a fair price. At or below my fair price I start a monthly plan. 15% or more below it I also buy big with the extra money (up to 200 € a month). Prices in euros, updated after every US close.")
+    st.caption("I love what these companies do, but I only buy with a margin of safety. 10% below my fair price I start a monthly plan, 20% below it I also buy big with the extra money (up to 200 € a month). Only if at least two independent checks agree: Morningstar, the stock's own past P/E and the banks. Prices in euros, updated after every US close.")
 
     # My top priorities, the closest to a buy first
     top = fair[fair["list"] == "priority"].sort_values("gap")
@@ -408,7 +409,7 @@ with tab_priority:
         if row["currency"] == "USD":
             to_euro = 1 / rate
         today = row["price"] * to_euro
-        start_plan = row["fair"] * to_euro
+        start_plan = row["start"] * to_euro
         buy_big = row["entry"] * to_euro
         fall_needed = (start_plan / today - 1) * 100
 
@@ -425,7 +426,7 @@ with tab_priority:
                 if fall_needed < 0:
                     st.progress(closeness, text=f"Needs to fall {-fall_needed:.0f}% to start the plan")
                 else:
-                    st.progress(closeness, text="At or below my fair price: start the plan")
+                    st.progress(closeness, text="At my start price: start the plan if the checks agree")
         number = number + 1
 
     st.caption("When one of them reaches its start price, I start its plan and VWCE goes down to make room, never below 50%. No other stock has to leave. Next to study, two or three at each review: health care, consumer staples (McDonald's and food companies), defense and space.")
@@ -571,7 +572,7 @@ with tab_alerts:
         if row["list"] == "portfolio":
             levels.append([row["name"], "My stock", row["fair"] * 0.85 * to_euro, row["fair"] * 1.10 * to_euro, row["fair"] * 1.5 * to_euro, row["price"] * to_euro])
         elif row["list"] == "priority":
-            levels.append([row["name"], "Top priority", row["fair"] * to_euro, None, None, row["price"] * to_euro])
+            levels.append([row["name"], "Top priority", row["start"] * to_euro, None, None, row["price"] * to_euro])
         else:
             levels.append([row["name"], "Watchlist", row["entry"] * to_euro, None, None, row["price"] * to_euro])
     levels = pd.DataFrame(levels, columns=["name", "list", "cheap", "pause", "sell_part", "today"])

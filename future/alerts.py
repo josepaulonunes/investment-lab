@@ -144,8 +144,12 @@ for _, row in fair[fair["list"] == "portfolio"].iterrows():
     if limits_on and pd.notna(product["sector"]) and product["sector"] in sectors and sectors[product["sector"]] > max_sector:
         full = True
 
-    if row["status"] == "BUY EXTRA" and not full:
-        alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}). Expected return {row['return']:.1f}% a year. A one-off buy from my personal budget makes sense if none of its alarms is on"])
+    if row["status"] == "BUY EXTRA" and not full and product["target"] > 0:
+        alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}), confirmed by {row['checks']} independent checks. Expected return {row['return']:.1f}% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"])
+    elif row["status"] == "CHEAP, NOT CONFIRMED":
+        alerts.append(["NOT CONFIRMED", name, f"Price is {-row['gap']:.0f}% below my fair price, but it is not confirmed. Checks that agree: {row['checks']} (2 needed), and analysts must not be cutting their profit forecast by more than 10%. No extra buy, the plan keeps going"])
+    elif row["status"] == "WAIT RESULTS":
+        alerts.append(["WAIT RESULTS", name, f"Cheap and confirmed, but results come on {row['next_results']}. Read them first, then decide on the extra buy"])
     elif row["status"] == "SELL PART":
         alerts.append(["SELL PART", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}) and the expected return is only {row['return']:.1f}% a year, less than VWCE. Sell up to half and move it to VWCE if the gain after the 28% tax is worth it. Keep the rest: a great business can stay expensive for years"])
     elif row["status"] == "PAUSE":
@@ -166,11 +170,15 @@ for _, row in fair[fair["list"] == "watchlist"].iterrows():
 # Rule: one of my top priorities reaches its fair price (start a monthly plan) or falls 15% below it (buy big)
 for _, row in fair[fair["list"] == "priority"].iterrows():
     if row["status"] == "BUY BIG":
-        alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 15% or more below my fair price of {row['fair']:.0f}. Check its alarms and the independent checks, then buy from the extra money (up to 200 € a month) and start a monthly plan"])
+        alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 20% or more below my fair price of {row['fair']:.0f}, confirmed by {row['checks']} checks. Buy from the extra money (up to 200 € a month) and start a monthly plan"])
     elif row["status"] == "START PLAN":
-        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my fair price of {row['fair']:.0f}. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"])
-    elif row["price"] <= row["fair"] * 1.05:
-        alerts.append(["PRIORITY CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my fair price of {row['fair']:.0f}. Get ready to start a monthly plan"])
+        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 10% or more below my fair price of {row['fair']:.0f}, confirmed by {row['checks']} checks. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"])
+    elif row["status"] == "CHEAP, NOT CONFIRMED":
+        alerts.append(["PRIORITY NOT CONFIRMED", row["name"], f"10% or more below my fair price, but not confirmed. Checks that agree: {row['checks']} (2 needed), and analysts must not be cutting their profit forecast by more than 10%. Wait"])
+    elif row["status"] == "WAIT RESULTS":
+        alerts.append(["PRIORITY WAIT RESULTS", row["name"], f"Cheap and confirmed, but results come on {row['next_results']}. Read them first"])
+    elif row["price"] <= row["start"] * 1.05:
+        alerts.append(["PRIORITY CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my start price of {row['start']:.0f}. Get ready to start a monthly plan"])
 
 # Rule: close to a buying price, so I am ready (within 5%)
 for _, row in fair.iterrows():
