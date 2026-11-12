@@ -3,5 +3,6 @@ max_position,5
 min_position,2
 max_bets,40
 max_sector,20
+max_ai,30
 months_before_limits,6
-max_stocks,8
+max_stocks,10
