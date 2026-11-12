@@ -77,6 +77,12 @@ Easiest way: open the repo in GitHub Codespaces. The packages install on their o
     python future/alerts.py
     python portfolio/optimize.py
 
+Once a month, after the plans buy on the 2nd:
+
+    python portfolio/add_month.py
+
+It adds that month's plan purchases to my private file (at the closing price of the plan day) and updates the public file for the live app.
+
 ## Sources
 Company reports and results, Vanguard factsheets, prices from yfinance.
 
