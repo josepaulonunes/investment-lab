@@ -1,12 +1,11 @@
-isin,name,block,ticker,currency,target,group
-IE00BK5BQT80,Vanguard FTSE All-World,core,VWCE.DE,EUR,70,
-US67066G1040,Nvidia,stocks,NVDA,USD,5,AI
-US57636Q1040,Mastercard,stocks,MA,USD,5,
-US8740391003,TSMC,stocks,TSM,USD,4,AI
-US5324571083,Eli Lilly,stocks,LLY,USD,4,
-NL0010273215,ASML,stocks,ASML.AS,EUR,3,AI
-US36828A1016,GE Vernova,stocks,GEV,USD,3,
-US11135F1012,Broadcom,stocks,AVGO,USD,3,AI
-US09581B1035,BNY,stocks,BNY,USD,3,
-US46120E6023,Intuitive Surgical,stocks,ISRG,USD,0,
+isin,name,block,ticker,currency,target,sector
+IE00BK5BQT80,Vanguard FTSE All-World,core,VWCE.DE,EUR,73,
+US67066G1040,Nvidia,stocks,NVDA,USD,5,Chips and AI
+US57636Q1040,Mastercard,stocks,MA,USD,5,Payments
+US8740391003,TSMC,stocks,TSM,USD,4,Chips and AI
+US5324571083,Eli Lilly,stocks,LLY,USD,4,Health
+NL0010273215,ASML,stocks,ASML.AS,EUR,3,Chips and AI
+US36828A1016,GE Vernova,stocks,GEV,USD,3,Energy
+US11135F1012,Broadcom,stocks,AVGO,USD,3,Chips and AI
+US46120E6023,Intuitive Surgical,stocks,ISRG,USD,0,Health
 IE00B579F325,Invesco Physical Gold,gold,8PSG.DE,EUR,0,
