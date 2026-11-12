@@ -15,6 +15,7 @@ max_bets = rules["max_bets"]
 max_sector = rules["max_sector"]
 months_before_limits = rules["months_before_limits"]
 max_stocks = rules["max_stocks"]
+max_ai = rules["max_ai"]
 
 # My products and my purchases (real file if it exists, otherwise the public one)
 products = pd.read_csv("data/portfolio/products.csv")
@@ -79,6 +80,11 @@ sectors = held.dropna(subset=["sector"]).groupby("sector")["weight"].sum()
 for sector, weight in sectors.items():
     if limits_on and weight > max_sector:
         alerts.append(["STOP BUYING", "Sector " + sector, f"My stocks in this sector are {weight:.1f}% of the portfolio, above {max_sector:.0f}%. No new money in this sector: look for good companies in other sectors"])
+
+# Rule: everything that depends on AI stays at or below its limit (ai column in products.csv)
+ai = held[held["ai"] == "yes"]["weight"].sum()
+if limits_on and ai > max_ai:
+    alerts.append(["STOP BUYING", "AI", f"Stocks that depend on AI are {ai:.1f}% of the portfolio, above {max_ai:.0f}%. New money goes to my other stocks or VWCE"])
 
 # Rule: no more stocks than I can follow properly (rule 8), counting only stocks still in the plan (target above 0)
 stocks_held = held[(held["block"] == "stocks") & (held["target"] > 0) & (held["quantity"] > 0)]
