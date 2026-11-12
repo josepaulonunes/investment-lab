@@ -1,6 +1,6 @@
 # Investment Lab
 
-My own investment tools in Python: a live dashboard of my portfolio, a screener that looks for companies with almost no competition at a fair price, and a weekly check that tells me when to buy more, stop buying or look closer.
+My own investment tools in Python: a live dashboard of my portfolio, a screener that looks for companies with almost no competition at a fair price, and a daily check that tells me when to buy more, stop buying or look closer.
 
 ## The plan
 | Block | What | Weight |
@@ -19,8 +19,8 @@ I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_
 4. future/fair_price.py turns that into a fair price with a simple DCF and tells me the yearly return today's price gives me. I ask for at least 9%
 5. A company only comes in if it passes my five tests (growth, beats its rivals, key sector, pays shareholders, fair price) and I have written the analysis
 
-## The weekly check
-Every Monday GitHub runs the screener, the fair prices and future/alerts.py. If the alerts are different from last week it opens an issue and I get a notification. Every stock I own gets one line:
+## The daily check
+Every weekday after the US market closes, GitHub runs the screener, the fair prices and future/alerts.py. If the alerts are different from the last check it opens an issue and I get a notification. Every stock I own gets one line:
 - BUY EXTRA: 15% or more below its fair price. A one-off buy makes sense
 - KEEP: up to 10% above fair. The monthly plan keeps going
 - PAUSE: more than 10% above fair. Its plan goes to VWCE and I keep the shares
@@ -31,6 +31,11 @@ Every Monday GitHub runs the screener, the fair prices and future/alerts.py. If 
 
 And for the watchlist:
 - BUY: the price reached my entry price. Time to write the full analysis
+
+To keep the fair prices fresh:
+- CLOSE: a stock is less than 5% above its buying price, so I get the order ready
+- REVIEW ASSUMPTION: analysts now expect a profit more than 15% away from mine, usually after results. I update data/portfolio/fair_inputs.csv
+- RESULTS: one of my stocks reports in the next 7 days
 
 I never sell just because the price fell.
 
@@ -46,14 +51,14 @@ I never sell just because the price fell.
 | Folder | What it does |
 |---|---|
 | portfolio/ | Dashboard (Streamlit), positions vs targets, optimizer, public data |
-| future/ | Screener, fair prices and weekly alerts |
+| future/ | Screener, fair prices and daily alerts |
 | companies/ | Valuation model for any company: ratios, DCF, reverse DCF, sensitivity, peers |
 | data/ | Inputs and outputs |
 | notes/ | My decisions, written before deciding |
 | archive/ | Old versions of the project, kept as a record. Not used anymore |
 
 ## Old versions (archive/)
-These are tools I used before the current plan. I keep them to see how my thinking changed, but nothing in the plan or the weekly check uses them:
+These are tools I used before the current plan. I keep them to see how my thinking changed, but nothing in the plan or the daily check uses them:
 - archive/companies/screener.py: my first screener, with a fixed 9% discount rate and its own watchlist. Replaced by future/future_screen.py
 - archive/house_view/: scored regions by valuation and momentum. I used it in October 2026 when I was choosing country ETFs. I dropped country ETFs on 29 Oct 2026 (notes/2026-10_plan_change.md)
 - archive/companies/prysmian_first_look.py: a first quick look at Prysmian before the full valuation model

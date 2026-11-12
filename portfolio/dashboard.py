@@ -276,7 +276,7 @@ with tab_fair:
 
     # Full table
     st.dataframe(
-        table[["name", "status", "price", "fair", "gap", "return", "entry", "currency"]],
+        table[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "my_eps", "analyst_eps", "eps_gap", "next_results"]],
         hide_index=True,
         column_config={
             "name": "Company",
@@ -287,9 +287,13 @@ with tab_fair:
             "return": st.column_config.NumberColumn("Return a year", format="%.1f%%"),
             "entry": st.column_config.NumberColumn("Buy at or below", format="%.0f"),
             "currency": "Currency",
+            "my_eps": st.column_config.NumberColumn("My profit a share", format="%.2f"),
+            "analyst_eps": st.column_config.NumberColumn("Analysts' profit a share", format="%.2f"),
+            "eps_gap": st.column_config.NumberColumn("Analysts vs me", format="%+.0f%%"),
+            "next_results": "Next results",
         },
     )
-    st.caption(f"Prices from the last weekly check. Run python future/fair_price.py to refresh them.")
+    st.caption("Prices from the last daily check (every weekday after the US close). If analysts are more than 15% away from my profit number, the check asks me to review it.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:
@@ -318,6 +322,8 @@ with tab_lab:
     col2.metric("Price today", f"{price:,.0f} {company['currency']}", f"{(price / fair_value - 1) * 100:+.0f}% vs fair", delta_color="inverse")
     col3.metric("Return a year at today's price", f"{yearly:.1f}%")
     col4.metric("P/E I am paying", f"{price / eps:.1f}")
+    if len(priced) > 0 and pd.notna(priced["analyst_eps"].iloc[0]):
+        st.caption(f"Analysts expect {priced['analyst_eps'].iloc[0]:.2f} a share next year. My saved number is {company['eps']:.2f}. Next results: {priced['next_results'].iloc[0]}")
 
     # Chart: the cash I expect each year and what it is worth today
     years = []
@@ -373,17 +379,25 @@ with tab_alerts:
         st.caption("Last check: " + str(alerts["date"].iloc[0]) + ". I never sell just because the price fell.")
         for _, alert in alerts.iterrows():
             text = f"**{alert['type']}** · {alert['product']}: {alert['message']}"
-            if alert["type"] in ["OK", "BUY", "BUY EXTRA"]:
+            if alert["type"] in ["OK", "BUY", "BUY EXTRA", "CLOSE"]:
                 st.success(text)
             elif alert["type"] == "KEEP":
                 with st.expander(f"KEEP · {alert['product']}"):
                     st.write(alert["message"])
-            elif alert["type"] in ["STOP BUYING", "PAUSE"]:
+            elif alert["type"] in ["STOP BUYING", "PAUSE", "RESULTS", "REVIEW ASSUMPTION"]:
                 st.warning(text)
             else:
                 st.error(text)
     else:
         st.write("No check yet: run python future/alerts.py")
+
+    # Calendar: next results of my stocks and the watchlist
+    st.subheader("Next results")
+    calendar = fair.dropna(subset=["next_results"]).sort_values("next_results")
+    if len(calendar) > 0:
+        st.dataframe(calendar[["next_results", "name", "list"]], hide_index=True, column_config={"next_results": "Date", "name": "Company", "list": "List"})
+    else:
+        st.write("No dates from Yahoo yet.")
 
     # Price alerts to set on Trade Republic, in euros
     st.subheader("Price alerts for Trade Republic (in euros)")

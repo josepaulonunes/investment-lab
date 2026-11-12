@@ -160,6 +160,22 @@ for _, row in fair[fair["list"] == "watchlist"].iterrows():
     if row["status"] == "BUY":
         alerts.append(["BUY", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my entry price of {row['entry']:.0f}. Write the full analysis before buying"])
 
+# Rule: close to a buying price, so I am ready (within 5%)
+for _, row in fair.iterrows():
+    if row["status"] in ["KEEP BUYING", "WAIT"] and pd.notna(row["entry"]) and row["entry"] < row["price"] <= row["entry"] * 1.05:
+        alerts.append(["CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my buying price of {row['entry']:.0f}. Check that the limit order or the price alert is ready"])
+
+# Rule: the analysts now expect a very different profit, so my fair price may be out of date
+for _, row in fair.iterrows():
+    if pd.notna(row["eps_gap"]) and abs(row["eps_gap"]) > 15:
+        alerts.append(["REVIEW ASSUMPTION", row["name"], f"Analysts expect {row['analyst_eps']:.2f} a share next year, {row['eps_gap']:+.0f}% vs my {row['my_eps']:.2f}. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"])
+
+# Rule: results in the next 7 days for the stocks I own (read them, never trade on the day)
+soon = str((pd.Timestamp.today() + pd.Timedelta(days=7)).date())
+for _, row in fair[fair["list"] == "portfolio"].iterrows():
+    if pd.notna(row["next_results"]) and row["next_results"] <= soon:
+        alerts.append(["RESULTS", row["name"], f"Results on {row['next_results']}. Read them the day after and check its alarms: {row['alarm']}"])
+
 # The KEEP lines go last: they are not a call to action
 alerts = alerts + keeps
 
@@ -171,16 +187,16 @@ if len(alerts) == 0:
 table = pd.DataFrame(alerts, columns=["type", "product", "message"])
 table.insert(0, "date", today)
 
-# Last week's alerts: only the type and the product count, the numbers in the message move every week
-last_week = []
+# Alerts from the last check: only the type and the product count, the numbers in the message move every week
+last_check = []
 if os.path.exists("data/alerts/alerts.csv"):
     old = pd.read_csv("data/alerts/alerts.csv")
     for _, row in old.iterrows():
-        last_week.append(row["type"] + " " + row["product"])
-this_week = []
+        last_check.append(row["type"] + " " + row["product"])
+this_check = []
 for _, row in table.iterrows():
-    this_week.append(row["type"] + " " + row["product"])
-changed = sorted(this_week) != sorted(last_week)
+    this_check.append(row["type"] + " " + row["product"])
+changed = sorted(this_check) != sorted(last_check)
 table.to_csv("data/alerts/alerts.csv", index=False)
 
 # Text for the GitHub issue
@@ -190,11 +206,11 @@ if table["type"].iloc[0] == "OK":
 else:
     lines.append("ALERTS FOUND")
     if changed:
-        lines.append("ALERTS CHANGED SINCE LAST WEEK")
+        lines.append("ALERTS CHANGED SINCE THE LAST CHECK")
     lines.append("")
     for _, row in table.iterrows():
         new = ""
-        if row["type"] + " " + row["product"] not in last_week:
+        if row["type"] + " " + row["product"] not in last_check:
             new = " (new)"
         lines.append("- **" + row["type"] + "** " + row["product"] + new + ": " + row["message"])
 lines.append("")

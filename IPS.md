@@ -44,7 +44,7 @@ Core 60%, stocks 40% (changed on 12 Nov 2026, see notes/2026-11-12_sixty_forty.m
 9. No sector above 20% of the portfolio, counting only the stocks I pick (VWCE does not count). The sector of each stock is in data/portfolio/products.csv. When a sector is full, the next good company has to come from another sector. That keeps me looking at the whole economy, not only at what is in the news. On top of that, everything that depends on AI (chips, ServiceNow, GE Vernova and Vistra, the ai column in products.csv) stays at or below 30%.
 10. All stocks together stay at or below 40%.
 11. Rules 8, 9 and 10 start after 6 months of buying (around April 2027): the one-off buy in Nov 2026 makes the first months look off.
-12. The weekly check (GitHub, every Monday) works out the fair prices and the alerts. I read the alerts, I don't react to news.
+12. The daily check (GitHub, every weekday after the US close) works out the fair prices and the alerts, and tells me when analysts change their profit forecasts by more than 15%. I read the alerts, I don't react to news.
 13. Plans only change in the quarterly review, or when a watchlist company reaches its entry price and passes a full written analysis.
 14. If I need money for my master's or a move: pause plans, never sell.
 15. If I move country, check how it taxes ETFs and stocks before doing anything.
