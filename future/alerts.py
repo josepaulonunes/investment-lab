@@ -153,7 +153,10 @@ for _, row in fair[fair["list"] == "portfolio"].iterrows():
     elif row["status"] == "NO PRICE":
         alerts.append(["REVIEW", name, "No price from Yahoo this week. Check the ticker in data/portfolio/fair_inputs.csv"])
     elif name not in selling:
-        keeps.append(["KEEP", name, f"Price is {row['gap']:+.0f}% vs my fair price ({row['fair']:.0f} {row['currency']}). The monthly plan keeps going. Sell only if: {row['alarm']}"])
+        plan_text = "The monthly plan keeps going."
+        if product["target"] == 0:
+            plan_text = "No monthly plan, I just keep the shares."
+        keeps.append(["KEEP", name, f"Price is {row['gap']:+.0f}% vs my fair price ({row['fair']:.0f} {row['currency']}). {plan_text} Sell only if: {row['alarm']}"])
 
 # Rule: a watchlist company reaches my entry price
 for _, row in fair[fair["list"] == "watchlist"].iterrows():
