@@ -1,0 +1,16 @@
+name,ticker,list,currency,price,fair,gap,return,entry,status,alarm
+GE Vernova,GEV,portfolio,USD,808,915.1419468221317,-11.707686134832585,10.900000000000007,777.8706547988119,KEEP BUYING,Orders falling for two quarters; turbine reservations cancelled; margins missing the 2028 path
+Broadcom,AVGO,portfolio,USD,345,385.8913486254275,-10.596596366071797,10.900000000000007,328.0076463316134,KEEP BUYING,More than 5% new shares a year; losing a big customer; missing its AI revenue targets
+TSMC,TSM,portfolio,USD,413,461.4311610108035,-10.495858343140718,9.700000000000006,392.21648685918296,KEEP BUYING,Losing leading edge customers; monthly sales falling for two quarters
+BNY,BNY,portfolio,USD,151,168.45104922916477,-10.35971536480248,10.900000000000007,143.18339184479004,KEEP BUYING,CET1 below 10%; return on tangible equity below 20%; losing big custody clients
+Nvidia,NVDA,portfolio,USD,160,174.70246409651338,-8.415716499791948,10.700000000000006,148.49709448203637,KEEP BUYING,Data center outlook falls; receivables grow faster than sales; new guarantees to customers; formal charges against the company
+ASML,ASML.AS,portfolio,EUR,1405,1521.733883180088,-7.671110203325426,9.500000000000005,1293.4738007030749,KEEP BUYING,2027 outlook below 15% growth; new export limits; customers cutting investment; gross margin below 52%
+Mastercard,MA,portfolio,USD,653,650.0758281577621,0.4498201156816872,9.000000000000005,552.5644539340977,KEEP BUYING,A law that cuts card fees; volume growing less than 5% for a year
+Eli Lilly,LLY,portfolio,USD,1432,1420.4927898111964,0.8100857865201094,9.000000000000005,1207.418871339517,KEEP BUYING,Prices falling faster than volume grows; losing share to rivals
+S&P Global,SPGI,watchlist,USD,475,468.80153842383686,1.3221930962520112,9.000000000000005,425.0,WAIT,
+Alphabet,GOOGL,watchlist,USD,293,271.03995313833326,8.102143837981979,8.600000000000005,265.0,WAIT,
+Safran,SAF.PA,watchlist,EUR,313,280.9430147207512,11.4104938010694,8.400000000000004,280.0,WAIT,
+Microsoft,MSFT,watchlist,USD,521,436.3743245527164,19.392908951282806,8.000000000000004,450.0,WAIT,
+Amazon,AMZN,watchlist,USD,260,215.04752636661635,20.90350649128043,8.000000000000004,220.0,WAIT,
+Intuitive Surgical,ISRG,portfolio,USD,449,353.8882970058612,26.876193363513103,7.800000000000004,300.805052454982,PAUSE,Losing the lead in robotic surgery; procedures growing less than 10%
+Meta,META,watchlist,USD,610,477.603125025277,27.721107345710095,7.700000000000004,480.0,WAIT,
