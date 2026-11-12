@@ -12,7 +12,7 @@ rules = pd.read_csv("data/portfolio/rules.csv").set_index("name")["value"]
 max_position = rules["max_position"]
 min_position = rules["min_position"]
 max_bets = rules["max_bets"]
-max_group = rules["max_group"]
+max_sector = rules["max_sector"]
 months_before_limits = rules["months_before_limits"]
 max_stocks = rules["max_stocks"]
 
@@ -74,11 +74,11 @@ bets = held[held["block"].isin(["themes", "stocks"])]["weight"].sum()
 if limits_on and bets > max_bets:
     alerts.append(["STOP BUYING", "All bets", f"Bets are {bets:.1f}% of the portfolio, above {max_bets:.0f}%. New money goes to VWCE until they are back at {max_bets:.0f}%"])
 
-# Rule: products that depend on the same thing count as one bet (group column in products.csv)
-groups = held.dropna(subset=["group"]).groupby("group")["weight"].sum()
-for group, weight in groups.items():
-    if limits_on and weight > max_group:
-        alerts.append(["STOP BUYING", "Group " + group, f"Together they are {weight:.1f}% of the portfolio, above {max_group:.0f}%. No extra buys in this group"])
+# Rule: no sector above the limit (sector column in products.csv, VWCE does not count)
+sectors = held.dropna(subset=["sector"]).groupby("sector")["weight"].sum()
+for sector, weight in sectors.items():
+    if limits_on and weight > max_sector:
+        alerts.append(["STOP BUYING", "Sector " + sector, f"My stocks in this sector are {weight:.1f}% of the portfolio, above {max_sector:.0f}%. No new money in this sector: look for good companies in other sectors"])
 
 # Rule: no more stocks than I can follow properly (rule 8), counting only stocks still in the plan (target above 0)
 stocks_held = held[(held["block"] == "stocks") & (held["target"] > 0) & (held["quantity"] > 0)]
@@ -92,6 +92,7 @@ if "forward_pe" not in screen.columns:
     exit()
 
 # Rule: check the business of each stock I own
+selling = []
 for _, row in held[held["block"] == "stocks"].iterrows():
     match = screen[screen["name"] == row["name"]]
     name = row["name"]
@@ -99,14 +100,26 @@ for _, row in held[held["block"] == "stocks"].iterrows():
         alerts.append(["REVIEW", name, "Not in the screener. Yahoo may have failed for it this week, or add it to data/future/universe.csv with the same name"])
         continue
     company = match.iloc[0]
+
+    # Each sign that the business is getting worse
+    problems = []
     if company["quality"] < 4:
-        alerts.append(["REVIEW", name, f"Quality fell to {company['quality']} out of 5. Check its alarms in IPS.md and sell or replace only if they are confirmed"])
+        problems.append(f"quality fell to {company['quality']} out of 5")
+    if pd.notna(company["revenue_growth"]) and company["revenue_growth"] < 0:
+        problems.append("revenue is falling")
     if pd.notna(company["growth_3y"]) and company["growth_3y"] < 0:
-        alerts.append(["REVIEW", name, "Revenue is lower than 3 years ago"])
+        problems.append("revenue is lower than 3 years ago")
     if pd.notna(company["net_debt_to_ebitda"]) and company["net_debt_to_ebitda"] > 4:
-        alerts.append(["REVIEW", name, f"Debt is {company['net_debt_to_ebitda']:.1f} times yearly profits, above 4"])
+        problems.append(f"debt is {company['net_debt_to_ebitda']:.1f} times yearly profits")
     if pd.notna(company["dilution"]) and company["dilution"] > 0.05:
-        alerts.append(["REVIEW", name, f"It adds {company['dilution'] * 100:.0f}% new shares a year, above 5%"])
+        problems.append(f"it adds {company['dilution'] * 100:.0f}% new shares a year")
+
+    # One problem: look closer. Two or more: the business is breaking, time to sell
+    if len(problems) == 1:
+        alerts.append(["REVIEW", name, f"Warning sign: {problems[0]}. Check its alarms and the next results before doing anything"])
+    if len(problems) >= 2:
+        selling.append(name)
+        alerts.append(["SELL", name, "The business is getting worse: " + ", ".join(problems) + ". If the next quarterly results confirm it, sell and move the money to VWCE or a better company. Never on the day of the news"])
 
 # Fair prices from my own DCF (run future/fair_price.py first)
 fair = pd.read_csv("data/future/fair_prices.csv")
@@ -120,18 +133,20 @@ for _, row in fair[fair["list"] == "portfolio"].iterrows():
     if name in list(held["name"]):
         weight = held[held["name"] == name]["weight"].iloc[0]
 
-    # No extra buys if the stock or its group is already above its limit
+    # No extra buys if the stock or its sector is already above its limit
     full = limits_on and weight > max_position
-    if limits_on and pd.notna(product["group"]) and product["group"] in groups and groups[product["group"]] > max_group:
+    if limits_on and pd.notna(product["sector"]) and product["sector"] in sectors and sectors[product["sector"]] > max_sector:
         full = True
 
     if row["status"] == "BUY EXTRA" and not full:
         alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}). Expected return {row['return']:.1f}% a year. A one-off buy from my personal budget makes sense if none of its alarms is on"])
+    elif row["status"] == "SELL PART":
+        alerts.append(["SELL PART", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}) and the expected return is only {row['return']:.1f}% a year, less than VWCE. Sell up to half and move it to VWCE if the gain after the 28% tax is worth it. Keep the rest: a great business can stay expensive for years"])
     elif row["status"] == "PAUSE":
         alerts.append(["PAUSE", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"])
     elif row["status"] == "NO PRICE":
         alerts.append(["REVIEW", name, "No price from Yahoo this week. Check the ticker in data/portfolio/fair_inputs.csv"])
-    else:
+    elif name not in selling:
         keeps.append(["KEEP", name, f"Price is {row['gap']:+.0f}% vs my fair price ({row['fair']:.0f} {row['currency']}). The monthly plan keeps going. Sell only if: {row['alarm']}"])
 
 # Rule: a watchlist company reaches my entry price
