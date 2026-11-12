@@ -27,6 +27,9 @@ jobs:
       - name: Run the screener
         run: python future/future_screen.py
 
+      - name: Work out the fair prices
+        run: python future/fair_price.py
+
       - name: Check the alerts
         run: python future/alerts.py
 
