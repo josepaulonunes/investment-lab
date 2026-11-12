@@ -17,30 +17,67 @@ warnings.filterwarnings("ignore")
 # Page setup
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 
-# A bit of style: white cards with a soft shadow for the numbers at the top
+# All the style of the site in one place: the top banner, the labels, the white cards and the phone layout
 st.markdown("""
 <style>
-div[data-testid="stMetric"] {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 14px 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-div[data-testid="stMetricLabel"] p {color: #6b7280;}
 .block-container {padding-top: 2rem;}
+.hero {background: linear-gradient(135deg, #0f766e, #134e4a); color: white; border-radius: 18px; padding: 28px 32px; margin-bottom: 10px;}
+.hero-title {font-size: 2.2rem; font-weight: 700; line-height: 1.2;}
+.hero-text {opacity: 0.9; margin: 6px 0 14px 0;}
+.chip {display: inline-block; background: rgba(255,255,255,0.16); border-radius: 999px; padding: 4px 12px; margin: 0 6px 6px 0; font-size: 0.85rem;}
+.pill {display: inline-block; border-radius: 999px; padding: 3px 12px; margin: 0 6px 6px 0; font-size: 0.85rem; font-weight: 600;}
+div[data-testid="stMetric"] {background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 14px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+div[data-testid="stMetricLabel"] p {color: #6b7280;}
+[class*="st-key-card"] {background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+@media (max-width: 640px) {
+    .hero {padding: 20px;}
+    .hero-title {font-size: 1.6rem;}
+    [class*="st-key-kpi"] div[data-testid="stColumn"] {min-width: calc(50% - 1rem); flex: 1 1 calc(50% - 1rem);}
+}
 </style>
 """, unsafe_allow_html=True)
 
 # Colours used in every chart
+colours = {"main": "#0f766e", "light": "#99f6e4", "grey": "#94a3b8", "gain": "#15803d", "loss": "#b91c1c", "text": "#111827", "grid": "#e5e7eb"}
+palette = ["#0f766e", "#1e3a5f", "#2563eb", "#7c3aed", "#db2777", "#d97706", "#ca8a04", "#475569", "#14b8a6", "#94a3b8"]
 status_colours = {
-    "BUY EXTRA": "#15803d", "BUY": "#15803d", "KEEP BUYING": "#0f766e", "WAIT": "#94a3b8",
+    "BUY EXTRA": "#15803d", "BUY": "#15803d", "KEEP BUYING": "#2563eb", "WAIT": "#64748b",
     "PAUSE": "#d97706", "SELL PART": "#b91c1c", "NO PRICE": "#6b7280",
+}
+status_dots = {
+    "BUY EXTRA": "🟢", "BUY": "🟢", "KEEP BUYING": "🔵", "WAIT": "⚪",
+    "PAUSE": "🟠", "SELL PART": "🔴", "NO PRICE": "⚪",
+}
+alert_colours = {
+    "OK": "#15803d", "BUY": "#15803d", "BUY EXTRA": "#15803d", "CLOSE": "#15803d", "KEEP": "#2563eb",
+    "STOP BUYING": "#d97706", "PAUSE": "#d97706", "RESULTS": "#d97706", "REVIEW ASSUMPTION": "#d97706",
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
     "Health": "#db2777", "Energy": "#d97706", "Aerospace and defense": "#475569", "Gold": "#ca8a04",
 }
+
+
+# One look for every chart: same font, soft grid, legend on top, no toolbar
+def show_chart(fig, height):
+    fig.update_layout(
+        height=height,
+        margin=dict(l=0, r=0, t=30, b=0),
+        font=dict(family="Inter, sans-serif", size=13, color=colours["text"]),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        legend=dict(orientation="h", x=0, y=1.02, yanchor="bottom", title_text=""),
+        hoverlabel=dict(bgcolor="white", font_size=13),
+    )
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(gridcolor=colours["grid"], zeroline=False)
+    st.plotly_chart(fig, config={"displayModeBar": False})
+
+
+# A small coloured label, used for the states and the alerts
+def pill(text, colour):
+    return f'<span class="pill" style="color: {colour}; background: {colour}1a;">{text}</span>'
+
 
 # My files: products, limits, my DCF assumptions and the weekly fair prices
 products = pd.read_csv("data/portfolio/products.csv")
@@ -48,6 +85,14 @@ rules = pd.read_csv("data/portfolio/rules.csv").set_index("name")["value"]
 inputs = pd.read_csv("data/portfolio/fair_inputs.csv")
 fair = pd.read_csv("data/future/fair_prices.csv")
 tickers = dict(zip(products["isin"], products["ticker"]))
+
+# Alerts from the last check, if there is one
+alerts = pd.DataFrame()
+last_check = "not yet"
+if os.path.exists("data/alerts/alerts.csv"):
+    alerts = pd.read_csv("data/alerts/alerts.csv")
+if len(alerts) > 0:
+    last_check = str(alerts["date"].iloc[0])
 
 
 # Yahoo prices, kept for one hour so the sliders stay fast
@@ -66,21 +111,36 @@ def load_rate():
 
 
 # Sidebar: an example amount to split (my real amount stays private) and the exchange rate for the Trade Republic levels
-st.sidebar.title("📈 My portfolio")
+st.sidebar.title(":material/monitoring: My portfolio")
 monthly = st.sidebar.number_input("Try an amount (€)", min_value=10, max_value=5000, value=100, step=10)
 rate = st.sidebar.number_input("Dollars per euro", min_value=0.80, max_value=1.60, value=round(load_rate(), 3), step=0.005, format="%.3f")
 st.sidebar.caption("Trade Republic shows US stocks in euros, so every price level in dollars is divided by this rate.")
 st.sidebar.divider()
 st.sidebar.caption("VWCE is the base. Each stock must clearly beat its rivals and is bought only at a fair price or below. Plans run every month, alerts every Monday, a full review every quarter.")
+st.sidebar.caption("The code is on [GitHub](https://github.com/josepaulonunes/investment-lab).")
 
-# Header
+# Top banner
 plan = products[products["target"] > 0]
 base = plan[plan["block"] == "core"]["target"].sum()
 stocks_plan = plan[plan["block"] == "stocks"]
-st.title("My portfolio")
-st.caption(f"{base:.0f}% in the whole world (VWCE) and {100 - base:.0f}% in {len(stocks_plan)} stocks. Prices from Yahoo Finance. Personal learning project, not investment advice.")
+st.markdown(f"""
+<div class="hero">
+    <div class="hero-title">My portfolio</div>
+    <div class="hero-text">{base:.0f}% in the whole world (VWCE) and {100 - base:.0f}% in {len(stocks_plan)} stocks.</div>
+    <span class="chip">{base:.0f}% VWCE</span>
+    <span class="chip">{len(stocks_plan)} stocks</span>
+    <span class="chip">Last check: {last_check}</span>
+</div>
+""", unsafe_allow_html=True)
+st.caption("Prices from Yahoo Finance. Personal learning project, not investment advice.")
 
-tab_portfolio, tab_plan, tab_fair, tab_lab, tab_alerts = st.tabs(["📊 Portfolio", "🧭 Monthly plan", "💶 Fair prices", "🧮 DCF lab", "🔔 Alerts and TR levels"])
+tab_portfolio, tab_plan, tab_fair, tab_lab, tab_alerts = st.tabs([
+    ":material/pie_chart: Portfolio",
+    ":material/calendar_month: Monthly plan",
+    ":material/sell: Fair prices",
+    ":material/calculate: DCF lab",
+    ":material/notifications: Alerts and TR levels",
+])
 
 # ---------------- Portfolio ----------------
 with tab_portfolio:
@@ -92,7 +152,7 @@ with tab_portfolio:
         file = "data/portfolio/public/transactions.csv"
         public = True
         unit = "points"
-        st.info("This is my real portfolio, scaled so that all the money I put in adds up to 100. The real amounts stay private.")
+        st.info("This is my real portfolio, scaled so that all the money I put in adds up to 100. The real amounts stay private.", icon=":material/lock:")
     transactions = pd.read_csv(file, parse_dates=["date"])
 
     # Exchange rates: one ticker for each currency that is not the euro
@@ -120,25 +180,29 @@ with tab_portfolio:
     gain = value.iloc[-1] - invested.iloc[-1]
     gain_pct = gain / invested.iloc[-1] * 100
     months = transactions["date"].dt.strftime("%Y-%m").nunique()
-    col1, col2, col3, col4 = st.columns(4)
-    if public:
-        col1.metric("Return", f"{gain_pct:+.1f}%")
-        col2.metric("Products", transactions["isin"].nunique())
-        col3.metric("Purchases", len(transactions))
-        col4.metric("Months investing", months)
-    else:
-        col1.metric("Value today", f"{value.iloc[-1]:,.0f} €")
-        col2.metric("Money I put in", f"{invested.iloc[-1]:,.0f} €")
-        col3.metric("Gain", f"{gain:,.0f} €", f"{gain_pct:.1f}%")
-        col4.metric("Months investing", months)
+    with st.container(key="kpi_portfolio"):
+        col1, col2, col3, col4 = st.columns(4)
+        if public:
+            col1.metric(":material/trending_up: Return", f"{gain_pct:+.1f}%")
+            col2.metric(":material/category: Products", transactions["isin"].nunique())
+            col3.metric(":material/shopping_cart: Purchases", len(transactions))
+            col4.metric(":material/calendar_month: Months investing", months)
+        else:
+            col1.metric(":material/account_balance_wallet: Value today", f"{value.iloc[-1]:,.0f} €")
+            col2.metric(":material/savings: Money I put in", f"{invested.iloc[-1]:,.0f} €")
+            col3.metric(":material/trending_up: Gain", f"{gain:,.0f} €", f"{gain_pct:.1f}%")
+            col4.metric(":material/calendar_month: Months investing", months)
 
     # Chart: value vs money invested
-    st.subheader("Value vs money invested")
-    history = pd.DataFrame({"Value": value, "Money invested": invested})
-    fig = px.line(history, color_discrete_map={"Value": "#0f766e", "Money invested": "#94a3b8"})
-    fig.update_traces(line_width=2, fill="tozeroy")
-    fig.update_layout(height=360, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit, hovermode="x unified")
-    st.plotly_chart(fig)
+    with st.container(border=True, key="card_value"):
+        st.subheader(":material/show_chart: Value vs money invested")
+        history = pd.DataFrame({"Value": value, "Money invested": invested})
+        fig = px.line(history, color_discrete_map={"Value": colours["main"], "Money invested": colours["grey"]})
+        fig.update_traces(line_width=2)
+        fig.update_traces(fill="tozeroy", fillcolor="rgba(15,118,110,0.10)", selector=dict(name="Value"))
+        fig.update_traces(line_dash="dot", selector=dict(name="Money invested"))
+        fig.update_layout(xaxis_title="", yaxis_title=unit, hovermode="x unified")
+        show_chart(fig, 360)
 
     # Positions today
     positions = transactions.groupby(["isin", "name", "block"]).agg(
@@ -154,55 +218,59 @@ with tab_portfolio:
 
     left, right = st.columns([1, 1.4])
     with left:
-        st.subheader("What I own")
-        fig = px.pie(positions, names="name", values="weight_%", hole=0.6)
-        fig.update_traces(textinfo="percent", textposition="inside")
-        fig.update_layout(height=360, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="")
-        st.plotly_chart(fig)
+        with st.container(border=True, key="card_own"):
+            st.subheader(":material/donut_small: What I own")
+            fig = px.pie(positions, names="name", values="weight_%", hole=0.6, color_discrete_sequence=palette)
+            fig.update_traces(textinfo="percent", textposition="inside")
+            show_chart(fig, 380)
     with right:
-        st.subheader("Gain or loss per product")
-        bars = positions.sort_values("gain_%")
-        bars["result"] = "Gain"
-        bars.loc[bars["gain_%"] < 0, "result"] = "Loss"
-        fig = px.bar(bars, x="gain_%", y="name", orientation="h", color="result", color_discrete_map={"Gain": "#15803d", "Loss": "#b91c1c"}, text_auto=".1f")
-        fig.update_layout(height=360, margin=dict(l=0, r=0, t=10, b=0), showlegend=False, xaxis_title="%", yaxis_title="")
-        st.plotly_chart(fig)
+        with st.container(border=True, key="card_gain"):
+            st.subheader(":material/bar_chart: Gain or loss per product")
+            bars = positions.sort_values("gain_%")
+            bars["result"] = "Gain"
+            bars.loc[bars["gain_%"] < 0, "result"] = "Loss"
+            fig = px.bar(bars, x="gain_%", y="name", orientation="h", color="result", color_discrete_map={"Gain": colours["gain"], "Loss": colours["loss"]}, text_auto=".1f")
+            fig.update_layout(showlegend=False, xaxis_title="%", yaxis_title="")
+            show_chart(fig, 380)
 
     # Table of positions
     columns = ["name", "block", "invested", "value", "gain_%", "weight_%"]
     if public:
         columns = ["name", "block", "gain_%", "weight_%"]
-    st.dataframe(
-        positions[columns].sort_values("weight_%", ascending=False),
-        hide_index=True,
-        column_config={
-            "name": "Product",
-            "block": "Block",
-            "invested": st.column_config.NumberColumn("Invested", format="%.2f €"),
-            "value": st.column_config.NumberColumn("Value", format="%.2f €"),
-            "gain_%": st.column_config.NumberColumn("Gain", format="%+.1f%%"),
-            "weight_%": st.column_config.ProgressColumn("Weight", format="%.1f%%", min_value=0, max_value=100),
-        },
-    )
+    with st.container(border=True, key="card_positions"):
+        st.subheader(":material/list_alt: Positions")
+        st.dataframe(
+            positions[columns].sort_values("weight_%", ascending=False),
+            hide_index=True,
+            column_config={
+                "name": "Product",
+                "block": "Block",
+                "invested": st.column_config.NumberColumn("Invested", format="%.2f €"),
+                "value": st.column_config.NumberColumn("Value", format="%.2f €"),
+                "gain_%": st.column_config.NumberColumn("Gain", format="%+.1f%%"),
+                "weight_%": st.column_config.ProgressColumn("Weight", format="%.1f%%", min_value=0, max_value=100),
+            },
+        )
 
     # Gain or loss of each month, without the new money I put in
-    st.subheader("Gain or loss per month")
-    monthly_value = value.resample("ME").last()
-    monthly_invested = invested.resample("ME").last()
-    monthly_gain = (monthly_value - monthly_invested).diff()
-    monthly_gain.iloc[0] = monthly_value.iloc[0] - monthly_invested.iloc[0]
-    by_month = pd.DataFrame({"month": monthly_gain.index.strftime("%Y-%m"), "gain": monthly_gain.values})
-    by_month["result"] = "Gain"
-    by_month.loc[by_month["gain"] < 0, "result"] = "Loss"
-    fig = px.bar(by_month, x="month", y="gain", color="result", color_discrete_map={"Gain": "#15803d", "Loss": "#b91c1c"})
-    fig.update_layout(height=280, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="", yaxis_title=unit)
-    fig.update_xaxes(type="category")
-    st.plotly_chart(fig)
+    with st.container(border=True, key="card_months"):
+        st.subheader(":material/date_range: Gain or loss per month")
+        monthly_value = value.resample("ME").last()
+        monthly_invested = invested.resample("ME").last()
+        monthly_gain = (monthly_value - monthly_invested).diff()
+        monthly_gain.iloc[0] = monthly_value.iloc[0] - monthly_invested.iloc[0]
+        by_month = pd.DataFrame({"month": monthly_gain.index.strftime("%Y-%m"), "gain": monthly_gain.values})
+        by_month["result"] = "Gain"
+        by_month.loc[by_month["gain"] < 0, "result"] = "Loss"
+        fig = px.bar(by_month, x="month", y="gain", color="result", color_discrete_map={"Gain": colours["gain"], "Loss": colours["loss"]})
+        fig.update_layout(xaxis_title="", yaxis_title=unit)
+        fig.update_xaxes(type="category")
+        show_chart(fig, 280)
 
 # ---------------- Monthly plan ----------------
 with tab_plan:
-    st.subheader("How I split my money every month")
-    st.caption(f"The euros show how {monthly:,.0f} € would be split. Change the amount on the left.")
+    st.subheader(":material/calendar_month: How I split my money every month")
+    st.caption(f"The euros show how {monthly:,.0f} € would be split. Change the amount in the sidebar (on a phone, open it with the arrow at the top left).")
 
     # Euros per product for the amount in the sidebar
     split = plan[["name", "block", "sector", "target", "ai"]].copy()
@@ -211,40 +279,43 @@ with tab_plan:
 
     left, right = st.columns([1, 1.2])
     with left:
-        fig = px.sunburst(split, path=["sector", "name"], values="target", color="sector", color_discrete_map=sector_colours)
-        fig.update_traces(textinfo="label+percent root")
-        fig.update_layout(height=420, margin=dict(l=0, r=0, t=10, b=0))
-        st.plotly_chart(fig)
+        with st.container(border=True, key="card_split"):
+            fig = px.sunburst(split, path=["sector", "name"], values="target", color="sector", color_discrete_map=sector_colours)
+            fig.update_traces(textinfo="label+percent root")
+            show_chart(fig, 420)
     with right:
-        st.dataframe(
-            split[["name", "sector", "target", "euros"]].sort_values("target", ascending=False),
-            hide_index=True,
-            height=420,
-            column_config={
-                "name": "Product",
-                "sector": "Sector",
-                "target": st.column_config.ProgressColumn("Weight", format="%.0f%%", min_value=0, max_value=100),
-                "euros": st.column_config.NumberColumn(f"Out of {monthly:,.0f} €", format="%.2f €"),
-            },
-        )
+        with st.container(border=True, key="card_split_table"):
+            st.dataframe(
+                split[["name", "sector", "target", "euros"]].sort_values("target", ascending=False),
+                hide_index=True,
+                height=440,
+                column_config={
+                    "name": "Product",
+                    "sector": "Sector",
+                    "target": st.column_config.ProgressColumn("Weight", format="%.0f%%", min_value=0, max_value=100),
+                    "euros": st.column_config.NumberColumn(f"Out of {monthly:,.0f} €", format="%.2f €"),
+                },
+            )
 
     # Limits: each sector of my stocks (VWCE does not count) and everything that depends on AI
-    st.subheader("Limits")
+    st.subheader(":material/shield: Limits")
     sectors = split[split["block"] == "stocks"].groupby("sector")["target"].sum().reset_index()
     ai_total = split[split["ai"] == "yes"]["target"].sum()
     stocks_total = split[split["block"] == "stocks"]["target"].sum()
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Stocks together", f"{stocks_total:.0f}%", f"limit {rules['max_bets']:.0f}%", delta_color="off")
-    col2.metric("Depends on AI", f"{ai_total:.0f}%", f"limit {rules['max_ai']:.0f}%", delta_color="off")
-    col3.metric("Stocks with a plan", len(stocks_plan), f"limit {rules['max_stocks']:.0f}", delta_color="off")
-    fig = px.bar(sectors, x="sector", y="target", color="sector", color_discrete_map=sector_colours, text_auto=".0f")
-    fig.add_hline(y=rules["max_sector"], line_dash="dash", line_color="#b91c1c", annotation_text=f"Sector limit {rules['max_sector']:.0f}%")
-    fig.update_layout(height=320, margin=dict(l=0, r=0, t=30, b=0), showlegend=False, xaxis_title="", yaxis_title="% of the portfolio")
-    st.plotly_chart(fig)
+    with st.container(key="kpi_plan"):
+        col1, col2, col3 = st.columns(3)
+        col1.metric(":material/stacked_bar_chart: Stocks together", f"{stocks_total:.0f}%", f"limit {rules['max_bets']:.0f}%", delta_color="off")
+        col2.metric(":material/memory: Depends on AI", f"{ai_total:.0f}%", f"limit {rules['max_ai']:.0f}%", delta_color="off")
+        col3.metric(":material/checklist: Stocks with a plan", len(stocks_plan), f"limit {rules['max_stocks']:.0f}", delta_color="off")
+    with st.container(border=True, key="card_sectors"):
+        fig = px.bar(sectors, x="sector", y="target", color="sector", color_discrete_map=sector_colours, text_auto=".0f")
+        fig.add_hline(y=rules["max_sector"], line_dash="dash", line_color=colours["loss"], annotation_text=f"Sector limit {rules['max_sector']:.0f}%")
+        fig.update_layout(showlegend=False, xaxis_title="", yaxis_title="% of the portfolio")
+        show_chart(fig, 320)
 
 # ---------------- Fair prices ----------------
 with tab_fair:
-    st.subheader("Price today vs my fair price")
+    st.subheader(":material/sell: Price today vs my fair price")
     st.caption("Below 0 the stock is cheaper than my fair price. Green zone: buy extra (15% or more below). Up to +10%: the plan keeps going. Above +10%: pause the plan. Above +50%: sell part.")
 
     # Filter: my stocks, the watchlist or both
@@ -256,73 +327,99 @@ with tab_fair:
         table = table[table["list"] == "watchlist"]
     table = table.sort_values("gap", ascending=False)
 
+    # How many companies are in each state
+    counts = table["status"].value_counts()
+    labels = ""
+    for status in counts.index:
+        labels = labels + pill(f"{counts[status]} {status}", status_colours.get(status, colours["grey"]))
+    st.markdown(labels, unsafe_allow_html=True)
+
     # Chart: gap to the fair price, with the zones behind the bars
-    fig = px.bar(table, x="gap", y="name", orientation="h", color="status", color_discrete_map=status_colours, text_auto=".0f",
-                 hover_data={"price": ":.0f", "fair": ":.0f", "return": ":.1f", "currency": True})
-    fig.add_vrect(x0=-60, x1=-15, fillcolor="#15803d", opacity=0.07, line_width=0)
-    fig.add_vrect(x0=10, x1=50, fillcolor="#d97706", opacity=0.07, line_width=0)
-    fig.add_vrect(x0=50, x1=120, fillcolor="#b91c1c", opacity=0.07, line_width=0)
-    fig.add_vline(x=0, line_color="#1f2937", line_width=1)
-    fig.update_layout(height=60 + 32 * len(table), margin=dict(l=0, r=0, t=10, b=0), xaxis_title="Price vs fair price (%)", yaxis_title="", legend_title_text="")
-    fig.update_xaxes(range=[min(-30, table["gap"].min() - 5), max(40, table["gap"].max() + 5)])
-    st.plotly_chart(fig)
+    with st.container(border=True, key="card_gap"):
+        fig = px.bar(table, x="gap", y="name", orientation="h", color="status", color_discrete_map=status_colours, text_auto=".0f",
+                     hover_data={"price": ":.0f", "fair": ":.0f", "return": ":.1f", "currency": True})
+        fig.add_vrect(x0=-60, x1=-15, fillcolor=status_colours["BUY EXTRA"], opacity=0.07, line_width=0)
+        fig.add_vrect(x0=10, x1=50, fillcolor=status_colours["PAUSE"], opacity=0.07, line_width=0)
+        fig.add_vrect(x0=50, x1=120, fillcolor=status_colours["SELL PART"], opacity=0.07, line_width=0)
+        fig.add_vline(x=0, line_color=colours["text"], line_width=1)
+        fig.update_layout(xaxis_title="Price vs fair price (%)", yaxis_title="")
+        fig.update_xaxes(range=[min(-30, table["gap"].min() - 5), max(40, table["gap"].max() + 5)])
+        show_chart(fig, 80 + 32 * len(table))
 
     # Chart: what I earn a year at today's price vs the 9% I ask for
-    st.subheader("Expected return a year at today's price")
-    fig = px.scatter(table, x="gap", y="return", text="name", color="status", color_discrete_map=status_colours)
-    fig.add_hline(y=9, line_dash="dash", line_color="#b91c1c", annotation_text="I ask for 9%")
-    fig.update_traces(textposition="top center", marker_size=12)
-    fig.update_layout(height=420, margin=dict(l=0, r=0, t=10, b=0), xaxis_title="Price vs fair price (%)", yaxis_title="% a year", legend_title_text="")
-    st.plotly_chart(fig)
+    with st.container(border=True, key="card_return"):
+        st.subheader(":material/percent: Expected return a year at today's price")
+        fig = px.scatter(table, x="gap", y="return", text="name", color="status", color_discrete_map=status_colours)
+        fig.add_hline(y=9, line_dash="dash", line_color=colours["loss"], annotation_text="I ask for 9%")
+        fig.update_traces(textposition="top center", marker_size=12)
+        fig.update_layout(xaxis_title="Price vs fair price (%)", yaxis_title="% a year")
+        show_chart(fig, 440)
 
-    # Full table
-    st.dataframe(
-        table[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "my_eps", "analyst_eps", "eps_gap", "next_results"]],
-        hide_index=True,
-        column_config={
-            "name": "Company",
-            "status": "Status",
-            "price": st.column_config.NumberColumn("Price", format="%.0f"),
-            "fair": st.column_config.NumberColumn("Fair price", format="%.0f"),
-            "gap": st.column_config.NumberColumn("vs fair", format="%+.0f%%"),
-            "return": st.column_config.NumberColumn("Return a year", format="%.1f%%"),
-            "entry": st.column_config.NumberColumn("Buy at or below", format="%.0f"),
-            "currency": "Currency",
-            "my_eps": st.column_config.NumberColumn("My profit a share", format="%.2f"),
-            "analyst_eps": st.column_config.NumberColumn("Analysts' profit a share", format="%.2f"),
-            "eps_gap": st.column_config.NumberColumn("Analysts vs me", format="%+.0f%%"),
-            "next_results": "Next results",
-        },
-    )
+    # Full table, with a coloured dot next to each state
+    table["status"] = [status_dots.get(status, "⚪") + " " + status for status in table["status"]]
+    with st.container(border=True, key="card_fair_table"):
+        st.subheader(":material/list_alt: All the numbers")
+        st.dataframe(
+            table[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "my_eps", "analyst_eps", "eps_gap", "next_results"]],
+            hide_index=True,
+            column_config={
+                "name": "Company",
+                "status": "Status",
+                "price": st.column_config.NumberColumn("Price", format="%.0f"),
+                "fair": st.column_config.NumberColumn("Fair price", format="%.0f"),
+                "gap": st.column_config.NumberColumn("vs fair", format="%+.0f%%"),
+                "return": st.column_config.NumberColumn("Return a year", format="%.1f%%"),
+                "entry": st.column_config.NumberColumn("Buy at or below", format="%.0f"),
+                "currency": "Currency",
+                "my_eps": st.column_config.NumberColumn("My profit a share", format="%.2f"),
+                "analyst_eps": st.column_config.NumberColumn("Analysts' profit a share", format="%.2f"),
+                "eps_gap": st.column_config.NumberColumn("Analysts vs me", format="%+.0f%%"),
+                "next_results": "Next results",
+            },
+        )
     st.caption("Prices from the last daily check (every weekday after the US close). If analysts are more than 15% away from my profit number, the check asks me to review it.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:
-    st.subheader("Play with my assumptions")
+    st.subheader(":material/calculate: Play with my assumptions")
     st.caption("Pick a company and move the sliders. The file data/portfolio/fair_inputs.csv does not change: I only change it in the quarterly review.")
 
     # Pick a company and start from my saved assumptions
-    name = st.selectbox("Company", list(inputs["name"]))
-    company = inputs[inputs["name"] == name].iloc[0]
-    priced = fair[fair["name"] == name]
-    price = float(priced["price"].iloc[0]) if len(priced) > 0 else 0.0
-    ticker = company["ticker"]
+    with st.container(border=True, key="card_sliders"):
+        name = st.selectbox("Company", list(inputs["name"]))
+        company = inputs[inputs["name"] == name].iloc[0]
+        priced = fair[fair["name"] == name]
+        price = float(priced["price"].iloc[0]) if len(priced) > 0 else 0.0
+        ticker = company["ticker"]
 
-    col1, col2 = st.columns(2)
-    eps = col1.slider("Earnings per share, next 12 months", 0.1, float(company["eps"]) * 2, float(company["eps"]), key="eps_" + ticker)
-    conversion = col1.slider("Share of earnings that becomes free cash", 0.3, 1.2, float(company["conversion"]), 0.05, key="conv_" + ticker)
-    growth = col2.slider("Growth a year, first 5 years (%)", 0.0, 40.0, float(company["growth"]) * 100, 0.5, key="growth_" + ticker) / 100
-    discount = col2.slider("Return I ask for (discount rate, %)", 7.0, 13.0, float(company["discount"]) * 100, 0.5, key="disc_" + ticker) / 100
+        col1, col2 = st.columns(2)
+        eps = col1.slider("Earnings per share, next 12 months", 0.1, float(company["eps"]) * 2, float(company["eps"]), key="eps_" + ticker)
+        conversion = col1.slider("Share of earnings that becomes free cash", 0.3, 1.2, float(company["conversion"]), 0.05, key="conv_" + ticker)
+        growth = col2.slider("Growth a year, first 5 years (%)", 0.0, 40.0, float(company["growth"]) * 100, 0.5, key="growth_" + ticker) / 100
+        discount = col2.slider("Return I ask for (discount rate, %)", 7.0, 13.0, float(company["discount"]) * 100, 0.5, key="disc_" + ticker) / 100
 
     # Results
     cash = eps * conversion
     fair_value = dcf_value(cash, growth, discount)
     yearly = expected_return(price, cash, growth) * 100 if price > 0 else 0
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Fair price", f"{fair_value:,.0f} {company['currency']}")
-    col2.metric("Price today", f"{price:,.0f} {company['currency']}", f"{(price / fair_value - 1) * 100:+.0f}% vs fair", delta_color="inverse")
-    col3.metric("Return a year at today's price", f"{yearly:.1f}%")
-    col4.metric("P/E I am paying", f"{price / eps:.1f}")
+    gap_now = (price / fair_value - 1) * 100
+    with st.container(key="kpi_lab"):
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric(":material/sell: Fair price", f"{fair_value:,.0f} {company['currency']}")
+        col2.metric(":material/payments: Price today", f"{price:,.0f} {company['currency']}", f"{gap_now:+.0f}% vs fair", delta_color="inverse")
+        col3.metric(":material/percent: Return a year at today's price", f"{yearly:.1f}%")
+        col4.metric(":material/speed: P/E I am paying", f"{price / eps:.1f}")
+
+    # The state these sliders give, with the same rules as the daily check
+    if price > 0:
+        state = "KEEP BUYING"
+        if gap_now <= -15:
+            state = "BUY EXTRA"
+        elif gap_now >= 50:
+            state = "SELL PART"
+        elif gap_now > 10:
+            state = "PAUSE"
+        st.markdown("With these sliders: " + pill(state, status_colours[state]), unsafe_allow_html=True)
     if len(priced) > 0 and pd.notna(priced["analyst_eps"].iloc[0]):
         st.caption(f"Analysts expect {priced['analyst_eps'].iloc[0]:.2f} a share next year. My saved number is {company['eps']:.2f}. Next results: {priced['next_results'].iloc[0]}")
 
@@ -338,70 +435,82 @@ with tab_lab:
     years = pd.DataFrame(years, columns=["year", "Cash that year", "Worth today"])
     left, right = st.columns(2)
     with left:
-        st.markdown("**Cash per share for the next 10 years**")
-        fig = px.bar(years, x="year", y=["Cash that year", "Worth today"], barmode="group", color_discrete_sequence=["#0f766e", "#99f6e4"])
-        fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), legend_title_text="", xaxis_title="Year", yaxis_title=company["currency"])
-        st.plotly_chart(fig)
+        with st.container(border=True, key="card_cash"):
+            st.markdown("**Cash per share for the next 10 years**")
+            fig = px.bar(years, x="year", y=["Cash that year", "Worth today"], barmode="group", color_discrete_sequence=[colours["main"], colours["light"]])
+            fig.update_layout(xaxis_title="Year", yaxis_title=company["currency"])
+            show_chart(fig, 340)
 
     # Heat map: fair price for other growth and discount rates
     with right:
-        st.markdown("**Fair price if I am wrong on growth or on the rate**")
-        growth_list = [growth - 0.06, growth - 0.03, growth, growth + 0.03, growth + 0.06]
-        discount_list = [discount - 0.01, discount, discount + 0.01]
-        grid = []
-        for d in discount_list:
-            line = []
-            for g in growth_list:
-                line.append(dcf_value(cash, g, d))
-            grid.append(line)
-        grid = pd.DataFrame(grid, index=[f"rate {d * 100:.1f}%" for d in discount_list], columns=[f"growth {g * 100:.0f}%" for g in growth_list])
-        fig = px.imshow(grid, text_auto=".0f", color_continuous_scale="RdYlGn", aspect="auto", zmin=price * 0.5, zmax=price * 1.5)
-        fig.update_layout(height=340, margin=dict(l=0, r=0, t=10, b=0), coloraxis_showscale=False)
-        st.plotly_chart(fig)
-        st.caption("Green: fair price above today's price. Red: below.")
+        with st.container(border=True, key="card_heat"):
+            st.markdown("**Fair price if I am wrong on growth or on the rate**")
+            growth_list = [growth - 0.06, growth - 0.03, growth, growth + 0.03, growth + 0.06]
+            discount_list = [discount - 0.01, discount, discount + 0.01]
+            grid = []
+            for d in discount_list:
+                line = []
+                for g in growth_list:
+                    line.append(dcf_value(cash, g, d))
+                grid.append(line)
+            grid = pd.DataFrame(grid, index=[f"rate {d * 100:.1f}%" for d in discount_list], columns=[f"growth {g * 100:.0f}%" for g in growth_list])
+            fig = px.imshow(grid, text_auto=".0f", color_continuous_scale="RdYlGn", aspect="auto", zmin=price * 0.5, zmax=price * 1.5)
+            fig.update_layout(coloraxis_showscale=False)
+            show_chart(fig, 340)
+            st.caption("Green: fair price above today's price. Red: below.")
 
     # Where today's price sits among my zones
-    st.markdown("**My zones for this company**")
-    fig = go.Figure()
-    fig.add_vrect(x0=0, x1=fair_value * 0.85, fillcolor="#15803d", opacity=0.18, line_width=0, annotation_text="Buy extra", annotation_position="top left")
-    fig.add_vrect(x0=fair_value * 0.85, x1=fair_value * 1.10, fillcolor="#0f766e", opacity=0.10, line_width=0, annotation_text="Keep buying", annotation_position="top left")
-    fig.add_vrect(x0=fair_value * 1.10, x1=fair_value * 1.5, fillcolor="#d97706", opacity=0.15, line_width=0, annotation_text="Pause", annotation_position="top left")
-    fig.add_vrect(x0=fair_value * 1.5, x1=fair_value * 2, fillcolor="#b91c1c", opacity=0.15, line_width=0, annotation_text="Sell part", annotation_position="top left")
-    fig.add_trace(go.Scatter(x=[price], y=[0.5], mode="markers+text", text=[f"Today {price:,.0f}"], textposition="bottom center", marker=dict(size=16, color="#1f2937")))
-    fig.update_layout(height=170, margin=dict(l=0, r=0, t=25, b=0), showlegend=False, yaxis_visible=False, xaxis_range=[fair_value * 0.5, fair_value * 1.7], xaxis_title=company["currency"])
-    st.plotly_chart(fig)
+    with st.container(border=True, key="card_zones"):
+        st.markdown("**My zones for this company**")
+        fig = go.Figure()
+        fig.add_vrect(x0=0, x1=fair_value * 0.85, fillcolor=status_colours["BUY EXTRA"], opacity=0.18, line_width=0, annotation_text="Buy extra", annotation_position="top left")
+        fig.add_vrect(x0=fair_value * 0.85, x1=fair_value * 1.10, fillcolor=status_colours["KEEP BUYING"], opacity=0.12, line_width=0, annotation_text="Keep buying", annotation_position="top left")
+        fig.add_vrect(x0=fair_value * 1.10, x1=fair_value * 1.5, fillcolor=status_colours["PAUSE"], opacity=0.15, line_width=0, annotation_text="Pause", annotation_position="top left")
+        fig.add_vrect(x0=fair_value * 1.5, x1=fair_value * 2, fillcolor=status_colours["SELL PART"], opacity=0.15, line_width=0, annotation_text="Sell part", annotation_position="top left")
+        fig.add_trace(go.Scatter(x=[price], y=[0.5], mode="markers+text", text=[f"Today {price:,.0f}"], textposition="bottom center", marker=dict(size=16, color=colours["text"])))
+        fig.update_layout(showlegend=False, yaxis_visible=False, xaxis_range=[fair_value * 0.5, fair_value * 1.7], xaxis_title=company["currency"])
+        show_chart(fig, 180)
 
 # ---------------- Alerts and Trade Republic levels ----------------
 with tab_alerts:
     # Alerts from the weekly check
-    st.subheader("This week's alerts")
-    if os.path.exists("data/alerts/alerts.csv"):
-        alerts = pd.read_csv("data/alerts/alerts.csv")
-        st.caption("Last check: " + str(alerts["date"].iloc[0]) + ". I never sell just because the price fell.")
+    st.subheader(":material/notifications_active: This week's alerts")
+    if len(alerts) > 0:
+        st.caption("Last check: " + last_check + ". I never sell just because the price fell.")
+
+        # How many alerts of each type
+        counts = alerts["type"].value_counts()
+        labels = ""
+        for kind in counts.index:
+            labels = labels + pill(f"{counts[kind]} {kind}", alert_colours.get(kind, colours["loss"]))
+        st.markdown(labels, unsafe_allow_html=True)
+
+        # One box per alert: green is good news, yellow is something to do, red is a warning
         for _, alert in alerts.iterrows():
             text = f"**{alert['type']}** · {alert['product']}: {alert['message']}"
             if alert["type"] in ["OK", "BUY", "BUY EXTRA", "CLOSE"]:
-                st.success(text)
+                st.success(text, icon=":material/check_circle:")
             elif alert["type"] == "KEEP":
-                with st.expander(f"KEEP · {alert['product']}"):
+                with st.expander(f"KEEP · {alert['product']}", icon=":material/thumb_up:"):
                     st.write(alert["message"])
             elif alert["type"] in ["STOP BUYING", "PAUSE", "RESULTS", "REVIEW ASSUMPTION"]:
-                st.warning(text)
+                st.warning(text, icon=":material/schedule:")
             else:
-                st.error(text)
+                st.error(text, icon=":material/warning:")
     else:
         st.write("No check yet: run python future/alerts.py")
 
     # Calendar: next results of my stocks and the watchlist
-    st.subheader("Next results")
+    st.subheader(":material/event: Next results")
     calendar = fair.dropna(subset=["next_results"]).sort_values("next_results")
     if len(calendar) > 0:
-        st.dataframe(calendar[["next_results", "name", "list"]], hide_index=True, column_config={"next_results": "Date", "name": "Company", "list": "List"})
+        with st.container(border=True, key="card_calendar"):
+            st.dataframe(calendar[["next_results", "name", "list"]], hide_index=True, column_config={"next_results": "Date", "name": "Company", "list": "List"})
     else:
         st.write("No dates from Yahoo yet.")
 
     # Price alerts to set on Trade Republic, in euros
-    st.subheader("Price alerts for Trade Republic (in euros)")
+    st.subheader(":material/notifications: Price alerts for Trade Republic (in euros)")
     st.caption("Set them with the bell on each stock page. Cheap: buy extra with a limit order (my stocks) or start the full analysis (watchlist). Expensive: pause the monthly plan, never sell on this alert alone.")
     levels = []
     for _, row in fair.iterrows():
@@ -414,17 +523,18 @@ with tab_alerts:
             levels.append([row["name"], "Watchlist", row["entry"] * to_euro, None, None, row["price"] * to_euro])
     levels = pd.DataFrame(levels, columns=["name", "list", "cheap", "pause", "sell_part", "today"])
     levels["distance"] = (levels["cheap"] / levels["today"] - 1) * 100
-    st.dataframe(
-        levels.sort_values(["list", "distance"], ascending=[True, False]),
-        hide_index=True,
-        column_config={
-            "name": "Company",
-            "list": "List",
-            "today": st.column_config.NumberColumn("Price today", format="%.0f €"),
-            "cheap": st.column_config.NumberColumn("Alert: cheap", format="%.0f €"),
-            "distance": st.column_config.NumberColumn("Fall needed", format="%+.0f%%"),
-            "pause": st.column_config.NumberColumn("Alert: pause plan", format="%.0f €"),
-            "sell_part": st.column_config.NumberColumn("Sell part above", format="%.0f €"),
-        },
-    )
-    st.download_button("Download the levels (CSV)", levels.round(0).to_csv(index=False), "tr_alerts.csv")
+    with st.container(border=True, key="card_levels"):
+        st.dataframe(
+            levels.sort_values(["list", "distance"], ascending=[True, False]),
+            hide_index=True,
+            column_config={
+                "name": "Company",
+                "list": "List",
+                "today": st.column_config.NumberColumn("Price today", format="%.0f €"),
+                "cheap": st.column_config.NumberColumn("Alert: cheap", format="%.0f €"),
+                "distance": st.column_config.NumberColumn("Fall needed", format="%+.0f%%"),
+                "pause": st.column_config.NumberColumn("Alert: pause plan", format="%.0f €"),
+                "sell_part": st.column_config.NumberColumn("Sell part above", format="%.0f €"),
+            },
+        )
+    st.download_button("Download the levels (CSV)", levels.round(0).to_csv(index=False), "tr_alerts.csv", icon=":material/download:")
