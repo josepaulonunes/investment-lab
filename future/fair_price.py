@@ -50,6 +50,9 @@ for _, company in inputs.iterrows():
             status = "KEEP BUYING"
         if price <= entry:
             status = "BUY EXTRA"
+        # Far too expensive: 50% or more above fair, the price already counts on many years of perfect growth
+        if price >= fair * 1.5:
+            status = "SELL PART"
 
     # Watchlist: buy at my entry price (the fair price if I did not set one)
     if company["list"] == "watchlist":
