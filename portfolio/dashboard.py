@@ -17,17 +17,16 @@ products = pd.read_csv("data/portfolio/products.csv")
 
 # One line that describes the plan, built from the products file so it is never out of date
 plan = products[products["target"] > 0]
-base = plan[plan["block"].isin(["core", "small"])]["target"].sum()
+base = plan[plan["block"] == "core"]["target"].sum()
 stocks = plan[plan["block"] == "stocks"]
-themes = plan[plan["block"] == "themes"]
-st.caption(f"{base:.0f}% in the whole market and {100 - base:.0f}% in bets on the future: {len(stocks)} stocks with little competition ({stocks['target'].sum():.0f}%) and {len(themes)} theme ETFs ({themes['target'].sum():.0f}%). Automatic plans every month, checked every Monday, reviewed every January.")
+st.caption(f"{base:.0f}% in the whole market and {100 - base:.0f}% in {len(stocks)} stocks that clearly beat their rivals, bought only at a fair price or below. Automatic plans every month, checked every Monday, reviewed every quarter.")
 tickers = dict(zip(products["isin"], products["ticker"]))
 targets = products.groupby("block")["target"].sum().to_dict()
 band = 3
 
 # Name and colour of each block in the charts
-names = {"core": "Global (VWCE)", "small": "Small caps (IUSN)", "themes": "Theme ETFs", "stocks": "Stocks", "gold": "Gold"}
-colours = {"Global (VWCE)": "#1f4e79", "Small caps (IUSN)": "#2a9d8f", "Theme ETFs": "#8e6cc0", "Stocks": "#e76f51", "Gold": "#e9b949"}
+names = {"core": "Global (VWCE)", "stocks": "Stocks", "gold": "Gold"}
+colours = {"Global (VWCE)": "#1f4e79", "Stocks": "#e76f51", "Gold": "#e9b949"}
 
 # Pick the data: my real file (private), the public file (scaled, no euros) or the example
 file = "data/portfolio/transactions.csv"
@@ -101,7 +100,7 @@ st.divider()
 
 # Alerts from the weekly check
 st.subheader("Alerts")
-st.caption("Checked automatically every Monday. Green: a chance to buy. Yellow: stop buying, or expensive for now. Red: check if the business got worse. I never sell just because the price fell.")
+st.caption("Checked automatically every Monday. Green: a chance to buy. Blue: keep the plan going. Yellow: pause or stop buying. Red: check if the business got worse. I never sell just because the price fell.")
 if os.path.exists("data/alerts/alerts.csv"):
     alerts = pd.read_csv("data/alerts/alerts.csv")
     st.write("Last check:", alerts["date"].iloc[0])
@@ -111,7 +110,9 @@ if os.path.exists("data/alerts/alerts.csv"):
             st.success(alert["message"])
         elif alert["type"] in ["BUY", "BUY EXTRA"]:
             st.success(text)
-        elif alert["type"] in ["STOP BUYING", "EXPENSIVE"]:
+        elif alert["type"] == "KEEP":
+            st.info(text)
+        elif alert["type"] in ["STOP BUYING", "PAUSE"]:
             st.warning(text)
         else:
             st.error(text)
@@ -189,33 +190,40 @@ st.dataframe(
 
 st.divider()
 
-# Stocks: health check and watchlist from the screener
-screen = pd.read_csv("data/future/future_screen.csv")
-if "fair_high" in screen.columns:
-    screen["vs_fair_%"] = (screen["price"] / screen["buy_below"] - 1) * 100
-    table_config = {
+# Fair price of my stocks and of the watchlist (from future/fair_price.py)
+if os.path.exists("data/future/fair_prices.csv"):
+    fair = pd.read_csv("data/future/fair_prices.csv")
+    fair_config = {
         "name": "Company",
-        "price": st.column_config.NumberColumn("Price", format="%.2f"),
-        "buy_below": st.column_config.NumberColumn("Fair price (careful)", format="%.2f"),
-        "fair_high": st.column_config.NumberColumn("Fair price (optimistic)", format="%.2f"),
-        "vs_fair_%": st.column_config.NumberColumn("Price vs fair", format="%+.0f%%"),
-        "quality": "Quality /5",
-        "edge": "Moat and future /4",
-        "score": "Score /11",
-        "verdict": "Verdict",
+        "price": st.column_config.NumberColumn("Price", format="%.0f"),
+        "fair": st.column_config.NumberColumn("Fair price", format="%.0f"),
+        "gap": st.column_config.NumberColumn("Price vs fair", format="%+.0f%%"),
+        "return": st.column_config.NumberColumn("Expected return a year", format="%.1f%%"),
+        "entry": st.column_config.NumberColumn("Buy at or below", format="%.0f"),
+        "currency": "Currency",
+        "status": "Status",
+        "alarm": "I sell or replace it if",
     }
-    show = ["name", "price", "buy_below", "fair_high", "vs_fair_%", "quality", "edge", "score", "verdict"]
 
-    st.subheader("My stocks: health check")
-    st.caption("From the screener, in each company's own currency. Careful fair price: today's growth (capped at 25%) fades to 2.5% over 10 years. Optimistic: today's growth for all 10 years. BUY below careful, FAIR between the two, WATCH above optimistic. Price vs fair compares with the careful one.")
-    my_stocks = products[products["block"] == "stocks"]["name"]
-    st.dataframe(screen[screen["name"].isin(my_stocks)][show], hide_index=True, column_config=table_config)
+    st.subheader("My stocks: fair price and what to do")
+    st.caption("My own DCF, in each company's currency. BUY EXTRA: 15% or more below fair. KEEP BUYING: up to 10% above fair. PAUSE: more than 10% above fair, so its monthly plan goes to VWCE and I keep the shares. The expected return is what I earn a year if the base case happens. I ask for at least 9%.")
+    mine = fair[fair["list"] == "portfolio"]
+    st.dataframe(mine[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "alarm"]], hide_index=True, column_config=fair_config)
 
-    st.subheader("Watchlist")
-    st.caption("Great companies I don't own yet because they were too expensive. They become candidates when the price goes below fair.")
-    watchlist = pd.read_csv("data/future/watchlist.csv")
-    waiting = screen[screen["ticker"].isin(watchlist["ticker"])].sort_values("vs_fair_%")
-    st.dataframe(waiting[show], hide_index=True, column_config=table_config)
+    st.subheader("Watchlist: good companies waiting for a good price")
+    st.caption("Sorted from the closest to its fair price to the furthest. One becomes BUY when the price reaches my entry price. Then I write the full analysis before buying.")
+    waiting = fair[fair["list"] == "watchlist"]
+    st.dataframe(waiting[["name", "status", "price", "fair", "gap", "return", "entry", "currency"]], hide_index=True, column_config=fair_config)
+else:
+    st.write("No fair prices yet: run python future/fair_price.py")
+
+# Business health of my stocks (from the screener)
+screen = pd.read_csv("data/future/future_screen.csv")
+st.subheader("My stocks: business health")
+st.caption("From the screener. Quality looks at growth, margin, cash, debt and return on equity. Moat and future are my own scores. If quality falls below 4 the weekly check tells me to review the stock.")
+my_stocks = products[products["block"] == "stocks"]["name"]
+health = screen[screen["name"].isin(my_stocks)][["name", "quality", "edge", "score"]]
+st.dataframe(health, hide_index=True, column_config={"name": "Company", "quality": "Quality /5", "edge": "Moat and future /4", "score": "Score /11"})
 
 st.divider()
 
