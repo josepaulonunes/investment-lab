@@ -1,7 +1,7 @@
 name,value
 max_position,5
 min_position,2
-max_bets,30
-max_group,12
+max_bets,40
+max_group,25
 months_before_limits,6
-max_stocks,7
+max_stocks,8
