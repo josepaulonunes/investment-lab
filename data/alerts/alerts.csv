@@ -1,25 +1,24 @@
 date,type,product,message
-2026-11-12,BUY EXTRA,Vertiv,Price is 17% below my fair price (253 USD). Expected return 11.4% a year. A one-off buy from my personal budget makes sense if none of its alarms is on
-2026-11-12,BUY EXTRA,ServiceNow,Price is 16% below my fair price (119 USD). Expected return 10.1% a year. A one-off buy from my personal budget makes sense if none of its alarms is on
-2026-11-12,PAUSE,Intuitive Surgical,"Price is 24% above my fair price (354 USD). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"
-2026-11-12,PRIORITY BUY BIG,Netflix,"Now at 63 USD, 15% or more below my fair price of 100. Check its alarms and the independent checks, then buy from the extra money (up to 200 € a month) and start a monthly plan"
-2026-11-12,PRIORITY START PLAN,IBM,"Now at 245 USD, at or below my fair price of 267. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"
-2026-11-12,PRIORITY CLOSE,Microsoft,"Now at 523 USD, less than 5% above my fair price of 510. Get ready to start a monthly plan"
-2026-11-12,CLOSE,TSMC,"Now at 405 USD, less than 5% above my buying price of 392. Check that the limit order or the price alert is ready"
+2026-11-12,WAIT RESULTS,Nvidia,"Cheap and confirmed, but results come on 2026-11-17. Read them first, then decide on the extra buy"
+2026-11-12,BUY EXTRA,Vistra,"Price is 29% below my fair price (190 USD), confirmed by 2/2 independent checks. Expected return 13.0% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,BUY EXTRA,Broadcom,"Price is 28% below my fair price (509 USD), confirmed by 3/3 independent checks. Expected return 12.7% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,BUY EXTRA,Vertiv,"Price is 25% below my fair price (280 USD), confirmed by 2/2 independent checks. Expected return 12.2% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,BUY EXTRA,GE Vernova,"Price is 20% below my fair price (1028 USD), confirmed by 3/3 independent checks. Expected return 11.7% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,BUY EXTRA,TSMC,"Price is 19% below my fair price (500 USD), confirmed by 3/3 independent checks. Expected return 10.4% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,BUY EXTRA,ASML,"Price is 18% below my fair price (1711 EUR), confirmed by 3/3 independent checks. Expected return 10.3% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"
+2026-11-12,PAUSE,Intuitive Surgical,"Price is 10% above my fair price (400 USD). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"
+2026-11-12,PAUSE,Eli Lilly,"Price is 14% above my fair price (1247 USD). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"
+2026-11-12,BUY,Netflix,"Now at 63 USD, at or below my entry price of 100. Write the full analysis before buying"
+2026-11-12,PRIORITY START PLAN,Alphabet,"Now at 299 USD, 10% or more below my fair price of 355, confirmed by 3/3 checks. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"
+2026-11-12,PRIORITY NOT CONFIRMED,Intel,"10% or more below my fair price, but not confirmed. Checks that agree: 1/2 (2 needed), and analysts must not be cutting their profit forecast by more than 10%. Wait"
+2026-11-12,PRIORITY CLOSE,Meta,"Now at 624 USD, less than 5% above my start price of 621. Get ready to start a monthly plan"
+2026-11-12,PRIORITY CLOSE,Microsoft,"Now at 523 USD, less than 5% above my start price of 517. Get ready to start a monthly plan"
 2026-11-12,CLOSE,ResMed,"Now at 239 USD, less than 5% above my buying price of 229. Check that the limit order or the price alert is ready"
-2026-11-12,CLOSE,GE Vernova,"Now at 817 USD, less than 5% above my buying price of 778. Check that the limit order or the price alert is ready"
 2026-11-12,REVIEW ASSUMPTION,Rheinmetall,"Analysts expect 49.82 a share next year, +25% vs my 40.00. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"
-2026-11-12,REVIEW ASSUMPTION,Nvidia,"Analysts expect 15.91 a share next year, +33% vs my 12.00. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"
 2026-11-12,REVIEW ASSUMPTION,Visa,"Analysts expect 17.14 a share next year, +15% vs my 14.90. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"
 2026-11-12,REVIEW ASSUMPTION,Qualcomm,"Analysts expect 12.21 a share next year, +31% vs my 9.30. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"
 2026-11-12,REVIEW ASSUMPTION,Prysmian,"Analysts expect 6.54 a share next year, +19% vs my 5.50. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"
 2026-11-12,RESULTS,Nvidia,Results on 2026-11-17. Read them the day after and check its alarms: Data center outlook falls; receivables grow faster than sales; new guarantees to customers; formal charges against the company
-2026-11-12,KEEP,TSMC,Price is -12% vs my fair price (461 USD). The monthly plan keeps going. Sell only if: Losing leading edge customers; monthly sales falling for two quarters
-2026-11-12,KEEP,GE Vernova,Price is -11% vs my fair price (915 USD). The monthly plan keeps going. Sell only if: Orders falling for two quarters; turbine reservations cancelled; margins missing the 2028 path
-2026-11-12,KEEP,ASML,Price is -10% vs my fair price (1522 EUR). The monthly plan keeps going. Sell only if: 2027 outlook below 15% growth; new export limits; customers cutting investment; gross margin below 52%
-2026-11-12,KEEP,Broadcom,Price is -6% vs my fair price (386 USD). The monthly plan keeps going. Sell only if: More than 5% new shares a year; losing a big customer; missing its AI revenue targets
-2026-11-12,KEEP,Nvidia,Price is -5% vs my fair price (175 USD). The monthly plan keeps going. Sell only if: Data center outlook falls; receivables grow faster than sales; new guarantees to customers; formal charges against the company
-2026-11-12,KEEP,Vistra,Price is -2% vs my fair price (137 USD). The monthly plan keeps going. Sell only if: Texas rules that cap power prices; debt above 3.5 times EBITDA; free cash flow below 3.5 billion USD; a nuclear plant out for long
-2026-11-12,KEEP,Safran,Price is -1% vs my fair price (317 EUR). The monthly plan keeps going. Sell only if: LEAP deliveries or spare parts falling for two quarters; Airbus or Boeing cutting production rates; operating margin below 15%; losing the LEAP successor engine to a rival
-2026-11-12,KEEP,Mastercard,Price is +0% vs my fair price (650 USD). The monthly plan keeps going. Sell only if: A law that cuts card fees; volume growing less than 5% for a year
-2026-11-12,KEEP,Eli Lilly,Price is +1% vs my fair price (1420 USD). The monthly plan keeps going. Sell only if: Prices falling faster than volume grows; losing share to rivals
+2026-11-12,KEEP,ServiceNow,"Price is -39% vs my fair price (165 USD). No monthly plan, I just keep the shares. Sell only if: Subscription growth below 15%; current backlog (cRPO) growth below 15%; stock pay above 18% of revenue; big customers moving to AI agents from rivals"
+2026-11-12,KEEP,Safran,Price is -8% vs my fair price (339 EUR). The monthly plan keeps going. Sell only if: LEAP deliveries or spare parts falling for two quarters; Airbus or Boeing cutting production rates; operating margin below 15%; losing the LEAP successor engine to a rival
+2026-11-12,KEEP,Mastercard,Price is +4% vs my fair price (630 USD). The monthly plan keeps going. Sell only if: A law that cuts card fees; volume growing less than 5% for a year
