@@ -1,25 +1,22 @@
-name,ticker,currency,list,eps,conversion,growth,discount,entry,compare,alarm
-Nvidia,NVDA,USD,portfolio,12,0.7,0.10,0.10,,yes,Data center outlook falls; receivables grow faster than sales; new guarantees to customers; formal charges against the company
-Mastercard,MA,USD,portfolio,22.8,1.0,0.13,0.09,,yes,A law that cuts card fees; volume growing less than 5% for a year
-TSMC,TSM,USD,portfolio,21,0.62,0.17,0.09,,yes,Losing leading edge customers; monthly sales falling for two quarters
-Eli Lilly,LLY,USD,portfolio,48,0.75,0.19,0.09,,yes,Prices falling faster than volume grows; losing share to rivals
-ASML,ASML.AS,EUR,portfolio,55,0.87,0.15,0.09,,yes,2027 outlook below 15% growth; new export limits; customers cutting investment; gross margin below 52%
-GE Vernova,GEV,USD,portfolio,25.8,1.0,0.20,0.10,,yes,Orders falling for two quarters; turbine reservations cancelled; margins missing the 2028 path
-Broadcom,AVGO,USD,portfolio,18.5,0.9,0.12,0.10,,yes,More than 5% new shares a year; losing a big customer; missing its AI revenue targets
-ServiceNow,NOW,USD,portfolio,4.8,0.7,0.17,0.09,,yes,Subscription growth below 15%; current backlog (cRPO) growth below 15%; stock pay above 18% of revenue; big customers moving to AI agents from rivals
-Vistra,VST,USD,portfolio,13.7,0.6,0.06,0.10,,no,Texas rules that cap power prices; debt above 3.5 times EBITDA; free cash flow below 3.5 billion USD; a nuclear plant out for long
-BNY,BNY,USD,watchlist,10.6,0.9,0.07,0.10,143,yes,CET1 below 10%; return on tangible equity below 20%; losing big custody clients
-Intuitive Surgical,ISRG,USD,portfolio,12.4,0.85,0.16,0.09,,yes,Losing the lead in robotic surgery; procedures growing less than 10%
-S&P Global,SPGI,USD,watchlist,19.4,1.0,0.10,0.09,425,yes,
-Alphabet,GOOGL,USD,watchlist,15.4,0.6,0.14,0.09,265,yes,
-Safran,SAF.PA,EUR,portfolio,12.4,1.0,0.11,0.09,,yes,LEAP deliveries or spare parts falling for two quarters; Airbus or Boeing cutting production rates; operating margin below 15%; losing the LEAP successor engine to a rival
-Microsoft,MSFT,USD,watchlist,22.5,0.7,0.14,0.09,450,yes,
-Amazon,AMZN,USD,watchlist,11.5,0.5,0.18,0.09,220,yes,
-Meta,META,USD,watchlist,34,0.55,0.11,0.09,480,yes,
-Marvell,MRVL,USD,watchlist,7,0.6,0.20,0.10,149,yes,
-Corning,GLW,USD,watchlist,4.5,0.8,0.16,0.10,103,yes,
-Qualcomm,QCOM,USD,watchlist,9.3,0.9,0.07,0.10,148,yes,
-Constellation Energy,CEG,USD,watchlist,13.5,0.7,0.10,0.10,197,yes,
-General Dynamics,GD,USD,watchlist,18.95,0.95,0.08,0.09,331,yes,
-ResMed,RMD,USD,watchlist,12.4,0.95,0.09,0.09,229,yes,
-Rheinmetall,RHM.DE,EUR,watchlist,40,0.6,0.20,0.10,724,yes,
+name,ticker,currency,list,eps,conversion,growth,discount,entry,alarm
+Nvidia,NVDA,USD,portfolio,12,0.7,0.10,0.10,,Data center outlook falls; receivables grow faster than sales; new guarantees to customers; formal charges against the company
+Mastercard,MA,USD,portfolio,22.8,1.0,0.13,0.09,,A law that cuts card fees; volume growing less than 5% for a year
+TSMC,TSM,USD,portfolio,21,0.62,0.17,0.09,,Losing leading edge customers; monthly sales falling for two quarters
+Eli Lilly,LLY,USD,portfolio,48,0.75,0.19,0.09,,Prices falling faster than volume grows; losing share to rivals
+ASML,ASML.AS,EUR,portfolio,55,0.87,0.15,0.09,,2027 outlook below 15% growth; new export limits; customers cutting investment; gross margin below 52%
+GE Vernova,GEV,USD,portfolio,25.8,1.0,0.20,0.10,,Orders falling for two quarters; turbine reservations cancelled; margins missing the 2028 path
+Broadcom,AVGO,USD,portfolio,18.5,0.9,0.12,0.10,,More than 5% new shares a year; losing a big customer; missing its AI revenue targets
+ServiceNow,NOW,USD,portfolio,4.8,0.7,0.17,0.09,,Subscription growth below 15%; current backlog (cRPO) growth below 15%; stock pay above 18% of revenue; big customers moving to AI agents from rivals
+Vistra,VST,USD,portfolio,13.7,0.6,0.06,0.10,,Texas rules that cap power prices; debt above 3.5 times EBITDA; free cash flow below 3.5 billion USD; a nuclear plant out for long
+BNY,BNY,USD,watchlist,10.6,0.9,0.07,0.10,143,CET1 below 10%; return on tangible equity below 20%; losing big custody clients
+Intuitive Surgical,ISRG,USD,portfolio,12.4,0.85,0.16,0.09,,Losing the lead in robotic surgery; procedures growing less than 10%
+S&P Global,SPGI,USD,watchlist,19.4,1.0,0.10,0.09,425,
+Alphabet,GOOGL,USD,watchlist,15,0.6,0.14,0.09,265,
+Safran,SAF.PA,EUR,watchlist,11,1.0,0.11,0.09,280,
+Microsoft,MSFT,USD,watchlist,20.7,0.7,0.14,0.09,450,
+Amazon,AMZN,USD,watchlist,11.5,0.5,0.18,0.09,220,
+Meta,META,USD,watchlist,34,0.55,0.11,0.09,480,
+Marvell,MRVL,USD,watchlist,7,0.6,0.20,0.10,149,
+Corning,GLW,USD,watchlist,4.5,0.8,0.16,0.10,103,
+Qualcomm,QCOM,USD,watchlist,9.3,0.9,0.07,0.10,148,
+Constellation Energy,CEG,USD,watchlist,13.5,0.7,0.10,0.10,197,
