@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 st.set_page_config(page_title="My portfolio", page_icon="📈", layout="wide")
 st.title("My portfolio")
 
-# My products: isin, name, block, Yahoo ticker, currency, target % and group
+# My products: isin, name, block, Yahoo ticker, currency, target % and sector
 products = pd.read_csv("data/portfolio/products.csv")
 
 # One line that describes the plan, built from the products file so it is never out of date
@@ -100,7 +100,7 @@ st.divider()
 
 # Alerts from the weekly check
 st.subheader("Alerts")
-st.caption("Checked automatically every Monday. Green: a chance to buy. Blue: keep the plan going. Yellow: pause or stop buying. Red: check if the business got worse. I never sell just because the price fell.")
+st.caption("Checked automatically every Monday. Green: a chance to buy. Blue: keep the plan going. Yellow: pause or stop buying. Red: the price is far too high or the business got worse, so I review or sell. I never sell just because the price fell.")
 if os.path.exists("data/alerts/alerts.csv"):
     alerts = pd.read_csv("data/alerts/alerts.csv")
     st.write("Last check:", alerts["date"].iloc[0])
@@ -206,7 +206,7 @@ if os.path.exists("data/future/fair_prices.csv"):
     }
 
     st.subheader("My stocks: fair price and what to do")
-    st.caption("My own DCF, in each company's currency. BUY EXTRA: 15% or more below fair. KEEP BUYING: up to 10% above fair. PAUSE: more than 10% above fair, so its monthly plan goes to VWCE and I keep the shares. The expected return is what I earn a year if the base case happens. I ask for at least 9%.")
+    st.caption("My own DCF, in each company's currency. BUY EXTRA: 15% or more below fair. KEEP BUYING: up to 10% above fair. PAUSE: more than 10% above fair, so its monthly plan goes to VWCE and I keep the shares. SELL PART: 50% or more above fair, I sell up to half. The expected return is what I earn a year if the base case happens. I ask for at least 9%.")
     mine = fair[fair["list"] == "portfolio"]
     st.dataframe(mine[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "alarm"]], hide_index=True, column_config=fair_config)
 
