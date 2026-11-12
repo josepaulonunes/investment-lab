@@ -1,4 +1,4 @@
-# Investment Lab
+# Investment Portfolio
 
 My own investment tools in Python: a live dashboard of my portfolio, a screener that looks for companies with almost no competition at a fair price, and a daily check that tells me when to buy more, stop buying or look closer.
 
