@@ -1,6 +1,6 @@
 # Investment Policy Statement
 
-My rules, written before investing. I only change them in the January review.
+My rules, written before investing. I change them in the quarterly review, or when a company passes a full written analysis.
 
 ## Money
 - Emergency fund and the savings for my master's stay in cash, never in the portfolio
@@ -9,47 +9,43 @@ My rules, written before investing. I only change them in the January review.
 ## Targets
 | Block | Product | ISIN | Target |
 |---|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 60% |
-| Small | iShares MSCI World Small Cap (IUSN) | IE00BF4RFH31 | 10% |
-| Theme ETF | Xtrackers MSCI World Health Care (XDWH) | IE00BM67HK77 | 3% |
-| Theme ETF | First Trust Smart Grid Infrastructure (GRID) | IE000J80JTL1 | 3% |
-| Theme ETF | VanEck Uranium and Nuclear Technologies (NUKL) | IE000M7V94E1 | 2% |
+| Core | Vanguard FTSE All-World (VWCE) | IE00BK5BQT80 | 70% |
+| Stock | Nvidia | US67066G1040 | 5% |
+| Stock | Mastercard | US57636Q1040 | 5% |
 | Stock | TSMC (ADR) | US8740391003 | 4% |
-| Stock | Mastercard | US57636Q1040 | 4% |
+| Stock | Eli Lilly | US5324571083 | 4% |
+| Stock | ASML | NL0010273215 | 3% |
+| Stock | GE Vernova | US36828A1016 | 3% |
 | Stock | Broadcom | US11135F1012 | 3% |
-| Stock | Nvidia | US67066G1040 | 3% |
-| Stock | Safran | FR0000073272 | 3% |
-| Stock | Eli Lilly | US5324571083 | 3% |
-| Stock | Intuitive Surgical | US46120E6023 | 2% |
+| Stock | BNY | US09581B1035 | 3% |
 
-Base 70%, bets 30% (22% stocks, 8% theme ETFs). The same list is in data/portfolio/products.csv and the limits are in data/portfolio/rules.csv.
+Core 70%, stocks 30%. I keep the Intuitive Surgical shares and the gold I already bought, with no new money. The same list is in data/portfolio/products.csv, the limits are in data/portfolio/rules.csv and the assumptions behind each fair price are in data/portfolio/fair_inputs.csv.
 
 ## Why this mix
-- VWCE and IUSN are the safe part: thousands of companies from about 50 countries, big and small. Even if every bet goes wrong I stay close to the market
-- Stocks only where the winner is clear: almost no competition, top quality in the screener, growing, and at a fair price. TSMC makes the chips for everyone. Mastercard is half of a duopoly in card payments. Broadcom makes custom AI chips and optical links. Nvidia makes most AI chips. Safran makes half of the engine on most single aisle planes and earns for decades on parts and repairs. Eli Lilly shares the market for obesity and diabetes drugs with Novo Nordisk. Intuitive Surgical leads robotic surgery
-- Theme ETFs where the theme is clear but the winner is not: health and biotech, power grid, nuclear
-- Safran and Eli Lilly came in because my stocks were almost all AI chips and all in dollars. Safran is in euros and doesn't depend on AI, Lilly is health with real growth
-- No quantum ETF for now: most pure quantum companies lose money and trade at many times their sales. I follow the sector in the screener and look again every January. It comes back if some of them make a profit or prices fall to normal levels
-- Weights mix a portfolio optimizer (portfolio/optimize.py) with the quality of each company. TSMC and Mastercard get more: TSMC wins whoever wins in AI, Mastercard is the calmest stock and moves differently from chips. Intuitive gets less until its January test
-- No gold: it earns about 1.5% a year above inflation against about 8% for stocks. I keep the small amount I bought in Nov 2026
-- No bonds for now: my cash savings play that role
+- VWCE is the default home for my money: thousands of companies from about 50 countries. Its weight is not fixed. It goes down when a good company reaches a good price and up when one gets expensive. It never goes below 60% before the 2030 test
+- Stocks only where the winner is clear and the price is fair or better. Nvidia makes most AI chips. TSMC makes the chips for everyone. ASML is the only maker of the machines TSMC needs. Broadcom makes custom AI chips. Mastercard is half of a duopoly in card payments. Eli Lilly leads obesity and diabetes drugs. GE Vernova is one of three makers of big gas turbines and sells grid equipment. BNY is a custody bank at a low price that has nothing to do with tech
+- No small cap ETF: the extra return of small companies is weak unless you filter for quality (Asness and others, 2018), it costs more, and it is the opposite of what I look for in stocks
+- No theme ETFs: specialised ETFs lost about 30% against the market in their first 5 years, mostly because the theme was already expensive when the ETF came out (Ben-David and others, 2023). If I like a theme I buy its best company at a fair price, or I wait
+- VWCE and not the S&P 500 or the Nasdaq 100: my stocks are already mostly American tech
+- No gold and no bonds for now: my cash savings play that role
 
 ## Rules
 1. Invest every month, whatever the market does.
 2. Never sell because prices fall. A 40% drop will happen. I keep buying.
-3. Each bet stays between 2% and 5% of the portfolio. Below 2% it doesn't change anything, so it's not worth having. Above 5% I stop buying it and its plan goes to VWCE. I don't sell to fix it.
-4. All bets together stay at or below 30%. Above that, new money goes to VWCE.
-5. Rules 3, 4 and 15 start after 6 months of buying (around April 2027): the one-off stock buy in Nov 2026 makes the first months look off.
-6. Sell or replace a stock only if the business gets worse: quality below 4 out of 5, revenue lower than 3 years ago, debt above 4 times profits, or more than 5% new shares a year. Then I decide in January, not on the day.
-7. Extra buys only when the weekly check says a stock is below its careful fair price (method in notes/2026-11_fair_price_method.md), at least 50 EUR, from my personal budget, never from the savings for my master's.
-8. A watchlist company only comes in if it is clearly better than my weakest stock, and only in January. Maximum 7 stocks: more than that and I can't follow them properly.
-9. The weekly check (GitHub, every Monday) runs the screener and the alerts. I read the alerts, I don't react to news.
-10. No changes because of videos, news, social media or other AIs. New ideas wait for January.
-11. If I need money for my master's or a move: pause plans, never sell.
-12. If I move country, check how it taxes ETFs and stocks before doing anything.
-13. A stock above its optimistic fair price is EXPENSIVE: no extra buys, its plan keeps going and I look at it in January.
-14. Three year test (January 2030): if my stocks together did worse than VWCE since I bought them, the stock block goes to VWCE. Most people who pick stocks end up below the market, and this tells me if I am one of them.
-15. Stocks that depend on the same thing count as one bet. TSMC, Broadcom and Nvidia (AI chips) stay under 12% together. Above that, no extra buys in the group.
+3. A company first has to pass five tests: strong growth ahead, clearly beats its rivals, key sector, gives money back to shareholders, and a fair price. Price comes last.
+4. One method for every company (future/fair_price.py): next year's profit per share times the share of it that becomes cash, 5 years of growth that then fades to 4%, discounted at 9% (10% for cyclical or riskier companies). I also work out the yearly return the price gives me. I ask for at least 9%.
+5. A company enters at or below its entry price in data/portfolio/fair_inputs.csv. Once it is in, the monthly plan keeps going up to 10% above the fair price. Beyond that the plan pauses and the money goes to VWCE. I keep the shares.
+6. Extra buys only when the price is 15% or more below the fair price and none of the company's alarms is on. From my personal budget, never from the savings for my master's.
+7. Sell or replace a stock only if one of its alarms is confirmed (they are written in data/portfolio/fair_inputs.csv), or if the screener shows quality below 4 out of 5, revenue lower than 3 years ago, debt above 4 times profits, or more than 5% new shares a year. Never on the day of the bad news.
+8. Each stock stays between 2% and 5% of the portfolio. Above 5% I stop buying it. Maximum 8 stocks with a plan.
+9. Stocks that depend on AI spending (Nvidia, TSMC, ASML, Broadcom) count as one bet: 15% through the monthly plans, up to 25% only through extra buys at a discount.
+10. All stocks together stay at or below 40%.
+11. Rules 8, 9 and 10 start after 6 months of buying (around April 2027): the one-off buy in Nov 2026 makes the first months look off.
+12. The weekly check (GitHub, every Monday) works out the fair prices and the alerts. I read the alerts, I don't react to news.
+13. Plans only change in the quarterly review, or when a watchlist company reaches its entry price and passes a full written analysis.
+14. If I need money for my master's or a move: pause plans, never sell.
+15. If I move country, check how it taxes ETFs and stocks before doing anything.
+16. Three year test (January 2030): if my stocks together did worse than VWCE since I bought them, the stock block goes to VWCE. Most people who pick stocks end up below the market, and this tells me if I am one of them.
 
 ## Tax notes (Portugal)
 - Accumulating ETFs: no tax until I sell

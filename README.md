@@ -5,27 +5,30 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 ## The plan
 | Block | What | Weight |
 |---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 60% |
-| Small companies | iShares MSCI World Small Cap (IUSN) | 10% |
-| Theme ETFs | Health care 3%, power grid 3%, nuclear 2% | 8% |
-| Stocks | TSMC 4%, Mastercard 4%, Broadcom 3%, Nvidia 3%, Safran 3%, Eli Lilly 3%, Intuitive Surgical 2% | 22% |
+| Core | Vanguard FTSE All-World (VWCE) | 70% |
+| Stocks | Nvidia 5%, Mastercard 5%, TSMC 4%, Eli Lilly 4%, ASML 3%, GE Vernova 3%, Broadcom 3%, BNY 3% | 30% |
 
-70% follows the whole market. 30% are bets on the sectors I think will shape the next decades, each between 2% and 5%. TSMC, Broadcom and Nvidia all depend on AI spending, so together they stay under 12%. Automatic plans every month, a check every Monday, a review every January. The rules are in IPS.md.
+70% follows the whole market. 30% is in 8 companies that clearly beat their rivals, bought only at a fair price or below. The weight of VWCE is not fixed: when a stock gets expensive its monthly plan goes to VWCE, and when a good company on the watchlist reaches a good price it comes in. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
 
-## How I picked the stocks
-1. A list of about 180 companies in AI, chips, energy, nuclear, health, payments, aviation, defense and more (data/future/universe.csv)
-2. The screener scores each one: quality (growth, margin, cash, debt, return on equity), moat and future (my own scores, 0 to 4) and the long run (3 year growth and money given back to shareholders)
-3. A DCF gives two fair prices: a careful one where growth fades to 2.5% over 10 years, as research says it usually does, and an optimistic one where it doesn't. The discount rate is the 10 year Treasury yield plus beta times Damodaran's equity risk premium (notes/2026-11_fair_price_method.md)
-4. Only companies with a near monopoly, top quality and a price below the careful fair price get a BUY
-5. When a company invests so much that its free cash flow is far below its profits (TSMC, Eli Lilly, Amazon), the DCF stops making sense. Those get CHECK and I look at the forward P/E instead
-6. A portfolio optimizer (portfolio/optimize.py) helps set the weights
+I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_plan_change.md).
+
+## How I pick the stocks
+1. A list of about 180 companies in AI, chips, energy, health, payments, aviation, defense and more (data/future/universe.csv)
+2. The screener scores each one: quality (growth, margin, cash, debt, return on equity), moat and future (my own scores) and the long run. I use it to find candidates and to watch the health of the business
+3. For the ones I own or want, I write down my own assumptions in data/portfolio/fair_inputs.csv: profit per share for the next 12 months, how much of it becomes cash, and growth for the next 5 years
+4. future/fair_price.py turns that into a fair price with a simple DCF and tells me the yearly return today's price gives me. I ask for at least 9%
+5. A company only comes in if it passes my five tests (growth, beats its rivals, key sector, pays shareholders, fair price) and I have written the analysis
 
 ## The weekly check
-Every Monday GitHub runs the screener and future/alerts.py. If the alerts are different from last week it opens an issue and I get a notification. New alerts are marked (new):
-- BUY or BUY EXTRA: a stock is below its careful fair price
-- EXPENSIVE: a stock I own is above its optimistic fair price. I keep buying and look at it in January
-- STOP BUYING: a bet is above 5% of the portfolio, the AI chip stocks together are above 12%, or bets are above 30%
-- REVIEW: the business got worse (quality, revenue, debt, new shares), a bet is below 2% of the portfolio, or I own more than 7 stocks
+Every Monday GitHub runs the screener, the fair prices and future/alerts.py. If the alerts are different from last week it opens an issue and I get a notification. Every stock I own gets one line:
+- BUY EXTRA: 15% or more below its fair price. A one-off buy makes sense
+- KEEP: up to 10% above fair. The monthly plan keeps going
+- PAUSE: more than 10% above fair. Its plan goes to VWCE and I keep the shares
+- REVIEW: the business got worse (quality, revenue, debt, new shares). I check its alarms and only then decide to sell or replace it
+- STOP BUYING: a stock is above 5% of the portfolio, the AI stocks together are above 25%, or all stocks are above 40%
+
+And for the watchlist:
+- BUY: the price reached my entry price. Time to write the full analysis
 
 I never sell just because the price fell.
 
@@ -33,7 +36,7 @@ I never sell just because the price fell.
 | Folder | What it does |
 |---|---|
 | portfolio/ | Dashboard (Streamlit), positions vs targets, optimizer, public data |
-| future/ | Screener and weekly alerts |
+| future/ | Screener, fair prices and weekly alerts |
 | companies/ | Valuation model for any company: ratios, DCF, reverse DCF, sensitivity, peers |
 | data/ | Inputs and outputs |
 | notes/ | My decisions, written before deciding |
@@ -55,10 +58,11 @@ Easiest way: open the repo in GitHub Codespaces. The packages install on their o
     pip install -r requirements.txt
     python -m streamlit run portfolio/dashboard.py
     python future/future_screen.py
+    python future/fair_price.py
     python future/alerts.py
     python portfolio/optimize.py
 
 ## Sources
-Company reports, MSCI, Vanguard, iShares, Xtrackers, First Trust and VanEck factsheets, prices from yfinance.
+Company reports and results, Vanguard factsheets, prices from yfinance.
 
 This is a personal learning project, not investment advice.
