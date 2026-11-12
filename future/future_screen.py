@@ -229,7 +229,9 @@ screen["rank"] = screen["verdict"].map(order)
 screen["price_vs_growth"] = screen["implied_growth"] / screen["growth_used"]
 screen = screen.sort_values(["rank", "score", "price_vs_growth"], ascending=[True, False, True]).drop(columns="rank")
 screen.to_csv("data/future/future_screen.csv", index=False)
-screen.to_csv("data/future/future_screen_" + str(date.today()) + ".csv", index=False)
+# A dated copy only on Mondays, so the folder does not fill up
+if date.today().weekday() == 0:
+    screen.to_csv("data/future/future_screen_" + str(date.today()) + ".csv", index=False)
 print()
 print("FUTURE STUDY (quality out of 5, edge out of 4, long term out of 2, score out of 11)")
 print(screen.round(2).to_string(index=False))
