@@ -1,11 +1,11 @@
 name,value
 max_position,5
 min_position,2
-max_bets,40
-max_sector,20
-max_ai,25
+max_bets,50
+max_sector,25
+max_ai,40
 months_before_limits,6
-max_stocks,12
+max_stocks,15
 weight_dcf,60
 premium_normal,4.25
 premium_cyclical,5.25

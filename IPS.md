@@ -12,28 +12,37 @@ The ideal mix is where I want to be. Today's plan is what the prices allow: a st
 
 | Sector | Product | Ideal | Today (13 Nov 2026) |
 |---|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 60% | 80% |
+| Core | Vanguard FTSE All-World (VWCE) | 52% | 62% |
+| Chips and AI | Nvidia | 5% (up to 10% with extra buys) | 5% |
 | Chips and AI | TSMC (ADR) | 5% | 5% |
-| Chips and AI | ASML | 4% | 4% |
-| Chips and AI | Broadcom | 3% | 3% |
-| Chips and AI | Nvidia | 2% | 2% |
-| Grid | Schneider Electric | 3% | waiting |
-| Grid | GE Vernova | 3% | waiting |
-| Health | ResMed | 3% | 3% |
-| Health | Eli Lilly | 3% | waiting |
-| Payments and data | Mastercard | 4% | paused |
-| Payments and data | S&P Global | 3% | waiting |
-| Aerospace | Safran | 4% | waiting |
-| Big tech | Alphabet (the first of Alphabet, Microsoft, Meta, Amazon and Apple to reach its fair price) | 3% | 3% |
+| Chips and AI | ASML | 5% | 5% |
+| Chips and AI | Broadcom | 4% | 4% |
+| Power and grid | Vertiv | 4% | 4% |
+| Power and grid | GE Vernova | 4% | 4% |
+| Power and grid | Vistra | 3% | 3% |
+| Payments | Mastercard | 5% | paused |
+| Health | Eli Lilly | 5% | paused |
+| Aerospace | Safran | 5% | 5% |
+| Big tech | Alphabet | 3% | 3% |
 
-Core 60%, stocks 40% in 12 companies from 6 sectors. I keep the Intuitive Surgical and ServiceNow shares and the gold I already bought, with no new money. The same list is in data/portfolio/products.csv (ideal and target columns), the limits and the numbers of the method are in data/portfolio/rules.csv and the assumptions behind each fair price are in data/portfolio/fair_inputs.csv. Why each company is in or out: notes/2026-11-13_method_and_portfolio.md.
+Core 52%, stocks 48% in 11 companies I know and trust. I keep the Intuitive Surgical and ServiceNow shares and the gold I already bought, with no new money. The same list is in data/portfolio/products.csv (ideal, target and max columns), the limits and the numbers of the method are in data/portfolio/rules.csv and the assumptions behind each fair price are in data/portfolio/fair_inputs.csv. Why: notes/2026-11-13_my_companies.md.
+
+## My priorities (the companies I want to own one day)
+- Magnificent 7: Microsoft, Amazon, Meta, Apple, Tesla (Alphabet and Nvidia are already in)
+- Chips: AMD, Micron, Intel
+- Cybersecurity: CrowdStrike, Palo Alto Networks, Zscaler, Fortinet
+- Quantum: IBM (Alphabet and Microsoft also lead here). Pure quantum names like IonQ have no profit, so my method cannot value them
+- Remote work: Zoom (Microsoft and ServiceNow already cover the rest)
+- AI: Palantir
+Each one starts a plan of 3% when its price is at or below my fair price, its alarm is off and analysts are not cutting profits. The money comes from VWCE, never below 50%.
 
 ## Why this mix
-- VWCE is the default home for my money: thousands of companies from about 50 countries. It never goes below 60%
-- Stocks only where the business is already proven, clearly beats its rivals, and would keep working with an average boss. "Invest in businesses even an idiot can run, because eventually he will." Nvidia lost its founder in November 2026, which is why it is my smallest position
-- Sectors I believe in for the long run: chips and AI, the electricity grid, health, payments and financial data, aircraft engines. No power producers, no commodity energy: their profits depend on prices and politics I cannot predict
+- VWCE is the base of my money: thousands of companies from about 50 countries. It never goes below 50%
+- Stocks only in companies I know, trust and would keep for 10 years. I do not add a new company in one evening because a model says so: a new name needs a written analysis first
+- Nvidia is my strongest conviction. When it is really cheap (35% below my fair price, because it is very hard to value) and its alarm is off, I can buy more, up to 10% of the portfolio
+- Sectors I believe in for the long run: chips and AI, power for data centers, payments, health, aircraft engines and big tech
 - No small cap ETF and no theme ETFs (Asness and others, 2018, Ben-David and others, 2023)
-- No bonds for now: my cash savings play that role. Bitcoin is optional and small (see the note)
+- No bonds for now: my cash savings play that role. Bitcoin is optional and small (see notes/2026-11-13_method_and_portfolio.md)
 
 ## Rules
 1. Invest every month, whatever the market does.
@@ -54,9 +63,9 @@ Core 60%, stocks 40% in 12 companies from 6 sectors. I keep the Intuitive Surgic
 8. Sell in two cases, never on the day of the bad news:
    - The business breaks: one of its alarms is confirmed by the next results, or the screener shows two or more warning signs at once.
    - The price gets absurd: 50% or more above my fair price (rule 6).
-9. Each stock stays between 2% and 5% of the portfolio. Maximum 12 stocks with a plan.
-10. No sector above 20% of the portfolio, counting only the stocks I pick. Everything that depends on AI spending (the chips, GE Vernova, the big tech name, ServiceNow) stays at or below 25%.
-11. All stocks together stay at or below 40%.
+9. Each stock stays between 2% and 5% of the portfolio, except Nvidia, which can go up to 10%. Maximum 15 stocks with a plan.
+10. No sector above 25% of the portfolio, counting only the stocks I pick. Everything that depends on AI spending (the chips, Vertiv, GE Vernova, Vistra, the big tech names, ServiceNow) stays at or below 40%. I know this is a big bet on AI: it is my choice and VWCE is the safety net.
+11. All stocks together stay at or below 50%.
 12. Rules 9, 10 and 11 start after 6 months of buying (around April 2027).
 13. The daily check (GitHub, every weekday after the US close) works out the fair prices and the alerts. I read the alerts, I don't react to news.
 14. The Morningstar values are typed by hand with their date. The check tells me when one is more than 3 months old. After each company's results I update it.
@@ -67,7 +76,7 @@ Core 60%, stocks 40% in 12 companies from 6 sectors. I keep the Intuitive Surgic
 
 ## How I protect the money
 - The money I may need in the next 3 years is not here
-- 60% or more in VWCE, no stock above 5%, no sector above 20%
+- 50% or more in VWCE, no stock above 5% (Nvidia 10%), no sector above 25%
 - A stock only starts at or below fair, I never add above 110% of fair, and extra money only goes in with a real discount
 - No debt, no options, no leveraged products
 - In a crash nothing changes in the plans. The unused extra money is there to buy what reaches its margin of safety

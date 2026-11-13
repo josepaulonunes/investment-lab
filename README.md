@@ -5,10 +5,10 @@ My own investment tools in Python: a live dashboard of my portfolio, a screener 
 ## The plan
 | Block | What | Ideal | Today |
 |---|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 60% | 80% |
-| Stocks | TSMC 5%, ASML 4%, Broadcom 3%, Nvidia 2%, Schneider Electric 3%, GE Vernova 3%, ResMed 3%, Eli Lilly 3%, Mastercard 4%, S&P Global 3%, Safran 4%, one big tech name 3% | 40% | 20% |
+| Core | Vanguard FTSE All-World (VWCE) | 52% | 62% |
+| Stocks | Nvidia 5%, TSMC 5%, ASML 5%, Broadcom 4%, Vertiv 4%, GE Vernova 4%, Vistra 3%, Mastercard 5%, Eli Lilly 5%, Safran 5%, Alphabet 3% | 48% | 38% |
 
-60% follows the whole market. 40% is for 12 proven companies from 6 sectors (chips and AI, the grid, health, payments and data, aerospace, big tech) that clearly beat their rivals. A stock only starts when its price is at or below my fair price. Until then it waits and its money stays in VWCE, which is why VWCE is at 80% today. Automatic plans every month, a check every weekday, a review every quarter. The rules are in IPS.md and the reasons in notes/2026-11-13_method_and_portfolio.md.
+About half follows the whole market. The other half is for 11 companies I know and trust: chips and AI, power for data centers, payments, health, aircraft engines and big tech. A stock gets money only when its price is at or below my fair price, so today Mastercard and Eli Lilly wait and their money stays in VWCE. Nvidia can grow up to 10% with extra buys when it is really cheap. My next companies are the Magnificent 7, chips, cybersecurity, quantum, remote work and AI leaders (the priorities tab). The rules are in IPS.md and the reasons in notes/2026-11-13_my_companies.md.
 
 ## How I pick the stocks
 1. A list of about 180 companies in AI, chips, energy, health, payments, aviation, defense and more (data/future/universe.csv)
@@ -27,7 +27,7 @@ Every weekday after the US market closes, GitHub runs the screener, the fair pri
 - PROFIT CUT: analysts cut next year's profit by more than 10% in 3 months. No buys until I read why
 - REVIEW: one warning sign in the business (quality, revenue, debt, new shares). I look closer
 - SELL: two or more warning signs at once. If the next results confirm them, I sell
-- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), everything linked to AI is above 25%, or all stocks are above 40%
+- STOP BUYING: a stock is above 5% of the portfolio (10% for Nvidia), one sector is above 25% (VWCE does not count), everything linked to AI is above 40%, or all stocks are above 50%
 
 For the companies that wait:
 - PRIORITY START PLAN: one of the stocks of my ideal mix is at or below fair, its alarm is off and analysts are not cutting profits. Its plan starts

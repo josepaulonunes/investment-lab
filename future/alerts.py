@@ -59,10 +59,13 @@ alerts = []
 months = pd.to_datetime(transactions["date"]).dt.strftime("%Y-%m").nunique()
 limits_on = months >= months_before_limits
 
-# Rule: no bet above the maximum weight
+# Rule: no bet above the maximum weight (a company with its own max in products.csv, like Nvidia, uses that one)
 for _, row in held.iterrows():
-    if limits_on and row["block"] in ["themes", "stocks"] and row["weight"] > max_position:
-        alerts.append(["STOP BUYING", row["name"], f"It is {row['weight']:.1f}% of the portfolio, above {max_position:.0f}%. Move its monthly plan to VWCE"])
+    limit = max_position
+    if pd.notna(row["max"]):
+        limit = row["max"]
+    if limits_on and row["block"] in ["themes", "stocks"] and row["weight"] > limit:
+        alerts.append(["STOP BUYING", row["name"], f"It is {row['weight']:.1f}% of the portfolio, above {limit:.0f}%. Move its monthly plan to VWCE"])
 
 # Rule: no bet below the minimum weight (too small to change anything)
 # Only products still in the plan (target above 0): one I stopped buying but still hold is fine
@@ -150,7 +153,10 @@ for _, row in portfolio.sort_values("room").iterrows():
         weight = held[held["name"] == name]["weight"].iloc[0]
 
     # No extra buys if the stock, its sector or everything that depends on AI is already above its limit
-    full = limits_on and weight > max_position
+    limit = max_position
+    if pd.notna(product["max"]):
+        limit = product["max"]
+    full = limits_on and weight > limit
     if limits_on and pd.notna(product["sector"]) and product["sector"] in sectors and sectors[product["sector"]] > max_sector:
         full = True
     if limits_on and product["ai"] == "yes" and ai > max_ai:

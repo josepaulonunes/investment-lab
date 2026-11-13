@@ -59,7 +59,7 @@ alert_colours = {
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
-    "Health": "#db2777", "Grid": "#d97706", "Aerospace": "#475569", "Gold": "#ca8a04",
+    "Health": "#db2777", "Grid": "#d97706", "Power and grid": "#d97706", "Aerospace": "#475569", "Gold": "#ca8a04",
     "Payments and data": "#2563eb", "Big tech": "#14b8a6",
 }
 
@@ -397,7 +397,7 @@ with tab_fair:
 # ---------------- Top priorities ----------------
 with tab_priority:
     st.subheader(":material/star: The companies I want to own one day")
-    st.caption(f"These are the companies of my ideal mix that I do not own yet, and the big tech names I would like to own. Each one already has its weight waiting. At or below my fair price I start its monthly plan, if its alarm is off and analysts are not cutting profits. At its full margin of safety, and with two checks agreeing, I also buy big with the extra money (up to 200 € a month). Prices in euros, updated after every US close.")
+    st.caption(f"These are the companies I want to own one day: the Magnificent 7, chips, cybersecurity, quantum, remote work and AI leaders. At or below my fair price I start its monthly plan, if its alarm is off and analysts are not cutting profits. At its full margin of safety, and with two checks agreeing, I also buy big with the extra money (up to 200 € a month). Prices in euros, updated after every US close.")
 
     # My top priorities, the closest to a buy first
     top = fair[fair["list"] == "priority"].sort_values("gap")
@@ -437,7 +437,7 @@ with tab_priority:
                     st.progress(closeness, text="At my start price: start the plan if the checks agree")
         number = number + 1
 
-    st.caption("When one of them reaches its start price, I start its plan and VWCE goes down to make room, never below its ideal weight. No other stock has to leave. Only one big tech name comes in: the first to reach its start price.")
+    st.caption("When one of them reaches its start price, I start its plan with 3% and VWCE goes down to make room, never below 50%. No other stock has to leave. Plenty of big tech names can come in, as long as each one reaches its own price.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:

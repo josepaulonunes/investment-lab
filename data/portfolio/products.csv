@@ -1,17 +1,16 @@
-isin,name,block,ticker,currency,target,ideal,sector,ai
-IE00BK5BQT80,Vanguard FTSE All-World,core,VWCE.DE,EUR,80,60,,no
-US8740391003,TSMC,stocks,TSM,USD,5,5,Chips and AI,yes
-US11135F1012,Broadcom,stocks,AVGO,USD,3,3,Chips and AI,yes
-US67066G1040,Nvidia,stocks,NVDA,USD,2,2,Chips and AI,yes
-US7611521078,ResMed,stocks,RMD,USD,3,3,Health,no
-US57636Q1040,Mastercard,stocks,MA,USD,0,4,Payments and data,no
-NL0010273215,ASML,stocks,ASML.AS,EUR,4,4,Chips and AI,yes
-FR0000121972,Schneider Electric,stocks,SU.PA,EUR,0,3,Grid,no
-US36828A1016,GE Vernova,stocks,GEV,USD,0,3,Grid,yes
-US5324571083,Eli Lilly,stocks,LLY,USD,0,3,Health,no
-US78409V1044,S&P Global,stocks,SPGI,USD,0,3,Payments and data,no
-FR0000073272,Safran,stocks,SAF.PA,EUR,0,4,Aerospace,no
-US02079K3059,Alphabet,stocks,GOOGL,USD,3,3,Big tech,yes
-US81762P1021,ServiceNow,stocks,NOW,USD,0,0,Software,yes
-US46120E6023,Intuitive Surgical,stocks,ISRG,USD,0,0,Health,no
-IE00B579F325,Invesco Physical Gold,gold,8PSG.DE,EUR,0,0,,no
+isin,name,block,ticker,currency,target,ideal,max,sector,ai
+IE00BK5BQT80,Vanguard FTSE All-World,core,VWCE.DE,EUR,62,52,,,no
+US67066G1040,Nvidia,stocks,NVDA,USD,5,5,10,Chips and AI,yes
+US8740391003,TSMC,stocks,TSM,USD,5,5,,Chips and AI,yes
+NL0010273215,ASML,stocks,ASML.AS,EUR,5,5,,Chips and AI,yes
+US11135F1012,Broadcom,stocks,AVGO,USD,4,4,,Chips and AI,yes
+US92537N1081,Vertiv,stocks,VRT,USD,4,4,,Power and grid,yes
+US36828A1016,GE Vernova,stocks,GEV,USD,4,4,,Power and grid,yes
+US92840M1027,Vistra,stocks,VST,USD,3,3,,Power and grid,yes
+US57636Q1040,Mastercard,stocks,MA,USD,0,5,,Payments,no
+US5324571083,Eli Lilly,stocks,LLY,USD,0,5,,Health,no
+FR0000073272,Safran,stocks,SAF.PA,EUR,5,5,,Aerospace,no
+US02079K3059,Alphabet,stocks,GOOGL,USD,3,3,,Big tech,yes
+US81762P1021,ServiceNow,stocks,NOW,USD,0,0,,Software,yes
+US46120E6023,Intuitive Surgical,stocks,ISRG,USD,0,0,,Health,no
+IE00B579F325,Invesco Physical Gold,gold,8PSG.DE,EUR,0,0,,,no
