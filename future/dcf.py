@@ -2,8 +2,11 @@
 def dcf_value(cash, growth, discount):
     value = 0
     for year in range(1, 11):
-        # 5 years at full growth, then it falls in a straight line to 4% in year 10
-        rate = growth
+        # Year 1 is the cash of the next 12 months, so growth only starts in year 2
+        # Years 2 to 5 at full growth, then it falls in a straight line to 4% in year 10
+        rate = 0
+        if year > 1:
+            rate = growth
         if year > 5:
             rate = growth + (0.04 - growth) * (year - 5) / 5
         cash = cash * (1 + rate)

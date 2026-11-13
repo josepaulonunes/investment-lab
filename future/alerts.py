@@ -99,6 +99,7 @@ if "forward_pe" not in screen.columns:
 
 # Rule: check the business of each stock I own
 selling = []
+warned = []
 for _, row in held[held["block"] == "stocks"].iterrows():
     match = screen[screen["name"] == row["name"]]
     name = row["name"]
@@ -120,40 +121,51 @@ for _, row in held[held["block"] == "stocks"].iterrows():
     if pd.notna(company["dilution"]) and company["dilution"] > 0.05:
         problems.append(f"it adds {company['dilution'] * 100:.0f}% new shares a year")
 
-    # One problem: look closer. Two or more: the business is breaking, time to sell
+    # One problem: look closer, and no extra buys. Two or more: the business is breaking, time to sell
+    if len(problems) >= 1:
+        warned.append(name)
     if len(problems) == 1:
         alerts.append(["REVIEW", name, f"Warning sign: {problems[0]}. Check its alarms and the next results before doing anything"])
     if len(problems) >= 2:
         selling.append(name)
         alerts.append(["SELL", name, "The business is getting worse: " + ", ".join(problems) + ". If the next quarterly results confirm it, sell and move the money to VWCE or a better company. Never on the day of the news"])
 
-# Fair prices from my own DCF (run future/fair_price.py first)
+# Fair prices: my DCF mixed with Morningstar (run future/fair_price.py first)
 fair = pd.read_csv("data/future/fair_prices.csv")
 keeps = []
 
+# Rule: an alarm I switched on by hand (alarm_on in fair_inputs.csv) stops every buy of that company until I switch it off
+for _, row in fair[fair["alarm_on"] == "yes"].iterrows():
+    alerts.append(["ALARM", row["name"], f"Its alarm is on, so no extra buy and no new plan, whatever the price. Read the next two results and switch it off only when this is settled: {row['alarm']}"])
+
 # Rule: every stock in the plan gets one line: buy extra, keep buying or pause
-for _, row in fair[fair["list"] == "portfolio"].iterrows():
+# The extra buys are sorted so the one furthest below its own buying price comes first
+portfolio = fair[fair["list"] == "portfolio"].copy()
+portfolio["room"] = portfolio["price"] / portfolio["entry"]
+for _, row in portfolio.sort_values("room").iterrows():
     name = row["name"]
     product = products[products["name"] == name].iloc[0]
     weight = 0
     if name in list(held["name"]):
         weight = held[held["name"] == name]["weight"].iloc[0]
 
-    # No extra buys if the stock or its sector is already above its limit
+    # No extra buys if the stock, its sector or everything that depends on AI is already above its limit
     full = limits_on and weight > max_position
     if limits_on and pd.notna(product["sector"]) and product["sector"] in sectors and sectors[product["sector"]] > max_sector:
         full = True
+    if limits_on and product["ai"] == "yes" and ai > max_ai:
+        full = True
 
-    if row["status"] == "BUY EXTRA" and not full and product["target"] > 0:
-        alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}), confirmed by {row['checks']} independent checks. Expected return {row['return']:.1f}% a year. If several are here, buy the one with the highest return first (up to 200 € a month)"])
+    if row["status"] == "BUY EXTRA" and not full and product["target"] > 0 and name not in warned:
+        alerts.append(["BUY EXTRA", name, f"Price is {-row['gap']:.0f}% below my fair price ({row['fair']:.0f} {row['currency']}), more than the {row['margin']:.0f}% margin of safety I ask for it, confirmed by {row['checks']} checks. Expected return {row['return']:.1f}% a year. If several are here, the first one in this list goes first (up to 200 € a month)"])
     elif row["status"] == "CHEAP, NOT CONFIRMED":
-        alerts.append(["NOT CONFIRMED", name, f"Price is {-row['gap']:.0f}% below my fair price, but it is not confirmed. Checks that agree: {row['checks']} (2 needed), and analysts must not be cutting their profit forecast by more than 10%. No extra buy, the plan keeps going"])
+        alerts.append(["NOT CONFIRMED", name, f"Price is {-row['gap']:.0f}% below my fair price, but it is not confirmed. Checks that agree: {row['checks']} (2 needed), analysts must not be cutting their profit forecast by more than 10% and its alarm must be off. No extra buy, the plan keeps going"])
     elif row["status"] == "WAIT RESULTS":
         alerts.append(["WAIT RESULTS", name, f"Cheap and confirmed, but results come on {row['next_results']}. Read them first, then decide on the extra buy"])
     elif row["status"] == "SELL PART":
         alerts.append(["SELL PART", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}) and the expected return is only {row['return']:.1f}% a year, less than VWCE. Sell up to half and move it to VWCE if the gain after the 28% tax is worth it. Keep the rest: a great business can stay expensive for years"])
-    elif row["status"] == "PAUSE":
-        alerts.append(["PAUSE", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}). That is more than 10%, so no new money: its plan goes to VWCE until the price comes back. I keep the shares"])
+    elif row["status"] == "PAUSE" and product["target"] > 0:
+        alerts.append(["PAUSE", name, f"Price is {row['gap']:.0f}% above my fair price ({row['fair']:.0f} {row['currency']}). That is more than 10%, so no new money: set its target to 0 in products.csv and give that weight to VWCE until the price comes back. I keep the shares"])
     elif row["status"] == "NO PRICE":
         alerts.append(["REVIEW", name, "No price from Yahoo this week. Check the ticker in data/portfolio/fair_inputs.csv"])
     elif name not in selling:
@@ -162,33 +174,43 @@ for _, row in fair[fair["list"] == "portfolio"].iterrows():
             plan_text = "No monthly plan, I just keep the shares."
         keeps.append(["KEEP", name, f"Price is {row['gap']:+.0f}% vs my fair price ({row['fair']:.0f} {row['currency']}). {plan_text} Sell only if: {row['alarm']}"])
 
-# Rule: a watchlist company reaches my entry price
+# Rule: a watchlist company reaches its start price. It still needs a full written analysis before it comes in
 for _, row in fair[fair["list"] == "watchlist"].iterrows():
-    if row["status"] == "BUY":
-        alerts.append(["BUY", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my entry price of {row['entry']:.0f}. Write the full analysis before buying"])
+    if row["status"] in ["BUY", "BUY BIG"]:
+        alerts.append(["BUY", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my start price of {row['start']:.0f} ({row['fair']:.0f} fair), confirmed by {row['checks']} checks. Write the full analysis before buying"])
 
-# Rule: one of my top priorities reaches its fair price (start a monthly plan) or falls 15% below it (buy big)
+# Rule: one of my top priorities reaches its start price (start a monthly plan) or its full margin of safety (buy big)
 for _, row in fair[fair["list"] == "priority"].iterrows():
     if row["status"] == "BUY BIG":
-        alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 20% or more below my fair price of {row['fair']:.0f}, confirmed by {row['checks']} checks. Buy from the extra money (up to 200 € a month) and start a monthly plan"])
+        alerts.append(["PRIORITY BUY BIG", row["name"], f"Now at {row['price']:.0f} {row['currency']}, {row['margin']:.0f}% or more below my fair price of {row['fair']:.0f}, confirmed by {row['checks']} checks. Buy from the extra money (up to 200 € a month) and start its monthly plan"])
     elif row["status"] == "START PLAN":
-        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, 10% or more below my fair price of {row['fair']:.0f}, confirmed by {row['checks']} checks. Time to start a monthly plan. VWCE goes down to make room (never below 50%), no other stock has to leave"])
+        alerts.append(["PRIORITY START PLAN", row["name"], f"Now at {row['price']:.0f} {row['currency']}, at or below my start price of {row['start']:.0f} (checks that agree: {row['checks']}). Its alarm is off and analysts are not cutting profits. Time to start its monthly plan: move it to the portfolio list and give it its ideal weight in products.csv. The money comes from VWCE"])
     elif row["status"] == "CHEAP, NOT CONFIRMED":
-        alerts.append(["PRIORITY NOT CONFIRMED", row["name"], f"10% or more below my fair price, but not confirmed. Checks that agree: {row['checks']} (2 needed), and analysts must not be cutting their profit forecast by more than 10%. Wait"])
+        alerts.append(["PRIORITY NOT CONFIRMED", row["name"], f"At or below my start price, but its alarm is on or analysts are cutting profits by more than 10%. Wait"])
     elif row["status"] == "WAIT RESULTS":
         alerts.append(["PRIORITY WAIT RESULTS", row["name"], f"Cheap and confirmed, but results come on {row['next_results']}. Read them first"])
     elif row["price"] <= row["start"] * 1.05:
         alerts.append(["PRIORITY CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my start price of {row['start']:.0f}. Get ready to start a monthly plan"])
 
-# Rule: close to a buying price, so I am ready (within 5%)
-for _, row in fair.iterrows():
-    if row["list"] != "priority" and row["status"] in ["KEEP BUYING", "WAIT"] and pd.notna(row["entry"]) and row["entry"] < row["price"] <= row["entry"] * 1.05:
-        alerts.append(["CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my buying price of {row['entry']:.0f}. Check that the limit order or the price alert is ready"])
+# Rule: one of my stocks is close to its extra buy price, so I am ready (within 5%)
+for _, row in fair[fair["list"] == "portfolio"].iterrows():
+    if row["status"] == "KEEP BUYING" and row["entry"] < row["price"] <= row["entry"] * 1.05:
+        alerts.append(["CLOSE", row["name"], f"Now at {row['price']:.0f} {row['currency']}, less than 5% above my extra buy price of {row['entry']:.0f}. Check that the limit order or the price alert is ready"])
 
-# Rule: the analysts now expect a very different profit, so my fair price may be out of date
+# Rule: Yahoo's profit number is more than 30% away from the one I saved, so the fair price still uses mine until I read why
 for _, row in fair.iterrows():
-    if pd.notna(row["eps_gap"]) and abs(row["eps_gap"]) > 15:
-        alerts.append(["REVIEW ASSUMPTION", row["name"], f"Analysts expect {row['analyst_eps']:.2f} a share next year, {row['eps_gap']:+.0f}% vs my {row['my_eps']:.2f}. Read the last results, then update eps (and growth if the story changed) in data/portfolio/fair_inputs.csv"])
+    if pd.notna(row["eps_gap"]) and abs(row["eps_gap"]) > 30:
+        alerts.append(["REVIEW ASSUMPTION", row["name"], f"Analysts expect {row['analyst_eps']:.2f} a share next year, {row['eps_gap']:+.0f}% vs my saved {row['my_eps']:.2f}. Read the last results, then update eps in data/portfolio/fair_inputs.csv"])
+
+# Rule: analysts cut the profit forecast of one of my stocks or priorities by more than 10% in 3 months
+for _, row in fair[fair["list"] != "watchlist"].iterrows():
+    if pd.notna(row["eps_change"]) and row["eps_change"] < -10:
+        alerts.append(["PROFIT CUT", row["name"], f"Analysts cut next year's profit by {-row['eps_change']:.0f}% in the last 3 months. No buys until I read why. Check its alarms: {row['alarm']}"])
+
+# Rule: the Morningstar fair value I saved is old or has no date, so 40% of that fair price may be out of date
+for _, row in fair[fair["list"] != "watchlist"].iterrows():
+    if row["ms_old"] == "yes":
+        alerts.append(["REVIEW MORNINGSTAR", row["name"], f"My Morningstar fair value ({row['morningstar']:.0f} {row['currency']}) has no date or is more than 3 months old. Look it up and update morningstar and ms_date in data/portfolio/fair_inputs.csv"])
 
 # Rule: results in the next 7 days for the stocks I own (read them, never trade on the day)
 soon = str((pd.Timestamp.today() + pd.Timedelta(days=7)).date())

@@ -3,38 +3,41 @@
 My own investment tools in Python: a live dashboard of my portfolio, a screener that looks for companies with almost no competition at a fair price, and a daily check that tells me when to buy more, stop buying or look closer.
 
 ## The plan
-| Block | What | Weight |
-|---|---|---|
-| Core | Vanguard FTSE All-World (VWCE) | 55% |
-| Stocks | Nvidia 5%, TSMC 5%, ASML 5%, Broadcom 4%, Vertiv 4%, GE Vernova 4%, Vistra 3%, Mastercard 5%, Eli Lilly 5%, Safran 5% | 45% |
+| Block | What | Ideal | Today |
+|---|---|---|---|
+| Core | Vanguard FTSE All-World (VWCE) | 60% | 80% |
+| Stocks | TSMC 5%, ASML 4%, Broadcom 3%, Nvidia 2%, Schneider Electric 3%, GE Vernova 3%, ResMed 3%, Eli Lilly 3%, Mastercard 4%, S&P Global 3%, Safran 4%, one big tech name 3% | 40% | 20% |
 
-55% follows the whole market. 45% is in 10 companies from 5 sectors that clearly beat their rivals, bought only at a fair price or below. When a stock gets expensive its monthly plan goes to VWCE. My top priorities (9 companies I want to own one day: Micron, Microsoft, Alphabet, Apple, Amazon, SpaceX, Meta, IBM and Intel) start a plan 10% below my fair price, once independent checks agree, with the money coming from VWCE, which never goes below 50%. Automatic plans every month, a check every Monday, a review every quarter. The rules are in IPS.md.
-
-I dropped the small cap ETF and the theme ETFs on 12 Nov 2026 (notes/2026-11-12_plan_change.md).
+60% follows the whole market. 40% is for 12 proven companies from 6 sectors (chips and AI, the grid, health, payments and data, aerospace, big tech) that clearly beat their rivals. A stock only starts when its price is at or below my fair price. Until then it waits and its money stays in VWCE, which is why VWCE is at 80% today. Automatic plans every month, a check every weekday, a review every quarter. The rules are in IPS.md and the reasons in notes/2026-11-13_method_and_portfolio.md.
 
 ## How I pick the stocks
 1. A list of about 180 companies in AI, chips, energy, health, payments, aviation, defense and more (data/future/universe.csv)
 2. The screener scores each one: quality (growth, margin, cash, debt, return on equity), moat and future (my own scores) and the long run. I use it to find candidates and to watch the health of the business
-3. For the ones I own or want, I write down my own assumptions in data/portfolio/fair_inputs.csv: profit per share for the next 12 months, how much of it becomes cash, and growth for the next 5 years
-4. future/fair_price.py turns that into a fair price with a simple DCF and tells me the yearly return today's price gives me. I ask for at least 9%
-5. A company only comes in if it passes my five tests (growth, beats its rivals, key sector, pays shareholders, fair price) and I have written the analysis
+3. For the ones I own or want, I write down my own assumptions in data/portfolio/fair_inputs.csv: how much of the profit becomes cash, growth for years 2 to 5 (never above 15%), how risky the business is, how hard it is to value, the Morningstar fair value with its date, and the alarms
+4. future/fair_price.py turns that into a fair price every day: 60% my own DCF and 40% Morningstar. The DCF reads the analysts' profit for next year and the US 10 year yield from Yahoo, so the fair price follows the business and the economy without me touching it
+5. A company only comes in if it passes my five tests (proven growth, beats its rivals, key sector, pays shareholders, price below fair) and I have written the analysis
 
 ## The daily check
 Every weekday after the US market closes, GitHub runs the screener, the fair prices and future/alerts.py. If the alerts are different from the last check it opens an issue and I get a notification. Every stock I own gets one line:
-- BUY EXTRA: 15% or more below its fair price. A one-off buy makes sense
+- BUY EXTRA: below its margin of safety (15%, 25% or 35% below fair, the harder to value the bigger) and two checks agree. A one-off buy makes sense
 - KEEP: up to 10% above fair. The monthly plan keeps going
 - PAUSE: more than 10% above fair. Its plan goes to VWCE and I keep the shares
-- SELL PART: 50% or more above fair. The price already counts on years of perfect growth, so I sell up to half and move it to VWCE
+- SELL PART: 50% or more above fair. I sell up to half and move it to VWCE
+- ALARM: I switched its alarm on by hand. No buys until two clean results
+- PROFIT CUT: analysts cut next year's profit by more than 10% in 3 months. No buys until I read why
 - REVIEW: one warning sign in the business (quality, revenue, debt, new shares). I look closer
 - SELL: two or more warning signs at once. If the next results confirm them, I sell
-- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), everything linked to AI is above 30%, or all stocks are above 50%
+- STOP BUYING: a stock is above 5% of the portfolio, one sector is above 20% (VWCE does not count), everything linked to AI is above 25%, or all stocks are above 40%
 
-And for the watchlist:
-- BUY: the price reached my entry price. Time to write the full analysis
+For the companies that wait:
+- PRIORITY START PLAN: one of the stocks of my ideal mix is at or below fair, its alarm is off and analysts are not cutting profits. Its plan starts
+- PRIORITY BUY BIG: it is below its full margin of safety. I also buy with the extra money
+- PRIORITY CLOSE: less than 5% above its start price
+- BUY: a watchlist company reached its start price. Time to write the full analysis
 
 To keep the fair prices fresh:
-- CLOSE: a stock is less than 5% above its buying price, so I get the order ready
-- REVIEW ASSUMPTION: analysts now expect a profit more than 15% away from mine, usually after results. I update data/portfolio/fair_inputs.csv
+- REVIEW MORNINGSTAR: the Morningstar value I typed has no date or is more than 3 months old
+- REVIEW ASSUMPTION: Yahoo's profit number is more than 30% away from the one I saved, so I read why before the check uses it
 - RESULTS: one of my stocks reports in the next 7 days
 
 I never sell just because the price fell.
@@ -42,8 +45,8 @@ I never sell just because the price fell.
 ## The dashboard
 `python -m streamlit run portfolio/dashboard.py` opens five tabs:
 - Portfolio: value vs money invested, what I own, gain per product and per month
-- Monthly plan: where each euro goes for any monthly amount, and every limit (sector, AI, stocks)
-- Fair prices: price vs my fair price for my stocks and the watchlist, and the yearly return each price gives me
+- Monthly plan: where each euro goes today, the ideal weight of each stock, and every limit (sector, AI, stocks)
+- Fair prices: price vs my fair price (my DCF and Morningstar) for my stocks and the ones that wait, with the start and extra buy price of each
 - DCF lab: pick a company and move the sliders (profit, cash, growth, rate) to see how the fair price changes, plus a heat map of what happens if I am wrong
 - Alerts and TR levels: this week's alerts and the euro prices to set as alerts on Trade Republic
 

@@ -55,10 +55,12 @@ alert_colours = {
     "STOP BUYING": "#d97706", "PAUSE": "#d97706", "RESULTS": "#d97706", "REVIEW ASSUMPTION": "#d97706",
     "PRIORITY BUY BIG": "#15803d", "PRIORITY START PLAN": "#15803d", "PRIORITY CLOSE": "#2563eb",
     "NOT CONFIRMED": "#ca8a04", "WAIT RESULTS": "#ca8a04", "PRIORITY NOT CONFIRMED": "#ca8a04", "PRIORITY WAIT RESULTS": "#ca8a04",
+    "REVIEW MORNINGSTAR": "#d97706", "PROFIT CUT": "#b91c1c", "ALARM": "#b91c1c",
 }
 sector_colours = {
     "VWCE": "#1e3a5f", "Chips and AI": "#0f766e", "Software": "#7c3aed", "Payments": "#2563eb",
-    "Health": "#db2777", "Energy": "#d97706", "Aerospace and defense": "#475569", "Gold": "#ca8a04",
+    "Health": "#db2777", "Grid": "#d97706", "Aerospace": "#475569", "Gold": "#ca8a04",
+    "Payments and data": "#2563eb", "Big tech": "#14b8a6",
 }
 
 
@@ -120,7 +122,7 @@ monthly = st.sidebar.number_input("Try an amount (€)", min_value=10, max_value
 rate = st.sidebar.number_input("Dollars per euro", min_value=0.80, max_value=1.60, value=round(load_rate(), 3), step=0.005, format="%.3f")
 st.sidebar.caption("Trade Republic shows US stocks in euros, so every price level in dollars is divided by this rate.")
 st.sidebar.divider()
-st.sidebar.caption("VWCE is the base. Each stock must clearly beat its rivals and is bought only at a fair price or below. Plans run every month, alerts every Monday, a full review every quarter.")
+st.sidebar.caption("VWCE is the base. Each stock must clearly beat its rivals and only comes in below its fair price. While a stock waits for its price, its money stays in VWCE. Plans run every month, the check every weekday, a full review every quarter.")
 st.sidebar.caption("The code is on [GitHub](https://github.com/josepaulonunes/investment-lab).")
 
 # Top banner
@@ -130,7 +132,7 @@ stocks_plan = plan[plan["block"] == "stocks"]
 st.markdown(f"""
 <div class="hero">
     <div class="hero-title">My portfolio</div>
-    <div class="hero-text">{base:.0f}% in the whole world (VWCE) and {100 - base:.0f}% in {len(stocks_plan)} stocks.</div>
+    <div class="hero-text">Today {base:.0f}% in the whole world (VWCE) and {100 - base:.0f}% in {len(stocks_plan)} stocks. The ideal mix is {products[products["block"] == "core"]["ideal"].sum():.0f}% VWCE: the other stocks wait for a good price.</div>
     <span class="chip">{base:.0f}% VWCE</span>
     <span class="chip">{len(stocks_plan)} stocks</span>
     <span class="chip">Last check: {last_check}</span>
@@ -275,45 +277,47 @@ with tab_portfolio:
 # ---------------- Monthly plan ----------------
 with tab_plan:
     st.subheader(":material/calendar_month: How I split my money every month")
-    st.caption(f"The euros show how {monthly:,.0f} € would be split. Change the amount in the sidebar (on a phone, open it with the arrow at the top left).")
+    st.caption(f"The euros show how {monthly:,.0f} € is split today. Ideal is the weight each stock gets once its price is good enough to start: until then its money stays in VWCE. Change the amount in the sidebar (on a phone, open it with the arrow at the top left).")
 
     # Euros per product for the amount in the sidebar
-    split = plan[["name", "block", "sector", "target", "ai"]].copy()
+    split = products[(products["target"] > 0) | (products["ideal"] > 0)][["name", "block", "sector", "target", "ideal", "ai"]].copy()
     split["sector"] = split["sector"].fillna("VWCE")
     split["euros"] = split["target"] / 100 * monthly
 
     left, right = st.columns([1, 1.2])
     with left:
         with st.container(border=True, key="card_split"):
-            fig = px.sunburst(split, path=["sector", "name"], values="target", color="sector", color_discrete_map=sector_colours)
+            fig = px.sunburst(split, path=["sector", "name"], values="ideal", color="sector", color_discrete_map=sector_colours)
             fig.update_traces(textinfo="label+percent root")
             show_chart(fig, 420)
     with right:
         with st.container(border=True, key="card_split_table"):
             st.dataframe(
-                split[["name", "sector", "target", "euros"]].sort_values("target", ascending=False),
+                split[["name", "sector", "ideal", "target", "euros"]].sort_values(["target", "ideal"], ascending=False),
                 hide_index=True,
                 height=440,
                 column_config={
                     "name": "Product",
                     "sector": "Sector",
-                    "target": st.column_config.ProgressColumn("Weight", format="%.0f%%", min_value=0, max_value=100),
+                    "ideal": st.column_config.NumberColumn("Ideal", format="%.0f%%"),
+                    "target": st.column_config.ProgressColumn("Today", format="%.0f%%", min_value=0, max_value=100),
                     "euros": st.column_config.NumberColumn(f"Out of {monthly:,.0f} €", format="%.2f €"),
                 },
             )
 
     # Limits: each sector of my stocks (VWCE does not count) and everything that depends on AI
     st.subheader(":material/shield: Limits")
-    sectors = split[split["block"] == "stocks"].groupby("sector")["target"].sum().reset_index()
-    ai_total = split[split["ai"] == "yes"]["target"].sum()
-    stocks_total = split[split["block"] == "stocks"]["target"].sum()
+    sectors = split[split["block"] == "stocks"].groupby("sector")["ideal"].sum().reset_index()
+    ai_total = split[split["ai"] == "yes"]["ideal"].sum()
+    stocks_total = split[split["block"] == "stocks"]["ideal"].sum()
+    st.caption("The limits are checked against the ideal weights, so the plan still fits when every stock has started.")
     with st.container(key="kpi_plan"):
         col1, col2, col3 = st.columns(3)
         col1.metric(":material/stacked_bar_chart: Stocks together", f"{stocks_total:.0f}%", f"limit {rules['max_bets']:.0f}%", delta_color="off")
         col2.metric(":material/memory: Depends on AI", f"{ai_total:.0f}%", f"limit {rules['max_ai']:.0f}%", delta_color="off")
-        col3.metric(":material/checklist: Stocks with a plan", len(stocks_plan), f"limit {rules['max_stocks']:.0f}", delta_color="off")
+        col3.metric(":material/checklist: Stocks in the ideal mix", len(split[(split["block"] == "stocks") & (split["ideal"] > 0)]), f"limit {rules['max_stocks']:.0f}", delta_color="off")
     with st.container(border=True, key="card_sectors"):
-        fig = px.bar(sectors, x="sector", y="target", color="sector", color_discrete_map=sector_colours, text_auto=".0f")
+        fig = px.bar(sectors, x="sector", y="ideal", color="sector", color_discrete_map=sector_colours, text_auto=".0f")
         fig.add_hline(y=rules["max_sector"], line_dash="dash", line_color=colours["loss"], annotation_text=f"Sector limit {rules['max_sector']:.0f}%")
         fig.update_layout(showlegend=False, xaxis_title="", yaxis_title="% of the portfolio")
         show_chart(fig, 320)
@@ -321,7 +325,7 @@ with tab_plan:
 # ---------------- Fair prices ----------------
 with tab_fair:
     st.subheader(":material/sell: Price today vs my fair price")
-    st.caption("Below 0 the stock is cheaper than my fair price. Green zone: buy extra (15% or more below, only if two independent checks agree). Up to +10%: the plan keeps going. Above +10%: pause the plan. Above +50%: sell part.")
+    st.caption(f"My fair price mixes my own DCF ({rules['weight_dcf']:.0f}%) with the Morningstar fair value. The DCF uses the analysts' profit of the day and a rate that follows the US 10 year yield, so it moves with the business and the economy. Below 0 the stock is cheaper than my fair price. A stock of my ideal mix starts its plan when the price is at or below fair. An extra buy needs a real discount: {rules['margin_medium']:.0f}%, {rules['margin_high']:.0f}% or {rules['margin_very_high']:.0f}%, the harder the company is to value the more I ask, and two checks must agree. Up to +10%: the plan keeps going. Above +10%: pause. Above +50%: sell part.")
 
     # Filter: my stocks, the watchlist or both
     show = st.radio("Show", ["My stocks", "Top priorities", "Watchlist", "All"], horizontal=True)
@@ -345,7 +349,6 @@ with tab_fair:
     with st.container(border=True, key="card_gap"):
         fig = px.bar(table, x="gap", y="name", orientation="h", color="status", color_discrete_map=status_colours, text_auto=".0f",
                      hover_data={"price": ":.0f", "fair": ":.0f", "return": ":.1f", "currency": True})
-        fig.add_vrect(x0=-60, x1=-15, fillcolor=status_colours["BUY EXTRA"], opacity=0.07, line_width=0)
         fig.add_vrect(x0=10, x1=50, fillcolor=status_colours["PAUSE"], opacity=0.07, line_width=0)
         fig.add_vrect(x0=50, x1=120, fillcolor=status_colours["SELL PART"], opacity=0.07, line_width=0)
         fig.add_vline(x=0, line_color=colours["text"], line_width=1)
@@ -353,11 +356,11 @@ with tab_fair:
         fig.update_xaxes(range=[min(-30, table["gap"].min() - 5), max(40, table["gap"].max() + 5)])
         show_chart(fig, 80 + 32 * len(table))
 
-    # Chart: what I earn a year at today's price vs the 9% I ask for
+    # Chart: what I earn a year at today's price vs the lowest rate I ask for
     with st.container(border=True, key="card_return"):
         st.subheader(":material/percent: Expected return a year at today's price")
         fig = px.scatter(table, x="gap", y="return", text="name", color="status", color_discrete_map=status_colours)
-        fig.add_hline(y=9, line_dash="dash", line_color=colours["loss"], annotation_text="I ask for 9%")
+        fig.add_hline(y=fair["discount"].min(), line_dash="dash", line_color=colours["loss"], annotation_text=f"I ask for at least {fair['discount'].min():.1f}%")
         fig.update_traces(textposition="top center", marker_size=12)
         fig.update_layout(xaxis_title="Price vs fair price (%)", yaxis_title="% a year")
         show_chart(fig, 440)
@@ -367,7 +370,7 @@ with tab_fair:
     with st.container(border=True, key="card_fair_table"):
         st.subheader(":material/list_alt: All the numbers")
         st.dataframe(
-            table[["name", "status", "price", "fair", "gap", "return", "entry", "currency", "my_eps", "analyst_eps", "eps_gap", "next_results"]],
+            table[["name", "status", "price", "fair", "gap", "dcf", "morningstar", "discount", "margin", "start", "entry", "return", "checks", "currency", "eps_used", "eps_change", "next_results"]],
             hide_index=True,
             column_config={
                 "name": "Company",
@@ -375,21 +378,26 @@ with tab_fair:
                 "price": st.column_config.NumberColumn("Price", format="%.0f"),
                 "fair": st.column_config.NumberColumn("Fair price", format="%.0f"),
                 "gap": st.column_config.NumberColumn("vs fair", format="%+.0f%%"),
+                "dcf": st.column_config.NumberColumn("My DCF", format="%.0f"),
+                "morningstar": st.column_config.NumberColumn("Morningstar", format="%.0f"),
+                "discount": st.column_config.NumberColumn("Rate I ask for", format="%.1f%%"),
+                "margin": st.column_config.NumberColumn("Margin of safety", format="%.0f%%"),
+                "start": st.column_config.NumberColumn("Start a plan at", format="%.0f"),
+                "entry": st.column_config.NumberColumn("Extra buy at", format="%.0f"),
                 "return": st.column_config.NumberColumn("Return a year", format="%.1f%%"),
-                "entry": st.column_config.NumberColumn("Buy at or below", format="%.0f"),
+                "checks": "Checks",
                 "currency": "Currency",
-                "my_eps": st.column_config.NumberColumn("My profit a share", format="%.2f"),
-                "analyst_eps": st.column_config.NumberColumn("Analysts' profit a share", format="%.2f"),
-                "eps_gap": st.column_config.NumberColumn("Analysts vs me", format="%+.0f%%"),
+                "eps_used": st.column_config.NumberColumn("Profit a share used", format="%.2f"),
+                "eps_change": st.column_config.NumberColumn("Analysts in 3 months", format="%+.0f%%"),
                 "next_results": "Next results",
             },
         )
-    st.caption("Prices from the last daily check (every weekday after the US close). If analysts are more than 15% away from my profit number, the check asks me to review it.")
+    st.caption("Prices, profits and the 10 year yield come from the last daily check (every weekday after the US close). The three checks are: Morningstar above the price, my own DCF above the price, and analysts not cutting profits in the last 3 months. The Morningstar values are typed by hand, so the check tells me when one is more than 3 months old.")
 
 # ---------------- Top priorities ----------------
 with tab_priority:
     st.subheader(":material/star: The companies I want to own one day")
-    st.caption("I love what these companies do, but I only buy with a margin of safety. 10% below my fair price I start a monthly plan, 20% below it I also buy big with the extra money (up to 200 € a month). Only if at least two independent checks agree: Morningstar, the stock's own past P/E and the banks. Prices in euros, updated after every US close.")
+    st.caption(f"These are the companies of my ideal mix that I do not own yet, and the big tech names I would like to own. Each one already has its weight waiting. At or below my fair price I start its monthly plan, if its alarm is off and analysts are not cutting profits. At its full margin of safety, and with two checks agreeing, I also buy big with the extra money (up to 200 € a month). Prices in euros, updated after every US close.")
 
     # My top priorities, the closest to a buy first
     top = fair[fair["list"] == "priority"].sort_values("gap")
@@ -429,12 +437,12 @@ with tab_priority:
                     st.progress(closeness, text="At my start price: start the plan if the checks agree")
         number = number + 1
 
-    st.caption("When one of them reaches its start price, I start its plan and VWCE goes down to make room, never below 50%. No other stock has to leave. Next to study, two or three at each review: health care, consumer staples (McDonald's and food companies), defense and space.")
+    st.caption("When one of them reaches its start price, I start its plan and VWCE goes down to make room, never below its ideal weight. No other stock has to leave. Only one big tech name comes in: the first to reach its start price.")
 
 # ---------------- DCF lab ----------------
 with tab_lab:
     st.subheader(":material/calculate: Play with my assumptions")
-    st.caption("Pick a company and move the sliders. The file data/portfolio/fair_inputs.csv does not change: I only change it in the quarterly review.")
+    st.caption("Pick a company and move the sliders. The file data/portfolio/fair_inputs.csv does not change: I only change it in the quarterly review. Growth above 15% is cut to 15% in the daily check.")
 
     # Pick a company and start from my saved assumptions
     with st.container(border=True, key="card_sliders"):
@@ -447,12 +455,18 @@ with tab_lab:
         col1, col2 = st.columns(2)
         eps = col1.slider("Earnings per share, next 12 months", 0.1, float(company["eps"]) * 2, float(company["eps"]), key="eps_" + ticker)
         conversion = col1.slider("Share of earnings that becomes free cash", 0.3, 1.2, float(company["conversion"]), 0.05, key="conv_" + ticker)
-        growth = col2.slider("Growth a year, first 5 years (%)", 0.0, 40.0, float(company["growth"]) * 100, 0.5, key="growth_" + ticker) / 100
-        discount = col2.slider("Return I ask for (discount rate, %)", 7.0, 13.0, float(company["discount"]) * 100, 0.5, key="disc_" + ticker) / 100
+        growth = col2.slider("Growth a year, years 2 to 5 (%)", 0.0, 40.0, float(company["growth"]) * 100, 0.5, key="growth_" + ticker) / 100
+        saved_rate = float(priced["discount"].iloc[0]) if len(priced) > 0 else 9.0
+        discount = col2.slider("Return I ask for (10 year yield plus the premium, %)", 7.0, 13.0, saved_rate, 0.05, key="disc_" + ticker) / 100
 
     # Results
+    # With Morningstar, the fair price is the same mix as the daily check
     cash = eps * conversion
-    fair_value = dcf_value(cash, growth, discount)
+    my_dcf = dcf_value(cash, growth, discount)
+    fair_value = my_dcf
+    if pd.notna(company["morningstar"]):
+        fair_value = rules["weight_dcf"] / 100 * my_dcf + (1 - rules["weight_dcf"] / 100) * company["morningstar"]
+    safety = float(priced["margin"].iloc[0]) / 100 if len(priced) > 0 else 0.15
     yearly = expected_return(price, cash, growth) * 100 if price > 0 else 0
     gap_now = (price / fair_value - 1) * 100
     with st.container(key="kpi_lab"):
@@ -461,11 +475,15 @@ with tab_lab:
         col2.metric(":material/payments: Price today", f"{price:,.0f} {company['currency']}", f"{gap_now:+.0f}% vs fair", delta_color="inverse")
         col3.metric(":material/percent: Return a year at today's price", f"{yearly:.1f}%")
         col4.metric(":material/speed: P/E I am paying", f"{price / eps:.1f}")
+    if pd.notna(company["morningstar"]):
+        st.caption(f"My DCF alone gives {my_dcf:,.0f} and Morningstar says {company['morningstar']:,.0f}. The fair price above is {rules['weight_dcf']:.0f}% mine and the rest Morningstar. Margin of safety for this company: {safety * 100:.0f}%.")
+    else:
+        st.caption(f"Morningstar does not cover this company (or I have not typed its value), so the fair price is my DCF alone. Margin of safety: {safety * 100:.0f}%.")
 
     # The state these sliders give, with the same rules as the daily check
     if price > 0:
         state = "KEEP BUYING"
-        if gap_now <= -15:
+        if gap_now <= -safety * 100:
             state = "BUY EXTRA"
         elif gap_now >= 50:
             state = "SELL PART"
@@ -473,13 +491,15 @@ with tab_lab:
             state = "PAUSE"
         st.markdown("With these sliders: " + pill(state, status_colours[state]), unsafe_allow_html=True)
     if len(priced) > 0 and pd.notna(priced["analyst_eps"].iloc[0]):
-        st.caption(f"Analysts expect {priced['analyst_eps'].iloc[0]:.2f} a share next year. My saved number is {company['eps']:.2f}. Next results: {priced['next_results'].iloc[0]}")
+        st.caption(f"Analysts expect {priced['analyst_eps'].iloc[0]:.2f} a share next year: the daily check uses that number. My saved number is {company['eps']:.2f}. Next results: {priced['next_results'].iloc[0]}")
 
     # Chart: the cash I expect each year and what it is worth today
     years = []
     year_cash = cash
     for year in range(1, 11):
-        rate_year = growth
+        rate_year = 0
+        if year > 1:
+            rate_year = growth
         if year > 5:
             rate_year = growth + (0.04 - growth) * (year - 5) / 5
         year_cash = year_cash * (1 + rate_year)
@@ -503,7 +523,10 @@ with tab_lab:
             for d in discount_list:
                 line = []
                 for g in growth_list:
-                    line.append(dcf_value(cash, g, d))
+                    value = dcf_value(cash, g, d)
+                    if pd.notna(company["morningstar"]):
+                        value = rules["weight_dcf"] / 100 * value + (1 - rules["weight_dcf"] / 100) * company["morningstar"]
+                    line.append(value)
                 grid.append(line)
             grid = pd.DataFrame(grid, index=[f"rate {d * 100:.1f}%" for d in discount_list], columns=[f"growth {g * 100:.0f}%" for g in growth_list])
             fig = px.imshow(grid, text_auto=".0f", color_continuous_scale="RdYlGn", aspect="auto", zmin=price * 0.5, zmax=price * 1.5)
@@ -515,8 +538,8 @@ with tab_lab:
     with st.container(border=True, key="card_zones"):
         st.markdown("**My zones for this company**")
         fig = go.Figure()
-        fig.add_vrect(x0=0, x1=fair_value * 0.85, fillcolor=status_colours["BUY EXTRA"], opacity=0.18, line_width=0, annotation_text="Buy extra", annotation_position="top left")
-        fig.add_vrect(x0=fair_value * 0.85, x1=fair_value * 1.10, fillcolor=status_colours["KEEP BUYING"], opacity=0.12, line_width=0, annotation_text="Keep buying", annotation_position="top left")
+        fig.add_vrect(x0=0, x1=fair_value * (1 - safety), fillcolor=status_colours["BUY EXTRA"], opacity=0.18, line_width=0, annotation_text="Buy extra", annotation_position="top left")
+        fig.add_vrect(x0=fair_value * (1 - safety), x1=fair_value * 1.10, fillcolor=status_colours["KEEP BUYING"], opacity=0.12, line_width=0, annotation_text="Keep buying", annotation_position="top left")
         fig.add_vrect(x0=fair_value * 1.10, x1=fair_value * 1.5, fillcolor=status_colours["PAUSE"], opacity=0.15, line_width=0, annotation_text="Pause", annotation_position="top left")
         fig.add_vrect(x0=fair_value * 1.5, x1=fair_value * 2, fillcolor=status_colours["SELL PART"], opacity=0.15, line_width=0, annotation_text="Sell part", annotation_position="top left")
         fig.add_trace(go.Scatter(x=[price], y=[0.5], mode="markers+text", text=[f"Today {price:,.0f}"], textposition="bottom center", marker=dict(size=16, color=colours["text"])))
@@ -545,7 +568,7 @@ with tab_alerts:
             elif alert["type"] == "KEEP":
                 with st.expander(f"KEEP · {alert['product']}", icon=":material/thumb_up:"):
                     st.write(alert["message"])
-            elif alert["type"] in ["STOP BUYING", "PAUSE", "RESULTS", "REVIEW ASSUMPTION"]:
+            elif alert["type"] in ["STOP BUYING", "PAUSE", "RESULTS", "REVIEW ASSUMPTION", "REVIEW MORNINGSTAR"]:
                 st.warning(text, icon=":material/schedule:")
             else:
                 st.error(text, icon=":material/warning:")
@@ -570,11 +593,11 @@ with tab_alerts:
         if row["currency"] == "USD":
             to_euro = 1 / rate
         if row["list"] == "portfolio":
-            levels.append([row["name"], "My stock", row["fair"] * 0.85 * to_euro, row["fair"] * 1.10 * to_euro, row["fair"] * 1.5 * to_euro, row["price"] * to_euro])
+            levels.append([row["name"], "My stock", row["entry"] * to_euro, row["fair"] * 1.10 * to_euro, row["fair"] * 1.5 * to_euro, row["price"] * to_euro])
         elif row["list"] == "priority":
             levels.append([row["name"], "Top priority", row["start"] * to_euro, None, None, row["price"] * to_euro])
         else:
-            levels.append([row["name"], "Watchlist", row["entry"] * to_euro, None, None, row["price"] * to_euro])
+            levels.append([row["name"], "Watchlist", row["start"] * to_euro, None, None, row["price"] * to_euro])
     levels = pd.DataFrame(levels, columns=["name", "list", "cheap", "pause", "sell_part", "today"])
     levels["distance"] = (levels["cheap"] / levels["today"] - 1) * 100
     with st.container(border=True, key="card_levels"):
