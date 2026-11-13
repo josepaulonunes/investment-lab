@@ -1,4 +1,0 @@
-scenario,fcf,growth_1_5,growth_6_10,terminal,discount
-pessimistic,2000,0.00,0.01,0.02,0.09
-central,2250,0.04,0.04,0.025,0.085
-optimistic,2400,0.07,0.06,0.03,0.08
