@@ -2,8 +2,8 @@ name,value
 max_position,5
 min_position,2
 max_bets,50
-max_sector,25
-max_ai,40
+max_sector,30
+max_ai,45
 months_before_limits,6
 max_stocks,15
 weight_dcf,60

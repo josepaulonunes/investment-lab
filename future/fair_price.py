@@ -33,14 +33,21 @@ weight_dcf = rules["weight_dcf"] / 100
 last = yf.download(list(inputs["ticker"]), period="10d", progress=False)["Close"].ffill().iloc[-1]
 
 # What analysts expect each company to earn next year and the date of its next results
+# Plus a few facts about the business for the company files on the site (they do not change the fair price)
 analyst_eps = {}
 next_results = {}
+facts = {}
 for ticker in inputs["ticker"]:
     analyst_eps[ticker] = None
     next_results[ticker] = None
+    facts[ticker] = [None] * 7
     try:
         info = yf.Ticker(ticker).info
         analyst_eps[ticker] = info.get("forwardEps")
+        fcf_yield = None
+        if info.get("freeCashflow") and info.get("marketCap"):
+            fcf_yield = info["freeCashflow"] / info["marketCap"] * 100
+        facts[ticker] = [info.get("forwardPE"), info.get("pegRatio"), fcf_yield, info.get("revenueGrowth"), info.get("grossMargins"), info.get("operatingMargins"), info.get("debtToEquity")]
         stamp = info.get("earningsTimestampStart", info.get("earningsTimestamp"))
         if stamp:
             day = pd.to_datetime(stamp, unit="s").date()
@@ -163,10 +170,26 @@ for _, company in inputs.iterrows():
     if pd.isna(price):
         status = "NO PRICE"
 
-    rows.append([company["name"], ticker, company["list"], company["currency"], price, fair, gap, yearly_return, entry, start, status, f"{checks}/{available}", company["alarm"], company["eps"], analyst_eps[ticker], eps_gap, next_results[ticker], dcf, company["morningstar"], discount * 100, margin[company["uncertainty"]] * 100, eps, eps_change, company["alarm_on"], ms_old])
+    # My verdict in plain words, for the company files
+    verdict = "Overvalued"
+    if price <= fair * 1.10:
+        verdict = "Fairly valued"
+    if price <= fair:
+        verdict = "Buy candidate"
+    if price <= entry and confirmed:
+        verdict = "Strong buy candidate"
+    if company["alarm_on"] == "yes":
+        verdict = "Avoid for now (alarm on)"
+
+    # What it could be worth in 5 years if profits grow as I expect and the fair multiple stays (bear: 5 points less growth, bull: 5 points more)
+    value_5y = fair * (1 + growth) ** 5
+    bear_5y = fair * (1 + max(growth - 0.05, 0)) ** 5
+    bull_5y = fair * (1 + growth + 0.05) ** 5
+
+    rows.append([company["name"], ticker, company["list"], company["currency"], price, fair, gap, yearly_return, entry, start, status, f"{checks}/{available}", company["alarm"], company["eps"], analyst_eps[ticker], eps_gap, next_results[ticker], dcf, company["morningstar"], discount * 100, margin[company["uncertainty"]] * 100, eps, eps_change, company["alarm_on"], ms_old, verdict, bear_5y, value_5y, bull_5y] + facts[ticker])
 
 # Save for the alerts and the dashboard, cheapest first
-columns = ["name", "ticker", "list", "currency", "price", "fair", "gap", "return", "entry", "start", "status", "checks", "alarm", "my_eps", "analyst_eps", "eps_gap", "next_results", "dcf", "morningstar", "discount", "margin", "eps_used", "eps_change", "alarm_on", "ms_old"]
+columns = ["name", "ticker", "list", "currency", "price", "fair", "gap", "return", "entry", "start", "status", "checks", "alarm", "my_eps", "analyst_eps", "eps_gap", "next_results", "dcf", "morningstar", "discount", "margin", "eps_used", "eps_change", "alarm_on", "ms_old", "verdict", "bear_5y", "value_5y", "bull_5y", "forward_pe", "peg", "fcf_yield", "revenue_growth", "gross_margin", "operating_margin", "debt_to_equity"]
 table = pd.DataFrame(rows, columns=columns)
 table = table.sort_values("gap")
 table.to_csv("data/future/fair_prices.csv", index=False)

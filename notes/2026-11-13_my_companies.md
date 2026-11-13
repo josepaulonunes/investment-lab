@@ -34,9 +34,13 @@ Morningstar values used: Tesla 475 (22 Oct), AMD 570 (early Nov), CrowdStrike 15
 
 Many of these will look expensive for a long time (Palantir, Tesla, CrowdStrike). That is fine: they wait until the price makes sense.
 
-## Limits
-- Stocks together up to 50%, VWCE never below 50%
-- One sector up to 25%, everything linked to AI up to 40%
+## Limits (changed again at 12h30)
+- VWCE ideal 50%, never below. It only goes down when there are real opportunities
+- Chips and big tech can grow with extra buys: TSMC, ASML, Broadcom and Alphabet up to 7%, Nvidia up to 10%
+- One sector up to 30%, everything linked to AI up to 45%
 - Up to 15 stocks with a plan
 
-I know 40% in AI is a big bet. It is my choice, and the rest of the portfolio is the whole world through VWCE.
+I know 45% in AI is a big bet. It is my choice, and the rest of the portfolio is the whole world through VWCE.
+
+## Company files
+A new tab on the site with one file per company: type of business, how I value that type, value in 5 years (bear, base, bull), the business in numbers from Yahoo, what could push it up, what could break it, and a verdict. The method does not change: the files explain it.

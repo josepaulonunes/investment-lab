@@ -140,11 +140,12 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 st.caption("Prices from Yahoo Finance. Personal learning project, not investment advice.")
 
-tab_portfolio, tab_priority, tab_plan, tab_fair, tab_lab, tab_alerts = st.tabs([
+tab_portfolio, tab_priority, tab_plan, tab_fair, tab_files, tab_lab, tab_alerts = st.tabs([
     ":material/pie_chart: Portfolio",
     ":material/star: Top priorities",
     ":material/calendar_month: Monthly plan",
     ":material/sell: Fair prices",
+    ":material/description: Company files",
     ":material/calculate: DCF lab",
     ":material/notifications: Alerts and TR levels",
 ])
@@ -438,6 +439,96 @@ with tab_priority:
         number = number + 1
 
     st.caption("When one of them reaches its start price, I start its plan with 3% and VWCE goes down to make room, never below 50%. No other stock has to leave. Plenty of big tech names can come in, as long as each one reaches its own price.")
+
+# ---------------- Company files ----------------
+with tab_files:
+    st.subheader(":material/description: One file per company")
+    st.caption("How I value each type of business, what the company does, what could make it worth more and what could break it. The numbers come from the last daily check.")
+
+    # The written files and the guide for each type of business
+    files = pd.read_csv("data/portfolio/company_files.csv")
+    types = pd.read_csv("data/portfolio/value_types.csv")
+    known = fair[fair["ticker"].isin(files["ticker"])]
+
+    if "verdict" not in fair.columns or len(known) == 0:
+        st.info("Run the daily check once so the company files get their numbers.")
+    else:
+        # Pick a company, my stocks first
+        known = known.sort_values(["list", "name"], ascending=[True, True])
+        name = st.selectbox("Company", known["name"], key="file_company")
+        row = known[known["name"] == name].iloc[0]
+        file = files[files["ticker"] == row["ticker"]].iloc[0]
+        kind = types[types["type"] == file["type"]].iloc[0]
+
+        verdict_colours = {"Strong buy candidate": "#15803d", "Buy candidate": "#16a34a", "Fairly valued": "#ca8a04", "Overvalued": "#b91c1c", "Avoid for now (alarm on)": "#b91c1c"}
+        st.markdown(f"### {row['name']} ({row['ticker']}) " + pill(row["verdict"], verdict_colours.get(row["verdict"], colours["grey"])) + pill(file["type"], colours["grey"]), unsafe_allow_html=True)
+
+        # Price, fair price and the levels, in the company's own currency
+        with st.container(key="kpi_file"):
+            a, b, c, d = st.columns(4)
+            a.metric("Price", f"{row['price']:,.0f} {row['currency']}")
+            b.metric("My fair price", f"{row['fair']:,.0f}", f"{row['gap']:+.0f}% vs fair", delta_color="inverse")
+            c.metric("Start a plan at", f"{row['start']:,.0f}")
+            d.metric("Extra buy at", f"{row['entry']:,.0f}", f"{row['margin']:.0f}% margin", delta_color="off")
+
+        # What it could be worth in 5 years
+        with st.container(border=True, key="card_file_future"):
+            st.markdown("**What it could be worth in 5 years**")
+            a, b, c, d = st.columns(4)
+            a.metric("Bear", f"{row['bear_5y']:,.0f}")
+            b.metric("Base", f"{row['value_5y']:,.0f}")
+            c.metric("Bull", f"{row['bull_5y']:,.0f}")
+            d.metric("Return a year from today's price", f"{row['return']:.1f}%")
+            st.caption("Base: my fair price growing with my growth number for 5 years, with the same multiple. Bear: 5 points less growth a year. Bull: 5 points more. It is a range to think with, not a forecast.")
+
+        # How this type of business is valued
+        with st.container(border=True, key="card_file_method"):
+            st.markdown(f"**How I value a {file['type'].lower()} company**")
+            st.write(kind["what"])
+            st.write(kind["how_valued"])
+            st.markdown(f"**What I watch:** {kind['watch']}. **Second check:** {kind['sanity_check']}.")
+            a, b, c = st.columns(3)
+            a.metric("My DCF", f"{row['dcf']:,.0f}")
+            b.metric("Morningstar", "none" if pd.isna(row["morningstar"]) else f"{row['morningstar']:,.0f}")
+            c.metric("Rate I ask for", f"{row['discount']:.1f}%")
+
+        # The business in numbers (from Yahoo)
+        with st.container(border=True, key="card_file_numbers"):
+            st.markdown("**The business in numbers**")
+            a, b, c, d = st.columns(4)
+            a.metric("Forward P/E", "n/a" if pd.isna(row["forward_pe"]) else f"{row['forward_pe']:.1f}")
+            b.metric("Free cash flow yield", "n/a" if pd.isna(row["fcf_yield"]) else f"{row['fcf_yield']:.1f}%")
+            c.metric("Revenue growth", "n/a" if pd.isna(row["revenue_growth"]) else f"{row['revenue_growth'] * 100:.0f}%")
+            d.metric("Operating margin", "n/a" if pd.isna(row["operating_margin"]) else f"{row['operating_margin'] * 100:.0f}%")
+
+        # The story: business, moat, what could push it up, what could break it
+        left, right = st.columns(2)
+        with left:
+            with st.container(border=True, key="card_file_story"):
+                st.markdown(f"**How it makes money:** {file['business']}")
+                st.markdown(f"**Why it beats rivals:** {file['moat']}")
+                st.markdown(f"**What could push it up:** {file['catalysts']}")
+        with right:
+            with st.container(border=True, key="card_file_risks"):
+                st.markdown(f"**What could break it:** {file['risks']}")
+                st.markdown(f"**My alarms:** {row['alarm']}")
+                if pd.notna(row["next_results"]):
+                    st.markdown(f"**Next results:** {row['next_results']}")
+
+    # All companies in one table, by verdict
+    if "verdict" in fair.columns:
+        st.markdown("**Every company at a glance**")
+        table = fair[fair["ticker"].isin(files["ticker"])].merge(files[["ticker", "type"]], on="ticker")
+        st.dataframe(
+            table[["name", "type", "list", "verdict", "gap", "value_5y", "return"]].sort_values("gap"),
+            hide_index=True,
+            column_config={
+                "name": "Company", "type": "Type", "list": "List", "verdict": "Verdict",
+                "gap": st.column_config.NumberColumn("vs fair", format="%+.0f%%"),
+                "value_5y": st.column_config.NumberColumn("Base value in 5 years", format="%.0f"),
+                "return": st.column_config.NumberColumn("Return a year", format="%.1f%%"),
+            },
+        )
 
 # ---------------- DCF lab ----------------
 with tab_lab:
