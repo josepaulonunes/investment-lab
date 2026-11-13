@@ -6,6 +6,7 @@ from datetime import date
 excel = "private/Carteira_DCF.xlsx"
 folder = "data/"
 today = date.today().isoformat()
+os.makedirs(folder, exist_ok=True)
 
 # English names for the words in the Excel
 sectors = {"Big tech e IA": "Big tech and AI", "Chips e IA": "Chips and AI", "Pagamentos": "Payments",
