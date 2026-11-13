@@ -1,0 +1,16 @@
+company,ticker,sector,group,currency,price,bear,base,bull,fair,price_vs_fair,return_if_base,wacc,uncertainty,strictness,verdict,quality
+Microsoft,MSFT,Big tech and AI,Monthly plan,USD,523.0,329.3821,488.8066,576.4713,470.8666,0.1107,0.0853,0.0924,0.5248,Core,Expensive,Pass
+Alphabet,GOOGL,Big tech and AI,Monthly plan,USD,298.7,171.0124,298.4673,363.9758,282.9807,0.0555,0.0914,0.0957,0.6819,Normal,Fair price,Pass with caveat
+TSMC,TSM,Chips and AI,Monthly plan,USD,405.49,174.7705,312.2534,393.9966,298.3185,0.3593,0.0701,0.1131,0.7349,Normal,Very expensive,Pass
+ASML,ASML,Chips and AI,Monthly plan,EUR,1376.8,669.2371,1117.0154,1438.0514,1085.3298,0.2686,0.0611,0.0947,0.7084,Normal,Expensive,Pass
+Broadcom,AVGO,Chips and AI,Monthly plan,USD,364.36,203.3255,435.0307,576.3389,412.4314,-0.1166,0.1211,0.103,0.9044,Strict,Buy,Pass
+Nvidia,NVDA,Chips and AI,Monthly plan,USD,166.19,103.3974,244.3496,341.0185,233.2788,-0.2876,0.1595,0.1033,1.0186,Strict,Buy,Pass
+Mastercard,MA,Payments,Monthly plan,USD,652.6,432.7542,589.8002,657.8819,567.5591,0.1498,0.067,0.0838,0.3967,Core,Expensive,Pass
+SAP,SAP,Business software,Monthly plan,EUR,212.55,154.0088,224.1606,261.753,216.0207,-0.0161,0.0863,0.0832,0.4988,Core,Buy,Pass
+Schneider Electric,SU,Power grid,Monthly plan,EUR,244.8,163.8079,243.7384,300.4592,237.936,0.0288,0.0762,0.0806,0.5743,Normal,Fair price,Pass with caveat
+Eli Lilly,LLY,Health,Watchlist,USD,1437.29,622.0935,1136.7167,1453.0026,1087.1324,0.3221,0.0498,0.0817,0.7643,Strict,Very expensive,Pass
+GE Vernova,GEV,Power,Watchlist,USD,818.49,330.011,545.3755,726.9585,536.9302,0.5244,0.04,0.1017,0.7393,Strict,Very expensive,Pass with caveat
+Apple,AAPL,Big tech and AI,Watchlist,USD,354.88,139.7675,189.4121,214.6201,183.303,0.936,0.0143,0.0961,0.4084,Core,Very expensive,Pass with caveat
+Intuitive Surgical,ISRG,Health,Watchlist,USD,452.8,206.0733,299.647,362.5587,291.9815,0.5508,0.0257,0.083,0.5359,Core,Very expensive,Pass
+Cadence,CDNS,Chips and AI,Watchlist,USD,333.32,107.0707,162.668,195.6421,157.0122,1.1229,-0.0002,0.0922,0.5641,Normal,Very expensive,Pass
+Amazon,AMZN,Big tech and AI,Watchlist,USD,267.44,106.7661,187.973,244.2971,181.7523,0.4715,0.0508,0.0949,0.7567,Strict,Waiting list,Fail

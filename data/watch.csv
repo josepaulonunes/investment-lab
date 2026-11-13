@@ -1,0 +1,16 @@
+company,currency,price,trigger,trigger_eur,distance,state,priority
+Microsoft,USD,523.0,419.3625,379.1704,-0.1982,Check weekly,6.0
+Alphabet,USD,298.7,282.9807,255.8596,-0.0526,Close: check daily,4.0
+TSMC,USD,405.49,298.3185,269.7274,-0.2643,Far: check monthly,10.0
+ASML,EUR,1376.8,1085.3298,1085.3298,-0.2117,Check weekly,7.0
+Broadcom,USD,364.36,371.25,335.6691,0.0189,Extra buy now,2.0
+Nvidia,USD,166.19,182.5275,165.0339,0.0983,Extra buy now,1.0
+Mastercard,USD,652.6,511.4925,462.4706,-0.2162,Check weekly,8.0
+SAP,EUR,212.55,172.8166,172.8166,-0.1869,Check weekly,5.0
+Schneider Electric,EUR,244.8,234.225,234.225,-0.0432,Close: check daily,3.0
+Eli Lilly,USD,1437.29,1087.1324,982.9407,-0.2436,Check weekly,9.0
+GE Vernova,USD,818.49,536.9302,485.4703,-0.344,Far: check monthly,11.0
+Apple,USD,354.88,183.303,165.7351,-0.4835,Far: check monthly,13.0
+Intuitive Surgical,USD,452.8,291.9815,263.9977,-0.3552,Far: check monthly,12.0
+Cadence,USD,333.32,157.0122,141.964,-0.5289,Far: check monthly,14.0
+Amazon,USD,267.44,,,,Not watched: fails quality,
