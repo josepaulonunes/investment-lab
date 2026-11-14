@@ -4,7 +4,7 @@ How I invest every month and how I value the companies I follow.
 
 I'm an economist and I invest a fixed amount every month: most of it in a world ETF (VWCE) and the rest in a few companies I know well, in chips and AI, software, payments, the power grid and health. I only want to buy them at a fair price, so I built a valuation model for each one, the way investment banks do it.
 
-**[Open the live app](https://your-app-link.streamlit.app)**
+**[Open the live app](https://investment-lab-josenunes.streamlit.app)**
 
 ## How it works
 
