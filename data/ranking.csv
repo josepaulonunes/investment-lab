@@ -1,0 +1,65 @@
+pos,ticker,company,group,passes_gates,points,eps_revision_90d,from_52w_high,change,signal,chips,next_results
+1,ANET,"Arista Networks, Inc.","AI, cloud and software",True,0.8696,0.1701,-0.1382,,Pass,True,
+2,APH,Amphenol Corporation,Chips and photonics,True,0.8696,0.1243,-0.152,,🔥 Opportunity,True,2027-01-27
+3,PLTR,Palantir Technologies Inc.,"AI, cloud and software",True,0.8696,0.097,-0.2285,,Pass,False,2027-02-01
+4,LLY,Eli Lilly and Company,Health,True,0.8696,0.0699,0.0001,,Pass,False,
+5,ISRG,"Intuitive Surgical, Inc.",Health,True,0.8696,0.033,-0.2549,,Pass,False,2027-01-21
+6,MSFT,Microsoft Corporation,"AI, cloud and software",True,0.8696,0.0264,-0.0607,,Pass,False,2027-01-27
+7,MA,Mastercard Incorporated,Others,True,0.8696,0.0067,-0.0117,,Pass,False,2027-01-28
+8,TSM,Taiwan Semiconductor Manufactur,Chips and photonics,True,0.8261,0.0987,-0.2249,,🔥 Opportunity,True,2027-01-14
+9,VRT,"Vertiv Holdings, LLC",Energy and the grid,True,0.8261,0.0852,-0.5004,,Pass,True,
+10,KLAC,KLA Corporation,Chips and photonics,True,0.8261,0.0839,-0.5183,,Pass,True,2027-01-28
+11,GLW,Corning Incorporated,Chips and photonics,True,0.8261,0.0515,-0.5833,,Pass,True,2027-01-26
+12,FTNT,"Fortinet, Inc.",Cybersecurity,True,0.8261,0.0377,-0.3683,,Pass,False,
+13,ETN,"Eaton Corporation, PLC",Energy and the grid,True,0.8261,0.0259,-0.2629,,Pass,False,2027-02-02
+14,MU,"Micron Technology, Inc.","AI, cloud and software",True,0.7826,0.2285,-0.4035,,Pass,True,2026-12-23
+15,LRCX,Lam Research Corporation,Chips and photonics,True,0.7826,0.2047,-0.512,,Pass,True,2027-01-27
+16,AMD,"Advanced Micro Devices, Inc.","AI, cloud and software",True,0.7826,0.151,-0.222,,Pass,True,2027-02-02
+17,ASML,ASML Holding N.V. - New York Re,Chips and photonics,True,0.7826,0.1047,-0.2846,,Pass,True,2027-01-27
+18,SNPS,"Synopsys, Inc.",Chips and photonics,True,0.7826,0.079,-0.1714,,Pass,True,2026-12-08
+19,AMAT,"Applied Materials, Inc.",Chips and photonics,True,0.7826,0.0538,-0.5124,,Pass,True,2027-02-11
+20,NVDA,NVIDIA Corporation,"AI, cloud and software",True,0.7391,0.2321,-0.3493,,Pass,True,2026-11-17
+21,SU.PA,SCHNEIDER ELECTRIC SE,Energy and the grid,True,0.7391,0.0412,-0.2233,,Pass,False,
+22,COST,Costco Wholesale Corporation,Others,True,0.7391,0.0056,0.0,,Pass,False,2026-12-10
+23,ENR.DE,Siemens Energy AG             N,Energy and the grid,True,0.6957,0.0722,-0.3125,,Pass,False,2027-02-11
+24,V,Visa Inc.,Others,True,0.6957,0.009,-0.017,,Pass,False,2027-01-26
+25,IBM,International Business Machines,Quantum,True,0.6957,0.0048,-0.2473,,Pass,False,2027-01-27
+26,AVGO,Broadcom Inc.,"AI, cloud and software",True,0.6957,-0.0094,-0.3085,,Pass,True,2026-12-09
+27,MRVL,"Marvell Technology, Inc.",Chips and photonics,True,0.6522,0.1777,-0.536,,Pass,True,2026-12-01
+28,GEV,GE Vernova Inc.,Energy and the grid,True,0.6522,0.052,-0.3494,,Pass,False,2027-01-27
+29,JPM,JP Morgan Chase & Co.,Others,True,0.6522,0.0248,-0.0657,,Pass,False,2027-01-14
+30,TMO,Thermo Fisher Scientific Inc,Health,True,0.6522,0.0099,-0.0349,,Pass,False,2027-01-28
+31,AMZN,"Amazon.com, Inc.","AI, cloud and software",True,0.6087,0.0146,-0.0899,,Pass,False,
+32,DE,Deere & Company,Others,True,0.6087,0.0114,-0.0676,,Pass,False,2026-11-25
+33,DHR,Danaher Corporation,Health,True,0.6087,0.0023,-0.0361,,Pass,False,2027-01-27
+34,CEG,Constellation Energy Corporatio,Energy and the grid,True,0.5652,0.0042,-0.2741,,Pass,False,
+35,CRWD,"CrowdStrike Holdings, Inc.",Cybersecurity,True,0.5652,-0.0119,-0.2132,,Pass,False,2026-12-01
+36,ORCL,Oracle Corporation,"AI, cloud and software",True,0.5217,0.0143,-0.5162,,Pass,False,2026-12-14
+37,ARM,Arm Holdings plc,"AI, cloud and software",True,0.5217,0.0055,-0.599,,Pass,True,2027-02-03
+38,META,"Meta Platforms, Inc.","AI, cloud and software",True,0.4783,0.0,-0.1954,,⚠ Estimates falling,False,2027-01-27
+39,GOOGL,Alphabet Inc.,"AI, cloud and software",True,0.3913,0.0105,-0.2863,,⚠ Estimates falling,False,
+40,LIN,Linde plc,Energy and the grid,True,0.3913,-0.008,-0.0335,,Pass,False,
+41,SAF.PA,SAFRAN,Others,True,0.3913,-0.0322,-0.1477,,⚠ Estimates falling,False,
+42,VST,Vistra Corp.,Energy and the grid,True,0.3478,-0.0405,-0.2884,,Pass,False,
+43,NOW,"ServiceNow, Inc.","AI, cloud and software",True,0.3043,-0.0407,-0.419,,⚠ Estimates falling,False,2027-01-27
+44,QCOM,QUALCOMM Incorporated,"AI, cloud and software",True,0.3043,-0.0617,-0.3117,,⚠ Estimates falling,True,2027-02-03
+45,VRTX,Vertex Pharmaceuticals Incorpor,Health,True,0.3043,-0.0864,-0.0382,,⚠ Estimates falling,False,
+46,MELI,"MercadoLibre, Inc.",Others,True,0.2609,-0.0602,-0.3648,,⚠ Estimates falling,False,
+47,PANW,"Palo Alto Networks, Inc.",Cybersecurity,True,0.2174,-0.0788,-0.2544,,⚠ Estimates falling,False,2026-11-18
+48,ABT,Abbott Laboratories,Health,True,0.1739,-0.0209,-0.1456,,⚠ Estimates falling,False,2027-01-28
+49,TSLA,"Tesla, Inc.",Others,True,0.087,-0.0412,-0.2261,,⚠ Estimates falling,False,2027-01-27
+50,LITE,Lumentum Holdings Inc.,Chips and photonics,False,0.6957,0.2704,-0.5173,,Fails the gates,True,2027-02-02
+51,SPCX,Space Exploration Technologies ,Others,False,0.6522,1.3013,-0.354,,Fails the gates,False,
+52,COHR,Coherent Corp.,Chips and photonics,False,0.6522,0.1948,-0.5212,,Fails the gates,True,2027-02-03
+53,SNOW,Snowflake Inc.,"AI, cloud and software",False,0.6087,0.1354,-0.2337,,Fails the gates,False,2026-12-02
+54,NET,"Cloudflare, Inc.",Cybersecurity,False,0.6087,0.1151,-0.1834,,Fails the gates,False,
+55,NVO,Novo Nordisk A/S,Health,False,0.4783,0.0407,-0.3146,,Fails the gates,False,2027-02-03
+56,ZS,"Zscaler, Inc.",Cybersecurity,False,0.4783,0.0349,-0.3538,,Fails the gates,False,2026-12-02
+57,GFS,GlobalFoundries Inc.,Chips and photonics,False,0.4348,-0.0104,-0.5523,,Fails the gates,True,
+58,AZN,AstraZeneca PLC,Health,False,0.4348,-0.0227,-0.1131,,Fails the gates,False,
+59,BWXT,"BWX Technologies, Inc.",Energy and the grid,False,0.2609,-0.0056,-0.5073,,Fails the gates,False,
+60,CCJ,Cameco Corporation,Energy and the grid,False,0.2609,-0.0775,-0.5036,,Fails the gates,False,
+61,XYL,Xylem Inc.,Energy and the grid,False,0.2174,-0.0568,-0.3382,,Fails the gates,False,
+62,QNT,Quantinuum Inc.,Quantum,False,0.2174,-0.1066,-0.6192,,Fails the gates,False,
+63,INTC,Intel Corporation,Chips and photonics,False,0.2174,-0.1202,-0.6068,,Fails the gates,True,2027-01-28
+64,BN,Brookfield Corporation,Others,False,0.1739,0.0,-0.1743,,Fails the gates,False,2027-02-11

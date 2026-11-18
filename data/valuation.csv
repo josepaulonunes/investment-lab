@@ -1,0 +1,31 @@
+company,ticker,currency,price,bear,base,bull,price_vs_base,wacc,implied_wacc,price_eur,alert1_eur,alert2_eur,why,priority
+TSMC,TSM,USD,379.35,178.39,474.12,809.29,-0.1999,0.0776,0.0913,344.56,293.0,241.0,Makes the most advanced chips for everyone (foundry near-monopoly),Top 8
+Nvidia,NVDA,USD,159.78,61.76,175.33,262.51,-0.0887,0.1224,0.1319,145.12,123.0,102.0,AI GPUs and software (CUDA),Top 8
+Broadcom,AVGO,USD,336.26,105.42,295.7,452.74,0.1372,0.1092,0.0999,305.42,287.0,269.0,Custom AI chips (ASICs) and networking,
+ASML,ASML,USD,1433.9,479.17,1169.93,1838.75,0.2256,0.0874,0.076,1302.41,1183.0,1063.0,Monopoly on EUV lithography machines,Top 8
+KLA,KLAC,USD,146.65,42.48,91.73,132.46,0.5987,0.1092,0.0801,133.2,108.0,83.0,Leader in chip inspection and metrology (process control),Top 8
+Applied Materials,AMAT,USD,356.27,83.87,236.17,364.48,0.5085,0.1147,0.0864,323.6,269.0,215.0,"Deposition/etch equipment; chosen over Lam Research (higher rank, cheaper, more diversified)",
+Microsoft,MSFT,USD,523.73,234.57,456.06,759.42,0.1484,0.0968,0.0889,475.7,445.0,414.0,"Software (Office, Windows) + Azure cloud",Top 8
+Alphabet,GOOGL,USD,288.72,132.91,270.56,457.45,0.0671,0.1007,0.0967,262.24,254.0,246.0,"Search, YouTube, Google Cloud, own AI chips (TPU)",Top 8
+Meta Platforms,META,USD,629.67,279.56,631.56,1114.73,-0.003,0.1005,0.1007,571.93,486.0,400.0,"Social media ads (Facebook, Instagram, WhatsApp)",
+Oracle,ORCL,USD,120.85,28.64,253.11,543.92,-0.5225,0.0971,0.1359,109.77,93.0,77.0,"Databases + AI cloud contracts; high risk (debt, capex above revenue)",
+Fortinet,FTNT,USD,123.57,43.31,72.77,108.48,0.6981,0.0971,0.0685,112.24,89.0,66.0,"Firewalls with own chips + cloud security; replaces Palo Alto (same market, revisions 10/10 vs 0/10)",
+Synopsys,SNPS,USD,445.15,168.32,329.6,546.3,0.3506,0.0952,0.08,404.33,352.0,299.0,Chip design software (duopoly with Cadence) + Ansys simulation,Top 8
+Amphenol,APH,USD,75.93,20.4,58.54,93.57,0.2971,0.0992,0.0846,68.97,61.0,53.0,"Connectors and cables inside AI racks; also auto, defence, industrial",
+Eli Lilly,LLY,USD,1448.65,361.25,939.69,1555.17,0.5416,0.0855,0.0672,1315.81,1085.0,854.0,Obesity and diabetes drugs; the main non-AI diversifier,Top 8
+Siemens Energy,ENR.DE,EUR,125.32,66.35,162.65,251.46,-0.2295,0.1014,0.1256,125.32,107.0,88.0,"Gas turbines, power grid and wind (Europe, EUR); same market as GE Vernova but much cheaper, so it takes its place; revised 17/11 with the FY2030 plan",
+GE Vernova,GEV,USD,777.08,247.58,539.03,915.49,0.4416,0.0972,0.0759,705.82,598.0,490.0,"Gas turbines and power grid equipment; same market as Siemens Energy, which is cheaper today",
+Schneider Electric,SU.PA,EUR,240.35,151.72,295.38,501.89,-0.1863,0.076,0.0863,240.35,204.0,168.0,"Electrical distribution, energy management and liquid cooling for data centres (EUR); cheapest of the electrification names",
+Vertiv,VRT,USD,191.66,44.39,122.21,202.62,0.5683,0.1196,0.0877,174.08,143.0,111.0,Power and cooling for AI data centres; chosen over Eaton (specialist),
+Arista Networks,ANET,USD,186.57,41.64,100.42,151.24,0.8579,0.1154,0.0747,169.47,130.0,91.0,"No. 1 in data-centre Ethernet switches; excellent but expensive, wait for a dip",
+Vistra,VST,USD,130.16,21.27,120.02,231.2,0.0845,0.0859,0.0823,118.22,114.0,109.0,Nuclear + gas power seller in Texas and the East; cheapest of the power names (P/E ~14) but estimates being cut,
+Constellation Energy,CEG,USD,277.82,45.93,163.95,289.72,0.6945,0.0886,0.0674,252.34,201.0,149.0,Largest US nuclear fleet (+ Calpine gas); 20-year deals with Microsoft and Meta; price assumes more than consensus,
+Corning,GLW,USD,106.17,20.14,63.15,106.76,0.6812,0.0979,0.0727,96.43,77.0,57.0,"Optical fibre and cables linking GPUs in AI data centres, plus specialty glass; revisions strongly up but DCF says expensive",
+Intuitive Surgical,ISRG,USD,437.75,120.79,185.27,258.3,1.3628,0.1094,0.0625,397.61,283.0,168.0,"da Vinci surgical robots, ~85% recurring revenue; owned: keep, do not add at this price",
+Anthropic,ANT,USD,74.0,24.43,62.46,123.55,0.1848,0.114,0.1011,67.21,62.0,57.0,"IPO 19/11/2026 (range 70-78 USD); preliminary model from the S-1, no analyst coverage until mid-December",Follow closely
+Ecolab,ECL,USD,308.41,86.25,181.55,309.93,0.6988,0.0849,0.0655,280.13,223.0,165.0,"World leader in industrial water treatment (Nalco Water), incl. data-centre cooling water; steady but P/E ~33",
+Palo Alto Networks,PANW,USD,314.93,53.88,108.35,190.38,1.9066,0.0948,0.0537,286.05,192.0,98.0,"Revisions down (0/10, rank #44); same market as Fortinet",
+Lam Research,LRCX,USD,214.72,56.97,125.05,176.35,0.7171,0.1221,0.0835,195.03,154.0,114.0,Same market as Applied Materials (deposition/etch); more memory-cyclical,
+Eaton,ETN,USD,341.72,124.91,262.77,429.35,0.3005,0.0925,0.0801,310.38,275.0,239.0,"Overlaps Vertiv in data-centre power; more generalist, less AI exposure",
+Amazon,AMZN,USD,260.93,62.55,172.02,337.37,0.5169,0.1053,0.0841,237.0,197.0,156.0,"Buy on a big discount: alert 1 ~230 USD (implied WACC 9%), alert 2 ~172 USD (model value)",Follow closely
+Apple,AAPL,USD,353.92,114.3,170.93,235.91,1.0706,0.098,0.0629,321.47,238.0,155.0,"Buy on a big discount: alert 1 ~194 USD (implied WACC 9%), alert 2 ~171 USD (model value)",
