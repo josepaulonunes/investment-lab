@@ -1,0 +1,9 @@
+# My Excel with real amounts stays on my computer
+private/
+
+# Python and editor files
+__pycache__/
+.venv/
+venv/
+.streamlit/secrets.toml
+~$*.xlsx
